@@ -16,6 +16,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^6.5.1"
+    "concurrently": "^6.5.1",
+    "@eslint/config-array": "latest",
+    "@eslint/object-schema": "latest",
+    "eslint": "^8.57.0"
+  },
+  "overrides": {
+    "glob": "latest",
+    "rimraf": "latest"
   }
 }
