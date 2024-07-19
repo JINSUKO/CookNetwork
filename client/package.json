@@ -22,5 +22,11 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "eslint-plugin-react-hooks": "^4.6.2",
     "vite": "^5.3.4"
+  },
+  "overrides": {
+    "glob": "latest",
+    "rimraf": "latest",
+    "@humanwhocodes/config-array": "latest",
+    "@humanwhocodes/object-schema": "latest"
   }
 }
