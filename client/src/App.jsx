@@ -6,8 +6,10 @@ function App() {
 
   useEffect(() => {
     const API_URL = import.meta.env.PROD
-      ? '/api'
-      : 'http://localhost:3000/api';
+      ? ''
+      : 'http://localhost:3000';
+
+    console.log(API_URL)
 
     fetch(`${API_URL}/hello`)
       .then(response => response.json())
