@@ -25,17 +25,24 @@ CookNetwork/
 
 1. 저장소 클론:
    ```
-   git clone [저장소 URL]
+   본인 깃허브로 프로젝틀 Fork
+   git clone [fork로 가져간 본인 프로젝트 URL]
    cd CookNetwork
+   git branch -b [개인 작업 branch 이름]
+   
+   git add .
+   git commit -m "작업 내용 설명"
+   git push origin [개인 작업 branch 이름]
+
+   git remote add upstream [원본 저장소 URL]
+   git fetch upstream master
+   git rebase upstream/master
    ```
 
 2. 의존성 설치:
    ```
    npm run install:all
    ```
-
-3. 환경 변수 설정:
-   `server/.env` 파일을 생성하고 필요한 환경 변수를 설정합니다.
 
 ## 개발 모드 실행
 
