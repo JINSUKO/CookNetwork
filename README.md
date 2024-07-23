@@ -41,7 +41,7 @@ CookNetwork/
 
 2. 의존성 설치:
    ```
-   npm run install:all
+   npm run install:all --force
    ```
 
 ## 개발 모드 실행
