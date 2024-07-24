@@ -29,28 +29,22 @@ app.get('/hello', (req, res) => {
 const signupRouter = require("./router/signUp.js");
 
 // 회원가입 라우트 요청시 사용
-app.use("/signup",signupRouter);
-
-// 요청 URL 확인
-app.use((req, res, next) => {
-  console.log('Requested URL:', req.url);
-  next();
-});
-
+app.use("/signup", signupRouter);
 
 // 정적 파일 서빙 (프로덕션 모드)
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/dist')));
 } else {
+    console.log(path.join(__dirname, '../client'))
     app.use(express.static(path.join(__dirname, '../client')));
 }
 
 // 위에 해당하지 않는 모든
 // API 404 에러 처리
 
-app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
-});
+// app.get('*', (req, res) => {
+//     res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
+// });
 
 // React app의 라우팅을 위한 와일드카드 라우트
 if (process.env.NODE_ENV === 'production') {
