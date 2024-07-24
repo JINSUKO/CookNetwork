@@ -3,7 +3,7 @@ const path = require('path');
 const cors = require('cors');
 
 require('dotenv').config();
-
+// require('dotenv').config({ path: '.env.local' })
 const app = express();
 
 // CORS 설정
@@ -32,9 +32,6 @@ app.use((req, res, next) => {
 });
 
 
-//
-
-
 // 정적 파일 서빙 (프로덕션 모드)
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/dist')));
@@ -45,7 +42,7 @@ if (process.env.NODE_ENV === 'production') {
 // 위에 해당하지 않는 모든
 // API 404 에러 처리
 
-app.use('/*', (req, res) => {
+app.use((req, res) => {
     res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
 });
 
