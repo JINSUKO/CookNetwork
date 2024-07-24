@@ -10,7 +10,9 @@ const app = express();
 app.use(morgan('dev'));
 
 // CORS 설정
-app.use(cors());
+app.use(cors(
+    origin: 'http://localhost:5000'
+));
 
 // Body parser
 app.use(express.json());
