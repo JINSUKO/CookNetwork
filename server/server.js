@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+
 require('dotenv').config();
 
 const app = express();
@@ -18,11 +19,21 @@ app.get('/hello', (req, res) => {
 
 // 여기에 다른 API 라우트들을 추가합니다...
 
+// 회원가입 라우트 연결
+const signupRouter = require("./router/signUp.js");
+
+// 회원가입 라우트 요청시 사용
+app.use("/signup",signupRouter);
+
 // 요청 URL 확인
 app.use((req, res, next) => {
   console.log('Requested URL:', req.url);
   next();
 });
+
+
+//
+
 
 // 정적 파일 서빙 (프로덕션 모드)
 if (process.env.NODE_ENV === 'production') {
@@ -52,3 +63,4 @@ if (process.env.NODE_ENV === 'production') {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+

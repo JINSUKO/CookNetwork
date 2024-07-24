@@ -1,4 +1,4 @@
-const mysql = require('mysql2')
+const mysql = require('mysql2/promise')
 require('dotenv').config({ path: '.env.local' })
 
 let conn = () =>{
@@ -13,4 +13,5 @@ let conn = () =>{
     })
 } ;
 
-module.exports = conn.promise();
+
+module.exports = conn;
