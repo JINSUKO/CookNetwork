@@ -1,9 +1,13 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const morgan = require('morgan');
 require('dotenv').config();
 
 const app = express();
+
+// Morgan logging dev 모드 설정
+app.use(morgan('dev'));
 
 // CORS 설정
 app.use(cors());
