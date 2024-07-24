@@ -1,13 +1,19 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const morgan = require('morgan');
 
 require('dotenv').config();
 // require('dotenv').config({ path: '.env.local' })
 const app = express();
 
+// Morgan logging dev 모드 설정
+app.use(morgan('dev'));
+
 // CORS 설정
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5000'
+}));
 
 // Body parser
 app.use(express.json());
