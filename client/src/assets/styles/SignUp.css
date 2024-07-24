@@ -1,0 +1,166 @@
+.page {
+  position: relative;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 500px;
+  padding: 0 20px;
+
+  left: 30%;
+  transform: translate(10%, 0);
+
+  background-color: #ffeee4;
+
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+
+
+}
+
+.titleWrap {
+  margin-top: 87px;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  color: #262626;
+
+}
+
+.contentWrap {
+  margin-top: 26px;
+  border-radius: 8px;
+  border: 1px solid --color-black;
+  flex: 1;
+}
+
+
+.infoOptionalText {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #262626
+}
+
+.userInputFrame {
+  display: flex;
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 8px;
+  background-color: var(--color-whiteBlue);
+  border: 1px solid #cac5c5;
+  text-align: left;
+
+}
+
+/* input 클릭시 border */
+.userInputFrame:focus-within {
+  border: 1px solid #cac5c5;
+}
+
+.userInput {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 10px;
+  border: none;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+
+}
+
+.userInput::placeholder {
+  color: #dadada;
+  text-align: left;
+}
+
+.errorMessageWrap {
+  margin-top: 1px;
+  margin-bottom: 12px;
+  color: var(--color-red);
+  font-size: 12px;
+  text-align: left;
+}
+
+.userButton {
+  width: 50%;
+  height: 48px;
+  border: none;
+  font-weight: 700;
+  background-color: #0d335d;
+  border-radius: 64px;
+  color: white;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.userSexRadio {
+  color: var(#333);
+  font-size: 16px;
+  text-align: left;
+}
+
+.fileButton {
+  display: none;
+}
+
+
+
+
+
+.signup-container {
+  /* 글래스모피즘 효과 */
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  /* 추가 스타일 */
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.userInputFrame {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+
+
+.userButton {
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: #000000;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* .userButton:disabled {} */
+
+
+
+
+/* hover 이벤트? */
+.userButton:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* 체크박스 */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+p {
+  color: #666;
+}
