@@ -5,16 +5,22 @@
 */
 
 import React from 'react';
-import '../../assets/styles/UserButton.css';
+import UserButtonStyles from '../../assets/styles/UserButton.module.css';
 
-const UserButton = ({ text, onClick, disabled }) => {
+const handleSubmit = (e) => {
+  return 1
+}
+
+const UserButton = (props) => {
   return (
-    <button 
-    className="userButton"
-    onClick={onClick}
-    disabled={disabled}
-    >{text}
-    </button>
+    <div>
+      <button
+        className={UserButtonStyles.userButton}
+        onClick={handleSubmit}
+        disabled={props.disabled}
+      >{props.text}
+      </button>
+    </div>
   );
 };
 

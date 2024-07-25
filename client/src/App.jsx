@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
+import SignUp from "./pages/SignUp.jsx";
 
 function App() {
   const [message, setMessage] = useState('&nbsp')
@@ -9,8 +10,6 @@ function App() {
       ? ''
       : 'http://localhost:3000';
 
-    console.log(API_URL)
-
     fetch(`${API_URL}/hello`)
       .then(response => response.json())
       .then(data => setMessage(data.message))
@@ -19,8 +18,9 @@ function App() {
 
   return (
     <div className="App">
-      <h1>React App</h1>
-      <p>{message}</p>
+      {/*<h1>React App</h1>*/}
+      {/*<p>{message}</p>*/}
+      <SignUp/>
     </div>
   )
 }
