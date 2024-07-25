@@ -3,7 +3,7 @@
 
 import React, { isValidElement, useState } from 'react';
 import UserButton from '../components/UI/UserButton.jsx';
-import '../assets/styles/SignUp.css';
+import SingupStyles from '../assets/styles/SignUp.css';
 
 
 function SignUp() {
@@ -92,48 +92,48 @@ function SignUp() {
 
 
   return (
-    <div className="page">
-      <div className="titleWrap">회원가입</div>
-      <div className="contentWrap">
-        <div className="userInputFrame">
-          <p className="infoOptionalText">아래에 정보를 입력해주세요.</p>
+    <div className={SingupStyles.page}>
+      <div className={SingupStyles.titleWrap}>회원가입</div>
+      <div className={SingupStyles.contentWrap}>
+        <div className={SingupStyles.userInputFrame}>
+          <p className={SingupStyles.infoOptionalText}>아래에 정보를 입력해주세요.</p>
           <input
-            className='userInput'
+            className={SingupStyles.userInput}
             type="text"
             placeholder="아이디"
             value={userId}
             name="userId"
             onChange={handleChange} />
-          <div className="errorMessageWrap"></div>
+          <div className={SingupStyles.errorMessageWrap}></div>
           <input
-            className='userInput'
+            className={SingupStyles.userInput}
             type="text"
             placeholder="비밀번호"
             value={password}
             name="password"
             onChange={handleChange}
           />
-          <div className="errorMessageWrap"></div>
+          <div className={SingupStyles.errorMessageWrap}></div>
           <input
-            className='userInput'
+            className={SingupStyles.userInput}
             type="text"
             placeholder="비밀번호 확인"
             name="passwordVerify"
             value={passwordVerify}
             onChange={handleChange}
           />
-          <div className="errorMessageWrap"></div>
+          <div className={SingupStyles.errorMessageWrap}></div>
           <input
-            className='userInput'
+            className={SingupStyles.userInput}
             type="text"
             placeholder="닉네임"
             value={nickname}
             name="nickname"
             onChange={handleChange}
           />
-          <div className="errorMessageWrap"></div>
+          <div className={SingupStyles.errorMessageWrap}></div>
           <input
-            className='userInput'
+            className={SingupStyles.userInput}
             type="text"
             placeholder="이메일"
             value={userEmail}
@@ -143,13 +143,13 @@ function SignUp() {
           <div value={userSex}>
             <label className="infoOptionalText">성별<br />
               남성<input
-                className='userSexRadio'
+                className={SingupStyles.userSexRadio}
                 type="radio"
                 value="male"
                 name="userSex"
                 onChange={handleChange} />
               여성<input
-                className='userSexRadio'
+                className={SingupStyles.userSexRadio}
                 type="radio"
                 value="female"
                 name="userSex"
@@ -159,11 +159,11 @@ function SignUp() {
         </div>
         <div>
           <hr></hr>
-          <label className='infoOptionalText'>
+          <label className={SingupStyles.infoOptionalText}>
             이용약관 및 개인정보수집 및 이용에 동의합니다.
             <input type="checkbox" checked={checked} onChange={handleCheck} />
           </label>
-          <p className='infoOptionalText'>이용약관<br />개인정보 수집 및 이용 동의</p>
+          <p className={SingupStyles.infoOptionalText}>이용약관<br />개인정보 수집 및 이용 동의</p>
           <hr></hr>
         </div>
         <div>
