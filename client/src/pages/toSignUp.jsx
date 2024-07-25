@@ -1,7 +1,5 @@
+
 import React, { useState, useEffect } from 'react'
-import SignUp from './pages/SignUp'
-import './App.css'
-import SignUp from "./pages/SignUp.jsx";
 
 function toSignUp() {
   const [message, setMessage] = useState('　')
@@ -11,6 +9,8 @@ function toSignUp() {
       ? ''
       : 'http://localhost:3000';
 
+    console.log(API_URL)
+
     fetch(`${API_URL}/signup`, { method: "POST" })
       .then(response => response.json())
       .then(data => setMessage(data.message))
@@ -18,10 +18,10 @@ function toSignUp() {
   }, [])
 
   return (
-    <div className="App">
+    <div className="SignUp">
       <p>{message}</p>
       <SignUp />
-    </div >
+    </div>
   )
 }
 

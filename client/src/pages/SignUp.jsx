@@ -173,6 +173,7 @@ function SignUp() {
             text="회원가입" />
         </div>
       </div>
+
       {/*<toSignUp />*/}
     </div>
   );
