@@ -3,7 +3,7 @@
 
 import React, { isValidElement, useState } from 'react';
 import UserButton from '../components/UI/UserButton.jsx';
-import SingupStyles from '../assets/styles/SignUp.css';
+import SingupStyles from '../assets/styles/SignUp.module.css';
 
 
 function SignUp() {
