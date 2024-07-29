@@ -1,0 +1,27 @@
+
+/* 로고 */
+/* . {
+  width: 130;
+  height: 38; 
+}*/
+
+/* 검색창 버튼 */
+.searchSubmitBtn {
+  width: 10%;
+}
+
+/* RecipeList  */
+.container {
+  margin: 0;
+  padding: 0;
+}
+
+#row {
+  width: 180px;
+  height: 300px;
+  background-color: gray;
+  display: flex; /* 수평정렬 */
+  margin-top: 12px;
+  margin-right: 24px;
+  margin-bottom: 20px; 
+}

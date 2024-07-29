@@ -19,7 +19,10 @@
     "concurrently": "^6.5.1"
   },
   "dependencies": {
+    "bootstrap": "^5.3.3",
     "express-session": "^1.18.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "react-bootstrap": "^2.10.4",
+    "swiper": "^11.1.8"
   }
 }

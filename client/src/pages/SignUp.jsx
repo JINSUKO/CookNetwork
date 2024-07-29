@@ -2,7 +2,6 @@
 */
 
 import React, { isValidElement, useState } from 'react';
-import UserButton from '../components/UI/UserButton.jsx';
 import SignUpStyles from '../assets/styles/SignUp.module.css';
 
 
@@ -32,12 +31,12 @@ function SignUp() {
   }
 
 
-  // 유효성검사
+  // 유효성검사 
   const [errors, setErrors] = useState({});
 
-  const validateForm = (event) => {
-    let inputError = {};
-    event.preventDefault();
+  const validateForm = (event) => {   // 유효성 검사 함수 validateForm.
+    let inputError = {};    // inputError 객체
+    event.preventDefault();   // 제출 방지
 
     // 정규식 패턴
     const regId = /^[0-9a-z]{8,16}$/;
@@ -79,7 +78,7 @@ function SignUp() {
     }
 
     setErrors(inputError);
-    return Object.keys(inputError).length === 0;
+    // return Object.keys(inputError).length === 0;
   }
 
 
@@ -90,10 +89,48 @@ function SignUp() {
   const handleCheck = () => {
     setChecked(!checked);
   };
-  const handleSubmit = (event) => {
-    event.preventDefault(); // 제출 방지
-  }
 
+  //onSubmit 함수
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // 제출 방지
+
+    setErrors('');
+
+    const input={
+      userId: user.userId,
+      password: user.password,
+      passwordVerify: user.passwordVerify,
+      nickname: user.nickname,
+      userSex: user.userSex,
+      userEmail: user.userEmail
+    }
+
+    try {
+      const response = await fetch('/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // 로그인 성공 
+        console.log('회원가입 성공:', data.user);
+        // 여기서 로그인 성공 후 토큰 저장, 리다이렉트 등 로직을 구현합니다.
+      
+      } else {
+        setErrors(data.message || '회원가입에 실패했습니다. 입력한 정보들을 확인해주세요.');
+      }
+    } catch (error) {
+      console.error('회원가입 에러:', error);
+      setErrors('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    }
+  }
+  
+    
 
   return (
     <div className={SignUpStyles.page}>
@@ -101,25 +138,27 @@ function SignUp() {
       <div className={SignUpStyles.contentWrap}>
         <div className={SignUpStyles.userInputFrame}>
           <p className={SignUpStyles.infoOptionalText}>아래에 정보를 입력해주세요.</p>
-          <input
+          <label className="infoOptionalText">아이디
+            <input
             className={SignUpStyles.userInput}
             type="text"
             placeholder="아이디"
             value={userId}
             name="userId"
             onChange={handleChange} />
-
-          <div className={SingupStyles.errorMessageWrap}>{errors.userId}</div>
-          <input
+          </label>
+          <div className={SignUpStyles.errorMessageWrap}>{errors.userId}</div>
+          <label className="infoOptionalText">비밀번호<input
             className={SignUpStyles.userInput}
-            type="text"
+            type="password"
             placeholder="비밀번호"
             value={password}
             name="password"
             onChange={handleChange}
           />
-          <div className={SignUpStyles.errorMessageWrap}></div>
-          <input
+          </label>
+          <div className={SignUpStyles.errorMessageWrap}>{errors.password}</div>
+          <label className="infoOptionalText">비밀번호 확인<input
             className={SignUpStyles.userInput}
             type="text"
             placeholder="비밀번호 확인"
@@ -127,8 +166,10 @@ function SignUp() {
             value={passwordVerify}
             onChange={handleChange}
           />
-          <div className={SignUpStyles.errorMessageWrap}></div>
-          <input
+          </label>
+          <div className={SignUpStyles.errorMessageWrap}>{errors.nickname}</div>
+          <label className="infoOptionalText">닉네임
+            <input
             className={SignUpStyles.userInput}
             type="text"
             placeholder="닉네임"
@@ -136,8 +177,10 @@ function SignUp() {
             name="nickname"
             onChange={handleChange}
           />
-          <div className={SignUpStyles.errorMessageWrap}></div>
-          <input
+          </label>
+          <div className={SignUpStyles.errorMessageWrap}>{errors.userEmail}</div>
+          <label className="infoOptionalText">이메일
+            <input
             className={SignUpStyles.userInput}
             type="text"
             placeholder="이메일"
@@ -145,6 +188,7 @@ function SignUp() {
             name="userEmail"
             onChange={handleChange}
           />
+          </label>
 
           <div value={userSex}>
             <label className="infoOptionalText">성별<br />
@@ -177,16 +221,14 @@ function SignUp() {
           <hr></hr>
         </div>
         <div>
-          <UserButton
-            disabled={true}
-            text="회원가입" />
+          <button
+            className='userButton'
+            text="회원가입" 
+            onSubmit={handleSubmit}/>
         </div>
       </div>
-
-      {/*<toSignUp />*/}
     </div>
   );
-
 };
 
 export default SignUp;
