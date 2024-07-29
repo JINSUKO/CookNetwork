@@ -12,7 +12,8 @@ app.use(morgan('dev'));
 
 // CORS 설정
 app.use(cors({
-    origin: 'http://localhost:5000'
+    origin: 'http://localhost:5000',
+    credentials: true
 }));
 
 // Body parser
