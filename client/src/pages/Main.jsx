@@ -8,7 +8,7 @@ import SearchBar from '../components/SearchBar.jsx'
 import RecipeList from '../components/RecipeList.jsx'
 import '../assets/styles/Main.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import Navbar from '../components/Navbar.jsx';
+import NavbarElement from '../components/NavbarElement.jsx';
 
 
 
@@ -21,7 +21,7 @@ function Main() {
       <header>
         <img src={logo} alt="로고 이미지" width={200}/>
         <SearchBar/>
-        {/* <Navbar/> */}
+        <NavbarElement/>
       </header>
     </div>
 

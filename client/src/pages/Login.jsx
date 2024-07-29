@@ -3,7 +3,7 @@
 */
 
 import React, { isValidElement, useState } from 'react';
-// import LoginStyles from '../assets/styles/Login.module.css';
+import styles from '../assets/styles/Login.module.css';
 
 function Login() {
 
@@ -93,28 +93,31 @@ function Login() {
 
 
   return (
-    <div>
-      <div className="titleWrap">Login</div>
-      <form className="userInputFrame" action="/" onSubmit={handleSubmit}>
+    <div className={styles.page}>
+      <div className={styles.titleWrap}>Login</div>
+      <form className={styles.userInputFrame} action="/" onSubmit={handleSubmit}>
         <label>아이디</label>
         <input 
+        className={styles.userInput}
         name="userId"
         value={user.userId} 
         type="text" 
         placeholder="아이디" 
         onChange={handleChange} 
         />
-        <div >{errors.userId}</div>
+        <div className={styles.errorMessageWrap}>{errors.userId}</div>
         <label>비밀번호</label>
         <input 
+        className={styles.userInput}
         name="password"
         value={user.password}
         type="password" 
         placeholder="비밀번호" 
         onChange={handleChange} 
         />
-        <div >{errors.password}</div>
-        <button className="userButton" type="submit" value="Login" onSubmit={handleSubmit}/>
+        <div className={styles.errorMessageWrap}>{errors.password}</div>
+        <button className={styles.userButton} type="submit" value="Login" onSubmit={handleSubmit}>로그인
+        </button>
       </form>
     </div>
   )
