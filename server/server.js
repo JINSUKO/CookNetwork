@@ -30,7 +30,7 @@ app.get('/hello', (req, res) => {
 const signupRouter = require("./router/signUp.js");
 
 // 회원가입 라우트 요청시 사용
-app.use("/signup", signupRouter);
+// app.use("/signup", signupRouter);
 
 // 정적 파일 서빙 (프로덕션 모드)
 if (process.env.NODE_ENV === 'production') {
