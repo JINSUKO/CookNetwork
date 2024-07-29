@@ -18,23 +18,26 @@ function SignUp() {
 
   console.log(user)
   const { userId, password, passwordVerify, nickname, userSex, userEmail } = user;
+  console.log(user)
 
-  const handleChange = (e) => {
-    console.log(e.target)
-    const { name, value } = e.target;
-    setUser(prevState => {
-      return {
-      ...prevState,
+
+  // onChange 함수
+  const handleChange = (event) => {
+    validateForm(event)
+    const { name, value } = event.target;
+    setUser({
+      ...user,
       [name]: value
-    }});
+    })
   }
+
 
   // 유효성검사
   const [errors, setErrors] = useState({});
 
-  const validateForm = () => {
+  const validateForm = (event) => {
     let inputError = {};
-    e.preventDefault();
+    event.preventDefault();
 
     // 정규식 패턴
     const regId = /^[0-9a-z]{8,16}$/;
@@ -44,6 +47,7 @@ function SignUp() {
 
     // 아이디
     if (!regId.test(user.userId)) {
+      setUser(prevState => ({ ...prevState, userId: '' }));
       inputError.userId = "8-16자 영어 소문자+숫자로 작성하세요.";
     }
     // 비밀번호
@@ -67,15 +71,15 @@ function SignUp() {
     }
     // 성별
     if (!user.userSex) {
-      inputErrors.userSex = "성별을 선택해주세요.";
+      inputError.userSex = "성별을 선택해주세요.";
     }
     // 입력 누락 검사
     if (!userId || !password || !passwordVerify || !nickname || !userSex || !userEmail) {
-      inputErrors.general = "모든 필드는 필수입니다.";
+      inputError.general = "모든 필드는 필수입니다.";
     }
 
-    setErrors(inputErrors);
-    return Object.keys(inputErrors).length === 0;
+    setErrors(inputError);
+    return Object.keys(inputError).length === 0;
   }
 
 
@@ -105,7 +109,8 @@ function SignUp() {
             value={userId}
             name="userId"
             onChange={handleChange} />
-          <div className={SignUpStyles.errorMessageWrap}></div>
+
+          <div className={SingupStyles.errorMessageWrap}>{errors.userId}</div>
           <input
             className={SignUpStyles.userInput}
             type="text"
@@ -141,18 +146,23 @@ function SignUp() {
             name="userEmail"
             onChange={handleChange}
           />
-          <div>
-            <label className={SignUpStyles.infoOptionalText}>성별<br />
+
+          <div value={userSex}>
+            <label className="infoOptionalText">성별<br />
+            </label>
+            <label>
               남성<input
                 className={SignUpStyles.userSexRadio}
                 type="radio"
-                value="male"
+                value="0"
                 name="userSex"
                 onChange={handleChange} />
+            </label>
+            <label>
               여성<input
                 className={SignUpStyles.userSexRadio}
                 type="radio"
-                value="female"
+                value="1"
                 name="userSex"
                 onChange={handleChange} />
             </label>

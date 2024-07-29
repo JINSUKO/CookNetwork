@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import SignUp from './pages/SignUp'
 import './App.css'
-import SignUp from "./pages/SignUp.jsx";
 
-function toSignUp() {
+function App() {
   const [message, setMessage] = useState('　')
 
   useEffect(() => {
@@ -11,10 +10,10 @@ function toSignUp() {
       ? ''
       : 'http://localhost:3000';
 
-    fetch(`${API_URL}/signup`, { method: "POST" })
-      .then(response => response.json())
-      .then(data => setMessage(data.message))
-      .catch(error => console.error('Error:', error));
+    // fetch(`${API_URL}/signup`, { method: "POST" })
+    //   .then(response => response.json())
+    //   .then(data => setMessage(data.message))
+    //   .catch(error => console.error('Error:', error));
   }, [])
 
   return (
@@ -25,4 +24,4 @@ function toSignUp() {
   )
 }
 
-export default toSignUp;
+export default App;
