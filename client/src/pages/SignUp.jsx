@@ -83,6 +83,7 @@ function SignUp() {
 
 
 
+
   // 이용약관 동의 체크박스 
   const [checked, setChecked] = useState(false);
 
