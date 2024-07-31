@@ -9,7 +9,7 @@ import Western from './pages/Western';
 import Chinese from './pages/Chinese';
 import Japanese from './pages/Japanese';
 import RecipeDetail from './components/RecipeDetail'
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {

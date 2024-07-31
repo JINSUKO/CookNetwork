@@ -7,7 +7,7 @@ import logo from '../assets/images/logo.png';
 import SearchBar from '../components/SearchBar.jsx'
 import RecipeList from '../components/RecipeList.jsx'
 import '../assets/styles/Main.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import NavbarElement from '../components/NavbarElement.jsx';
 
 
