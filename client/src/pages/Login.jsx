@@ -2,7 +2,7 @@
 로그인 페이지
 */
 
-import React, { isValidElement, useState } from 'react';
+import React, { useState } from 'react';
 import styles from '../assets/styles/Login.module.css';
 
 function Login() {
@@ -11,7 +11,8 @@ function Login() {
     userId: '',
     password: '',
   });
-  const [error, setError] = useState('');
+
+  const { userId, password } = user;
 
   // onChange 함수
   const handleChange = (event) => {
@@ -36,28 +37,32 @@ function Login() {
 
     // 아이디
     if (!regId.test(user.userId)) {
-      setUser(prevState => ({ ...prevState, userId: '' }));
+      // setUser(prevState => ({ ...prevState, userId: '' }));
       inputError.userId = "8-16자 영어 소문자+숫자로 작성하세요.";
     }
     // 비밀번호
     if (!regPw.test(user.password)) {
-      setUser(prevState => ({ ...prevState, pw: '' }));
+      // setUser(prevState => ({ ...prevState, pw: '' }));
       inputError.password = "8-16자 영어+숫자로 작성하세요.";
     }
    
     // 입력 누락 검사
-    if (!user.userId || !user.password) {
+    if (!userId || !password) {
       inputError.general = "모든 필드는 필수입니다.";
     }
 
     setErrors(inputError);
+
+    // 유효성검사 함수 Boolean 값 반환
+    return Object.keys(inputError).length === 0;
+
   }
- 
+  // onSubmit 함수
   const handleSubmit = async (event) => {
     event.preventDefault();  // submit을 할 때 제출 방지
     console.log(user);
 
-    setError('');
+    // setErrors('');
 
     const input={
       userId: user.userId,
@@ -125,8 +130,3 @@ function Login() {
 
 
 export default Login;
-
-function Login() {
-
-  
-}
