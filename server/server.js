@@ -19,9 +19,11 @@ app.use(cors({
 // Body parser
 app.use(express.json());
 
+const exGetUser = require('./exGetUser');
 // API 라우트
-app.get('/hello', (req, res) => {
-    res.json({ message: 'Hello from server!' });
+// app.get('/hello', (req, res) => {
+app.use('/hello', exGetUser, (req, res) => {
+    res.json({ message: 'Hello from server!', user: req.user});
 });
 
 // 여기에 다른 API 라우트들을 추가합니다...
