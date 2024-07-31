@@ -14,6 +14,9 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+
+
+
 }
 
 .titleWrap {
@@ -77,8 +80,7 @@
 .errorMessageWrap {
   margin-top: 1px;
   margin-bottom: 12px;
-  color: red;
-  font-weight: 700;
+  color: var(--color-red);
   font-size: 12px;
   text-align: left;
 }
@@ -86,11 +88,11 @@
 .userButton {
   width: 50%;
   height: 48px;
-  border: 1px solid #000000;
+  border: none;
   font-weight: 700;
   background-color: #0d335d;
   border-radius: 64px;
-  color: rgb(0, 0, 0);
+  color: white;
   margin-bottom: 16px;
   cursor: pointer;
 }
@@ -100,6 +102,14 @@
   font-size: 16px;
   text-align: left;
 }
+
+.fileButton {
+  display: none;
+}
+
+
+
+
 
 .signup-container {
   /* 글래스모피즘 효과 */
@@ -133,6 +143,9 @@
   cursor: pointer;
   transition: background 0.3s ease;
 }
+
+/* .userButton:disabled {} */
+
 
 
 
