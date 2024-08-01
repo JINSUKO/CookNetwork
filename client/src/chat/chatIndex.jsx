@@ -16,7 +16,7 @@ const{
   SubmitButton
 } = StyledApp;
 
-const socket = new io('http://localhost:3001/');
+const socket = new io('http://192.168.0.103:3001/');
 
 function chatIndex() {
   const [messageHistory, setMessageHistory] = useState([]);
@@ -25,7 +25,7 @@ function chatIndex() {
   const historyElement = useRef(null);
 
   const [userMessage, setUserMessage] = useState({
-    name: '김주현',
+    name: '',
     message: '',
   });
 
