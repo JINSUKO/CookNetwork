@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Layout/Header'
+import Footer from './components/Layout/Footer'
 import Main from './pages/Main'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
@@ -112,7 +114,8 @@ function App() {
 
   return (
     <div className="App">
-      {/*<p>{message}</p>*/}
+      <p>{message}</p>
+      <Header />
       <Router>
         <Routes>
           <Route path = '/' element = {<Main />}/>
@@ -127,8 +130,8 @@ function App() {
         </Routes>
       </Router>
       <Chat/>
+      <Footer/>
     </div>
-
   )
 }
 
