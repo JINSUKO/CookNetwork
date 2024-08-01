@@ -177,12 +177,12 @@ const UserPage = ({user, profilePic}) => {
                         </div>
                         <Row className="justify-content-center g-2 mb-3">
                             <Col>
-                                <FormControl size="sm" placeholder="찜기한 레시피 수: 000" readOnly />
+                                <FormControl size="sm" placeholder="평가한 레시피 수: 000" readOnly />
                             </Col>
                         </Row>
                         <Row className="justify-content-center g-2 mb-3">
                             <Col>
-                                <FormControl size="sm" placeholder="찜한 식당 수: 000" readOnly />
+                                <FormControl size="sm" placeholder="북마크 레시피 수: 000" readOnly />
                             </Col>
                         </Row>
                         <div className="mb-3">
@@ -251,7 +251,11 @@ const UserPage = ({user, profilePic}) => {
                                     <Row xs={2} md={3} lg={6} className="g-2 mb-4">
                                         {[...Array(6)].map((_, idx) => (
                                             <Col key={idx}>
-                                                <div style={{width: '100%', paddingBottom: '100%', background: '#f0f0f0'}}></div>
+                                                <div style={{
+                                                    width: '100%',
+                                                    paddingBottom: '100%',
+                                                    background: '#f0f0f0'
+                                                }}></div>
                                             </Col>
                                         ))}
                                     </Row>
@@ -259,15 +263,29 @@ const UserPage = ({user, profilePic}) => {
                                     <Row xs={2} md={3} lg={6} className="g-2 mb-4">
                                         {[...Array(6)].map((_, idx) => (
                                             <Col key={idx}>
-                                                <div style={{width: '100%', paddingBottom: '100%', background: '#f0f0f0'}}></div>
+                                                <div style={{
+                                                    width: '100%',
+                                                    paddingBottom: '100%',
+                                                    background: '#f0f0f0'
+                                                }}></div>
                                             </Col>
                                         ))}
                                     </Row>
                                     <h6 className="mb-3">카테고리 최신 레시피</h6>
+                                    <div className="mt-3">
+                                        {['Label', 'Label', 'Label', 'Label', 'Label'].map((label, idx) => (
+                                            <Button key={idx} variant="dark" size="sm"
+                                                    className="me-2 mb-2">{label}</Button>
+                                        ))}
+                                    </div>
                                     <Row xs={2} md={3} lg={6} className="g-2">
                                         {[...Array(6)].map((_, idx) => (
                                             <Col key={idx}>
-                                                <div style={{width: '100%', paddingBottom: '100%', background: '#f0f0f0'}}></div>
+                                                <div style={{
+                                                    width: '100%',
+                                                    paddingBottom: '100%',
+                                                    background: '#f0f0f0'
+                                                }}></div>
                                             </Col>
                                         ))}
                                     </Row>
