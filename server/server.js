@@ -26,6 +26,9 @@ app.use('/hello', exGetUser, (req, res) => {
     res.json({ message: 'Hello from server!', user: req.user});
 });
 
+const uploadUserImg = require('./uploadUserImg');
+app.use('/api/uploadUserImg', uploadUserImg);
+
 // 여기에 다른 API 라우트들을 추가합니다...
 
 // 회원가입 라우트 연결
