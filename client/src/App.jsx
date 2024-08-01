@@ -1,26 +1,50 @@
 import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Layout/Header'
 import Footer from './components/Layout/Footer'
 import Main from './pages/Main'
 import SignUp from './pages/SignUp'
-import './App.css'
 import Login from './pages/Login'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Korean from './pages/Korean';
 import Western from './pages/Western';
 import Chinese from './pages/Chinese';
 import Japanese from './pages/Japanese';
 import RecipeDetail from './components/RecipeDetail'
 import Chat from "./chat/chatIndex";
+import UserPage from "./pages/UserPage";
+
+import './App.css'
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
   const [message, setMessage] = useState('');
+    const [user, setUser] = useState(null);
+    const [profilePic, setProfilePic] = useState('');
 
-  const API_URL = import.meta.env.PROD
-    ? ''
-    : 'http://localhost:3000';
- 
+    const API_URL ='http://localhost:3000';
+
+  useEffect(() => {
+    // const API_URL = import.meta.env.PROD
+    //   ? ''
+    //   : 'http://localhost:3000';
+
+    // db에서 유저 데이터 받아오는 코드
+      // 로그인 유지 기능 없어서 임시로 작성해놓은 코드
+    fetch(`${API_URL}/hello`)
+      .then(response => response.json())
+      .then(data => {
+                setMessage(data.message)
+                console.log(data.user)
+                // console.log(data.profilePic)
+                setUser(data.user)
+
+                setProfilePic(data.profilePic);
+            }
+       )
+      .catch(error => console.error('Error:', error));
+  }, [])
+
   // 서버로 데이터 전송하는 함수 handleSignUp
   const handleSignUp = async (signUpData) => {
     try {
@@ -33,7 +57,7 @@ function App() {
         },
         body: JSON.stringify(signUpData)
       });
-      
+
 
       const data = await response.json();
 
@@ -42,7 +66,7 @@ function App() {
         return response.json();
         setMessage('회원가입이 성공적으로 완료되었습니다.')
         // 여기서 로그인 성공 후 토큰 저장, 리다이렉트 등 로직을 구현합니다.
-        
+
       } else {
         setMessage(data.message || '회원가입에 실패했습니다. 입력한 정보들을 확인해주세요.');
       }
@@ -53,7 +77,7 @@ function App() {
   };
 
 
-  //   fetch(`${API_URL}/signup`, { 
+  //   fetch(`${API_URL}/signup`, {
   //     method: "POST",
   //     headers: {
   //       'Content-Type': 'application/json',
@@ -64,7 +88,7 @@ function App() {
   //     // .then((data) => {setMessage(data.message)})
   //     .catch((error) => {console.error('Error:', error)});
   // }, [])
-  
+
   // try {
   //   const response = await fetch('/signup', {
   //     method: 'POST',
@@ -102,16 +126,13 @@ function App() {
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/recipe/:id' element = {<RecipeDetail />}/>
+          <Route path = '/mypage' element = {user ? <UserPage user={user} profilePic={profilePic}/> : <Login />}/>
         </Routes>
       </Router>
       <Chat/>
       <Footer/>
-    </div >
-
-    // <div>
-    //   <Main />
-    // </div>
+    </div>
   )
 }
 
-export default App;
+export default App

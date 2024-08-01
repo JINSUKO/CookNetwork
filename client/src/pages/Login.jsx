@@ -7,6 +7,8 @@ import styles from '../assets/styles/Login.module.css';
 
 function Login() {
 
+  const API_URL = 'http://localhost:3000';
+
   const [user, setUser] = useState({
     userId: '',
     password: '',
@@ -70,7 +72,7 @@ function Login() {
     }
 
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch(`${API_URL}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,11 +88,11 @@ function Login() {
         // 여기서 로그인 성공 후 토큰 저장, 리다이렉트 등 로직을 구현합니다.
       
       } else {
-        setError(data.message || '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
+        setErrors(data.message || '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
       }
     } catch (error) {
       console.error('로그인 에러:', error);
-      setError('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      setErrors('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
     }
   }
 
