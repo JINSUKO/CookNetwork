@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const morgan = require('morgan');
+const socketIO = require('socket.io');
 
 require('dotenv').config();
 // require('dotenv').config({ path: '.env.local' })
@@ -65,5 +66,44 @@ if (process.env.NODE_ENV === 'production') {
 
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
+
+const chat_PORT = 3001;
+const server= app.listen(chat_PORT, () => console.log(`Chat Server is running at ${chat_PORT}`))
+
+const io = new socketIO.Server(server, {
+    cors: {
+        origin: '*',
+    },
+});
+
+const handleSocketMessage = (socket, data) => {
+    console.log(`${socket.id}: `,data);
+
+    socket.broadcast.emit('Message', data);
+};
+
+const handleSocketDisconnect = (socket) => {
+    console.log('접속 해제: ',socket.id);
+
+    userList.delete(socket.id)
+    console.log('Current User: ', [...userList.values()]);
+
+    socket.broadcast.emit('USER_LEAVE',socket.id);
+};
+
+const userList = new Set([]);
+
+const handleConnection = (socket) => {
+    userList.add(socket.id);
+    console.log('유저 접속: ',socket.id);
+    console.log('Current User: ', [...userList.values()]);
+
+    socket.broadcast.emit('USER_ENTER',socket.id);
+
+    socket.on("Message",(data) => handleSocketMessage(socket, data));
+    socket.on('disconnect', () => handleSocketDisconnect(socket));
+};
+
+io.on('connection',handleConnection);
 
