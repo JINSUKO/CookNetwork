@@ -1,5 +1,6 @@
-
 import React, { useState, useEffect } from 'react'
+import Header from './components/Layout/Header'
+import Footer from './components/Layout/Footer'
 import Main from './pages/Main'
 import SignUp from './pages/SignUp'
 import './App.css'
@@ -11,7 +12,6 @@ import Chinese from './pages/Chinese';
 import Japanese from './pages/Japanese';
 import RecipeDetail from './components/RecipeDetail'
 import Chat from "./chat/chatIndex";
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
@@ -91,6 +91,7 @@ function App() {
   return (
     <div className="App">
       <p>{message}</p>
+      <Header />
       <Router>
         <Routes>
           <Route path = '/' element = {<Main />}/>
@@ -104,6 +105,7 @@ function App() {
         </Routes>
       </Router>
       <Chat/>
+      <Footer/>
     </div >
 
     // <div>

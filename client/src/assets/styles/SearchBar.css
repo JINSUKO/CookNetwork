@@ -1,0 +1,33 @@
+/* SearchBar.css */
+
+.search-form {
+  display: flex;
+  align-items: center;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 25px 0 0 25px;
+  outline: none;
+  background-color: white;
+}
+
+.search-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #FF8C00; /* 어두운 주황색 */
+  border: none;
+  border-radius: 0 25px 25px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #E67300; /* 호버 시 약간 더 어두운 주황색 */
+}

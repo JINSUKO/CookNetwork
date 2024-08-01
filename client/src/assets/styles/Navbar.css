@@ -21,13 +21,14 @@
 .navbar .nav-link {
   padding: 0.5rem 1rem;
 }
-
+/* 
+미디어쿼리 사용? ..
 @media (max-width: 992px) {
   .navbar .nav-link {
     padding: 0.5rem 0.5rem;
-  }
-}
+  } */
 
+/* 
 @media (max-width: 768px) {
   .navbar .nav-link {
     padding: 0.5rem 0.25rem;
@@ -47,4 +48,4 @@
   .navbar .btn {
     font-size: 0.7rem;
   }
-}
+} */
