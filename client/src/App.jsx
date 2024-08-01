@@ -18,11 +18,14 @@ import './App.css'
 function App() {
   const [message, setMessage] = useState('');
     const [user, setUser] = useState(null);
+    const [profilePic, setProfilePic] = useState('');
+
+    const API_URL ='http://localhost:3000';
 
   useEffect(() => {
-    const API_URL = import.meta.env.PROD
-      ? ''
-      : 'http://localhost:3000';
+    // const API_URL = import.meta.env.PROD
+    //   ? ''
+    //   : 'http://localhost:3000';
 
     // db에서 유저 데이터 받아오는 코드
       // 로그인 유지 기능 없어서 임시로 작성해놓은 코드
@@ -31,7 +34,10 @@ function App() {
       .then(data => {
                 setMessage(data.message)
                 console.log(data.user)
+                // console.log(data.profilePic)
                 setUser(data.user)
+
+                setProfilePic(data.profilePic);
             }
        )
       .catch(error => console.error('Error:', error));
@@ -106,7 +112,7 @@ function App() {
 
   return (
     <div className="App">
-      <p>{message}</p>
+      {/*<p>{message}</p>*/}
       <Router>
         <Routes>
           <Route path = '/' element = {<Main />}/>
@@ -117,11 +123,10 @@ function App() {
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/recipe/:id' element = {<RecipeDetail />}/>
-          <Route path = '/mypage' element = {user ? <UserPage user={user}/> : <Login />}/>
+          <Route path = '/mypage' element = {user ? <UserPage user={user} profilePic={profilePic}/> : <Login />}/>
         </Routes>
       </Router>
       <Chat/>
-    </div >
     </div>
 
   )

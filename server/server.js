@@ -13,7 +13,8 @@ app.use(morgan('dev'));
 
 // CORS 설정
 app.use(cors({
-    origin: 'http://localhost:5000',
+    // origin: 'http://192.168.0.103:5000', // 관용님 학원 pc ip
+    origin: 'http://192.168.0.14:5000', // 진수님 학원 wifi ip
     credentials: true
 }));
 
@@ -24,7 +25,7 @@ const exGetUser = require('./exGetUser');
 // API 라우트
 // app.get('/hello', (req, res) => {
 app.use('/hello', exGetUser, (req, res) => {
-    res.json({ message: 'Hello from server!', user: req.user});
+    res.json({ message: 'Hello from server!', user: req.user, profilePic: req.profilePic});
 });
 
 const uploadUserImg = require('./uploadUserImg');

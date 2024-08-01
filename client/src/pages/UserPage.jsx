@@ -1,12 +1,12 @@
 import { useState, useRef } from 'react';
 import {Image, Container, Row, Col, Nav, InputGroup, FormControl, Button, Card, Modal} from 'react-bootstrap';
 
-const UserPage = ({user}) => {
+const UserPage = ({user, profilePic}) => {
 
     const API_URL = 'http://localhost:3000';
 
     const [activeTab, setActiveTab] = useState('userInfo');
-    const [profileImgPath, setProfileImgPath] = useState(user.user_img);
+    const [profileImgDB, setProfileImgDB] = useState(profilePic);
     const [profileImg, setProfileImg] = useState(null);
 
     const fileInputRef = useRef(null);
@@ -15,18 +15,17 @@ const UserPage = ({user}) => {
         // 파일이 선택되었을 때의 로직
         const file = event.target.files[0];
 
-        if (!file) return setProfileImgPath('');
+        if (!file) return setProfileImgDB(profilePic);
 
         if (!file.type.startsWith('image/')) return alert('이미지 파일만 선택해주세요.');
 
-        console.log('Selected file:', file.name);
-        console.log('Selected file:', file);
         setProfileImg(file);
         const reader = new FileReader();
         reader.onload = (e) => {
-            setProfileImgPath(e.target.result);
+            setProfileImgDB(e.target.result);
         }
         reader.readAsDataURL(file);
+
 
         setShowDialog(true)
 
@@ -49,6 +48,7 @@ const UserPage = ({user}) => {
         const formData = new FormData();
         console.log('fetch 직전 file:', profileImg)
         formData.append('file', profileImg);
+        formData.append('user_code', user.user_code);
 
         try {
             const response = await fetch(`${API_URL}/api/uploadUserImg`, {
@@ -63,6 +63,9 @@ const UserPage = ({user}) => {
 
             const result = response.json();
 
+
+            setProfileImgDB(profileBasePath + user.user_img);
+
             console.log('파일 업로드 성공!');
 
         } catch (e) {
@@ -73,7 +76,7 @@ const UserPage = ({user}) => {
     const handleCancel = () => {
         console.log('User canceled');
         setShowDialog(false);
-        setProfileImgPath('');
+        setProfileImgDB(profilePic);
     };
 
     const ConfirmDialog = ({ show, message, onConfirm, onCancel }) => {
@@ -132,7 +135,7 @@ const UserPage = ({user}) => {
                 {/* Left Column */}
                 <Col md={4}>
                     <div className="text-center">
-                        <Image src={profileImgPath} style={{
+                        <Image src={profileImgDB} style={{
                             width: '150px',
                             height: '150px',
                             borderRadius: '50%',
@@ -142,7 +145,7 @@ const UserPage = ({user}) => {
                             justifyContent: 'center',
                             margin: '0 auto'
                         }}/>
-                        <h5 className="mb-3">"닉네임"</h5>
+                        <h5 className="mb-3">{user.username}</h5>
                         <div className="mb-3">
                             <input
                                 type="file"
@@ -219,18 +222,20 @@ const UserPage = ({user}) => {
                         <Card.Body>
                             {activeTab === 'userInfo' && (
                                 <>
-                                    <Card.Title className="mb-3">닉네임: "닉네임"</Card.Title>
+                                    <Card.Title className="mb-3">닉네임: {user.username}</Card.Title>
                                     <Card.Text>
-                                        성별: "성별"<br />
-                                        이메일: "이메일"<br />
-                                        유저 등급: "일반 유저"
+                                        성별: {user.sex ? "여" : "남"}<br />
+                                        이메일: {user.email}<br />
+                                        유저 등급: {user.user_code <= 10 ? "운영자 계정" : (user.chef_code ? "셰프 계정" : "일반 계정")}
                                     </Card.Text>
+                                    <Button variant="dark" size="sm" className="mb-2">화원 정보 수정하기</Button>
                                     <h6 className="mb-3">카테고리 찜 목록</h6>
                                     <div className="mb-3">
                                         {['한식', '양식', '일식&아시안', '중식', '기타'].map((category, idx) => (
                                             <Button key={idx} variant="outline-secondary" size="sm" className="me-2 mb-2">{category}</Button>
                                         ))}
                                     </div>
+
                                     <Button variant="outline-primary" size="sm" className="me-2">카테고리 찜하기</Button>
                                     <Button variant="outline-danger" size="sm">카테고리 제거하기</Button>
                                     <div className="mt-3">
