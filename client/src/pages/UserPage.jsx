@@ -61,12 +61,10 @@ const UserPage = ({user, profilePic}) => {
                 throw new Error(errorData.message);
             }
 
-            const result = response.json();
+            const result = await response.json();
+            // console.log('profile img upload result:', result.result);
 
-
-            setProfileImgDB(profileBasePath + user.user_img);
-
-            console.log('파일 업로드 성공!');
+            console.log('프로필 이미지 업로드 성공!');
 
         } catch (e) {
             console.error('Error:', e);
@@ -101,34 +99,6 @@ const UserPage = ({user, profilePic}) => {
 
     return (
         <Container fluid className="p-3">
-
-            {/* Header */}
-            {/*<header className="mb-4">*/}
-            {/*    <Row className="align-items-center mb-3">*/}
-            {/*        <Col>*/}
-            {/*            <h1 className="display-6 fw-bold text-warning">COOKNET</h1>*/}
-            {/*        </Col>*/}
-            {/*        <Col xs="auto">*/}
-            {/*            <InputGroup>*/}
-            {/*                <FormControl placeholder="Value" aria-label="Value"/>*/}
-            {/*                <Button variant="outline-secondary">x</Button>*/}
-            {/*            </InputGroup>*/}
-            {/*        </Col>*/}
-            {/*        <Col xs="auto">*/}
-            {/*            <Nav>*/}
-            {/*                <Nav.Link>공지사항</Nav.Link>*/}
-            {/*                <Nav.Link>마이페이지</Nav.Link>*/}
-            {/*                <Nav.Link>로그아웃</Nav.Link>*/}
-            {/*            </Nav>*/}
-            {/*        </Col>*/}
-            {/*    </Row>*/}
-            {/*    <Nav variant="tabs" className="justify-content-between">*/}
-            {/*        <Nav.Item style={{flex: 1}}><Nav.Link className="text-center">한식</Nav.Link></Nav.Item>*/}
-            {/*        <Nav.Item style={{flex: 1}}><Nav.Link className="text-center">양식</Nav.Link></Nav.Item>*/}
-            {/*        <Nav.Item style={{flex: 1}}><Nav.Link className="text-center">일식&아시안</Nav.Link></Nav.Item>*/}
-            {/*        <Nav.Item style={{flex: 1}}><Nav.Link className="text-center">중식</Nav.Link></Nav.Item>*/}
-            {/*    </Nav>*/}
-            {/*</header>*/}
 
             {/* Main Content */}
             <Row className="g-4">
