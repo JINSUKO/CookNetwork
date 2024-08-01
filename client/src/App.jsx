@@ -9,6 +9,7 @@ import Western from './pages/Western';
 import Chinese from './pages/Chinese';
 import Japanese from './pages/Japanese';
 import RecipeDetail from './components/RecipeDetail'
+import Chat from "./chat/chatIndex";
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -101,6 +102,7 @@ function App() {
           <Route path = '/recipe/:id' element = {<RecipeDetail />}/>
         </Routes>
       </Router>
+      <Chat/>
     </div >
 
     // <div>
