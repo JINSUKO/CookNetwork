@@ -7,15 +7,13 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
 
-    console.log('fdsa', req.body);
+    const { username, user_code } = req.body;
 
     try {
 
-        // const query =
+        const query = 'UPDATE users SET username = ? WHERE user_code = ?;'
 
-        const result = await maria.execute(query);
-
-        // console.log(result);
+        const result = await maria.execute(query, [username, user_code]);
 
         return res.status(200).json({result});
     } catch (e) {

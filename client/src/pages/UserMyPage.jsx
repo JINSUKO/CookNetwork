@@ -133,8 +133,9 @@ const UserMyPage = ({user, profilePic}) => {
 
     // 닉네임 수정 기능 시작
     const [showUserNameModal, setShowUserNameModal] = useState(false);
+    const [username, setUsername] = useState(user.username);
 
-    const UserNameModal = ({ show, preUsername}) => {
+    const UserNameModal = ({ show, preUsername, setUsername}) => {
 
 
         const [usernameError, setUsernameError] = useState('');
@@ -155,12 +156,13 @@ const UserMyPage = ({user, profilePic}) => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({username: postUsername})
+                    body: JSON.stringify({username: postUsername, user_code: user.user_code})
                 });
 
                 if (!response.ok) throw new Error((await response.json()).error);
 
                 const result = await response.json();
+                setUsername(postUsername)
 
                 console.log('username 업데이트 성공!');
 
@@ -233,7 +235,7 @@ const UserMyPage = ({user, profilePic}) => {
                             justifyContent: 'center',
                             margin: '0 auto'
                         }}/>
-                        <h5 className="mb-3">{user.username}</h5>
+                        <h5 className="mb-3">{username}</h5>
                         <div className="mb-3">
                             <input
                                 type="file"
@@ -264,7 +266,8 @@ const UserMyPage = ({user, profilePic}) => {
                             <Button variant="dark" size="sm" className="mb-2" onClick={() => {setShowUserNameModal(true)}} >닉네임 수정하기</Button>
                             <UserNameModal
                                 show={showUserNameModal}
-                                preUsername={user.username}
+                                preUsername={username}
+                                setUsername={setUsername}
                             />
                         </div>
                         <Row className="justify-content-center g-2 mb-3">
@@ -317,7 +320,7 @@ const UserMyPage = ({user, profilePic}) => {
                         <Card.Body>
                             {activeTab === 'userInfo' && (
                                 <>
-                                    <Card.Title className="mb-3">닉네임: {user.username}</Card.Title>
+                                    <Card.Title className="mb-3">닉네임: {username}</Card.Title>
                                     <Card.Text>
                                         성별: {user.sex ? "여" : "남"}<br />
                                         이메일: {user.email}<br />
