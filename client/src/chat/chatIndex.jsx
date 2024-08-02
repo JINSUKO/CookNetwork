@@ -21,7 +21,8 @@ const socket = new io('http://192.168.0.103:3001/'); // 관용님 학원 pc ip
 
 // const socket = new io('http://192.168.0.14:3001/'); // 진수님 학원 wifi ip
 
-function chatIndex() {
+function chatIndex({userData}) {
+  console.log(userData)
   const [messageHistory, setMessageHistory] = useState([]);
 
   const uid = useRef(null);
@@ -31,7 +32,6 @@ function chatIndex() {
     name: '',
     message: '',
   });
-
   useEffect(() => {
     const onConnect = () =>{
       uid.current = socket.id;
@@ -95,12 +95,7 @@ function chatIndex() {
         )}
       </HistoryWrapper>
       <Form onSubmit={handleSubmit}>
-        <NameInput
-          id="name"
-          value={userMessage.name}
-          onChange={handleChange}
-          placeholder="닉네임"
-        />
+        <NameInput>{userMessage.name}</NameInput>
         <MessageInput
           id="message"
           value={userMessage.message}
