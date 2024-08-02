@@ -4,8 +4,8 @@ const router = express.Router()
 const maria = require('../module/sql') ;
 
 router.post('/', async(req,res)=>{
-    let id = req.body.userId;
-    let pw = req.body.password;
+    let userId = req.body.userId;
+    let password = req.body.password;
 
     const queryString = `SELECT * FROM users WHERE user_id = ? AND user_password = ?`;
 
