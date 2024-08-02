@@ -7,7 +7,7 @@ import styles from '../assets/styles/Login.module.css';
 
 function Login() {
 
-  const API_URL = 'http://localhost:5000';
+  const API_URL = 'http://192.168.0.103:3000';
 
   const [user, setUser] = useState({
     userId: '',
@@ -50,7 +50,7 @@ function Login() {
 
       if (response.ok) {
         // 로그인 성공 
-        console.log('로그인 성공:', data.user);
+        console.log('로그인 성공:', data);
         // 여기서 로그인 성공 후 토큰 저장, 리다이렉트 등 로직을 구현합니다.
       
       } else {
