@@ -116,6 +116,7 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
       if (allFieldsFilled) {
         onSignUp(input);
         alert("회원가입이 성공적으로 완료되었습니다!"); // 성공 메시지 alert 추가
+        location.href = '/login';
         
       } else {
         setErrors(prevErrors => ({

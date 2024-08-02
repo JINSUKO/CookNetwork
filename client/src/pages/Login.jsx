@@ -51,6 +51,8 @@ function Login() {
       if (response.ok) {
         // 로그인 성공 
         console.log('로그인 성공:', data);
+        location.href = '/';
+        
         // 여기서 로그인 성공 후 토큰 저장, 리다이렉트 등 로직을 구현합니다.
       
       } else {
