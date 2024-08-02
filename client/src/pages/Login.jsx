@@ -46,6 +46,8 @@ function Login() {
 
       console.log('응답 상태:', response.status)
 
+      const data = await response.json();
+
       if (response.ok) {
         // 로그인 성공 
         console.log('로그인 성공:', data.user);
@@ -56,7 +58,7 @@ function Login() {
       }
     } catch (error) {
       console.error('로그인 에러:', error);
-      setErrors({ gnenral:'서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' });
+      setErrors({ genenral:'서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' });
     }
   }
 
