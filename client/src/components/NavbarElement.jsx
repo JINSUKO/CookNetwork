@@ -12,7 +12,7 @@ import { Container, Nav, Navbar, Form, Button } from 'react-bootstrap';
 function NavbarElement() {
   return (
     <div>
-      {/* 추가: 상단오른쪽 공지사항, 회원가입, 로그인 링크 */}
+      {/* 상단오른쪽 공지사항, 회원가입, 로그인 링크도 네비바로 작성 */}
       <Nav className="justify-content-end" defaultActiveKey="/" as="ul">
         <Nav.Item as="li">
           <Nav.Link href="/">공지사항</Nav.Link>

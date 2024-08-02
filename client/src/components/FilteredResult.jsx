@@ -1,5 +1,5 @@
-/* FilteredResults.jsx
-SearchBar 컴포넌트와 달리 필터링과 표시에 집중하는 컴포넌트입니다.
+/* FilteredResult.jsx
+검색어 필터링을 하고 화면에 표시하는 FilteredResult 함수 컴포넌트입니다.
 */
 
 import React from 'react';
