@@ -22,6 +22,7 @@ app.use(cors({
 // Body parser
 app.use(express.json());
 
+// 유저 정보 불러오는 요청시 사용. 임시로 만들어 놓음.
 const exGetUser = require('./exGetUser');
 // API 라우트
 // app.get('/hello', (req, res) => {
@@ -30,8 +31,14 @@ app.use('/hello', exGetUser, (req, res) => {
     
 });
 
+// 유저 관련 요청은 /user/*로 미들웨어 하나로 모아 놓울 예정.
+// 유저 프로필 이미지 불러오는 요청시 사용
 const uploadUserImg = require('./uploadUserImg');
 app.use('/api/uploadUserImg', uploadUserImg);
+
+// 유저 프로필 이미지 불러오는 요청시 사용
+const userCategories = require('./getUserCategories');
+app.use('/api/userCategories', userCategories);
 
 // 여기에 다른 API 라우트들을 추가합니다...
 
