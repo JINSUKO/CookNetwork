@@ -11,8 +11,7 @@
 */
 
 import React, { useState } from "react";
-import Button from 'react-bootstrap/Button';
-import Form from "react-bootstrap";
+import {Form, Button} from "react-bootstrap";
 import SearchResult from "./SearchResult";
 import FilteredResult from "./FilteredResult";
 import SearchCategoryDrop from "./SearchCategoryDrop";
