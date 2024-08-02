@@ -2,11 +2,11 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 
-const maria = require('./module/sql');
+const maria = require('../module/sql');
 
 const router = express.Router();
 
-const uploadPath = path.join(__dirname, 'uploads', 'users', 'profile_images');
+const uploadPath = path.join(__dirname, '../', 'uploads', 'users', 'profile_images');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
