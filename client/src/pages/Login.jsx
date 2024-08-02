@@ -51,9 +51,12 @@ function Login() {
       if (response.ok) {
         // 로그인 성공 
         console.log('로그인 성공:', data);
+        location.href = '/';
+        
         // 여기서 로그인 성공 후 토큰 저장, 리다이렉트 등 로직을 구현합니다.
       
       } else {
+        console.log(data)
         setErrors( {general: data.message || '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.'});
       }
     } catch (error) {

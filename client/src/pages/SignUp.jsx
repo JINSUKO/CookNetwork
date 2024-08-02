@@ -2,6 +2,7 @@
 */
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import SignUpStyles from '../assets/styles/SignUp.module.css';
 
 
@@ -75,7 +76,7 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
     }
     // 입력 누락 검사
     if (!userId || !password || !passwordVerify || !nickname || !userSex || !userEmail) {
-      inputError.general = "모든 필드는 필수입니다.";
+      inputError.general = "모든 필드는 필수입니다.";   // general: 입력 누락 등 오류메시지 저장하는 키
     }
 
     setErrors(inputError);
@@ -110,7 +111,19 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
         userEmail: user.userEmail
       }
 
-      onSignUp(input);
+      const allFieldsFilled = Object.values(input).every(value => value !== '' && value !== undefined);
+
+      if (allFieldsFilled) {
+        onSignUp(input);
+        alert("회원가입이 성공적으로 완료되었습니다!"); // 성공 메시지 alert 추가
+        location.href = '/login';
+        
+      } else {
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          general: "모든 필드를 입력해주세요."
+        }));
+      }
     } else {
       setErrors(prevErrors => ({
         ...prevErrors,
@@ -118,8 +131,7 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
       }));
     }
     }
-
-
+    
   return (
     <div className={SignUpStyles.page}>
       <div className={SignUpStyles.titleWrap}>회원가입</div>
@@ -155,7 +167,6 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
             onChange={handleChange}
           />
           </label>
-          <div className={SignUpStyles.errorMessageWrap}>{errors.nickname}</div>
           <label className="infoOptionalText">닉네임
             <input
             className={SignUpStyles.userInput}
@@ -165,8 +176,8 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
             name="nickname"
             onChange={handleChange}
           />
+          <div className={SignUpStyles.errorMessageWrap}>{errors.nickname}</div>          
           </label>
-          <div className={SignUpStyles.errorMessageWrap}>{errors.userEmail}</div>
           <label className="infoOptionalText">이메일
             <input
             className={SignUpStyles.userInput}
@@ -177,7 +188,7 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
             onChange={handleChange}
           />
           </label>
-
+          <div className={SignUpStyles.errorMessageWrap}>{errors.userEmail}</div>
           <div value={userSex}>
             <label className="infoOptionalText">성별<br />
             </label>
@@ -215,6 +226,11 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
             text="회원가입"
             value="SignUp" 
             />
+        </div>
+        <div>
+          <p className="login-link">이미 회원이신가요? 
+            <Link to="/api/login"> 로그인 하러가기</Link>
+          </p>
         </div>
       </form>
     </div>

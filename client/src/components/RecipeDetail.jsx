@@ -1,4 +1,6 @@
-
+/* RecipeDetail.jsx
+레시피 상세페이지를 화면에 표시하는 컴포넌트입니다. 
+*/
 
 import React from 'react';
 import { useParams } from 'react-router-dom';
