@@ -13,11 +13,13 @@ router.post('/', async(req,res)=>{
          const [user] = await maria.excute(queryString, [userId, password])
          
          if(user.length > 0){
-            // 로그인 성공
+            res.json({ login: '1'});
          } else{
-            // 로그인 실패
+            res.json({ login: '0'});
          }
     } catch(error){
         console.log(error)
     }
 })
+
+module.exports = router;
