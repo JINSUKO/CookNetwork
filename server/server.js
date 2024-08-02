@@ -4,6 +4,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 const socketIO = require('socket.io');
 
+const chatLog = require('./module/openChat.js');
+
 require('dotenv').config();
 // require('dotenv').config({ path: '.env.local' })
 const app = express();
@@ -81,6 +83,7 @@ const handleSocketMessage = (socket, data) => {
     console.log(`${socket.id}: `,data);
 
     socket.broadcast.emit('Message', data);
+    chatLog.chatDataLog(data)
 };
 
 const handleSocketDisconnect = (socket) => {
