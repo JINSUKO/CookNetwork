@@ -40,6 +40,10 @@ app.use('/api/uploadUserImg', uploadUserImg);
 const userCategories = require('./router/getUserCategories');
 app.use('/api/userCategories', userCategories);
 
+// 유저 닉네임 변경 요청시 사용
+const userNameUpdate = require('./router/UpdateUsername');
+app.use('/api/userNameUpdate', userNameUpdate);
+
 // 여기에 다른 API 라우트들을 추가합니다...
 
 // 회원가입 라우트 연결
