@@ -1,4 +1,7 @@
-import { useState, useRef } from 'react';
+/* 사용자의 마이페이지
+*   운영자, 셰프, 일반 유저 모두 동일한 마이페이지 사용함.
+* */
+import {useState, useRef, useEffect} from 'react';
 import {Image, Container, Row, Col, Nav, InputGroup, FormControl, Button, Card, Modal} from 'react-bootstrap';
 
 const UserPage = ({user, profilePic}) => {
@@ -8,7 +11,9 @@ const UserPage = ({user, profilePic}) => {
     const [activeTab, setActiveTab] = useState('userInfo');
     const [profileImgDB, setProfileImgDB] = useState(profilePic);
     const [profileImg, setProfileImg] = useState(null);
+    const [categories, setCategories] = useState(null);
 
+    console.log('categories', categories)
     const fileInputRef = useRef(null);
 
     const handleFileInputChange = (event) => {
@@ -37,13 +42,43 @@ const UserPage = ({user, profilePic}) => {
         fileInputRef.current.click();
     };
 
+    // 마이페이지에서 유저가 등록한 선호 카테고리 목록 데이터 요청 코드.
+    const getUserCategories = async () => {
+        try {
+            const response = await fetch(`${API_URL}/api/userCategories`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({user_code: user.user_code})
+            });
+
+            if (!response) throw new Error((await response.json().error));
+
+            const result = await response.json();
+
+            console.log(result);
+
+            setCategories(result);
+
+        } catch (e) {
+            console.error('Error:', e);
+        }
+    }
+
+    useEffect(() => {
+
+        // 마이페이지에서 유저가 등록한 선호 카테고리 목록 데이터 요청 코드.
+        getUserCategories();
+
+    }, []);
+
     // 확인 대화상자 부분 시작
     const [showDialog, setShowDialog] = useState(false);
 
     const handleConfirm = async () => {
         console.log('User confirmed');
         setShowDialog(false);
-        // 파일 서버로 저장하는 코드 작성해야함.
         // 파일 저장 formData 객체 생성
         const formData = new FormData();
         console.log('fetch 직전 file:', profileImg)
@@ -58,7 +93,7 @@ const UserPage = ({user, profilePic}) => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message);
+                throw new Error(errorData.error);
             }
 
             const result = await response.json();
@@ -77,7 +112,7 @@ const UserPage = ({user, profilePic}) => {
         setProfileImgDB(profilePic);
     };
 
-    const ConfirmDialog = ({ show, message, onConfirm, onCancel }) => {
+    const ImgConfirmModal = ({ show, message, onConfirm, onCancel }) => {
         return (
             <Modal show={show} onHide={onCancel} centered>
                 <Modal.Header closeButton>
@@ -109,7 +144,6 @@ const UserPage = ({user, profilePic}) => {
                             width: '150px',
                             height: '150px',
                             borderRadius: '50%',
-                            border: '1px solid #000',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -135,7 +169,7 @@ const UserPage = ({user, profilePic}) => {
                                     >
                                         사진 변경하기
                                     </Button>
-                                    <ConfirmDialog
+                                    <ImgConfirmModal
                                         show={showDialog}
                                         message="선택된 사진으로 변경하려면 확인을 눌러주세요."
                                         onConfirm={handleConfirm}
@@ -156,12 +190,15 @@ const UserPage = ({user, profilePic}) => {
                             </Col>
                         </Row>
                         <div className="mb-3">
-                            {['Label', 'Label', 'Label'].map((label, idx) => (
-                                <Button key={idx} variant="dark" size="sm" className="me-2 mb-2">{label}</Button>
+                            {categories && categories.map((category, idx) => (
+                                <Button key={idx} variant="outline-secondary" size="sm" className="me-2 mb-2">{category.category_name}</Button>
                             ))}
-                            {['Label', 'Label'].map((label, idx) => (
-                                <Button key={idx} variant="secondary" size="sm" className="me-2 mb-2">{label}</Button>
-                            ))}
+                            {/*{['Label', 'Label', 'Label'].map((label, idx) => (*/}
+                            {/*    <Button key={idx} variant="dark" size="sm" className="me-2 mb-2">{label}</Button>*/}
+                            {/*))}*/}
+                            {/*{['Label', 'Label'].map((label, idx) => (*/}
+                            {/*    <Button key={idx} variant="secondary" size="sm" className="me-2 mb-2">{label}</Button>*/}
+                            {/*))}*/}
                         </div>
                     </div>
                 </Col>
@@ -199,20 +236,18 @@ const UserPage = ({user, profilePic}) => {
                                         유저 등급: {user.user_code <= 10 ? "운영자 계정" : (user.chef_code ? "셰프 계정" : "일반 계정")}
                                     </Card.Text>
                                     <Button variant="dark" size="sm" className="mb-2">화원 정보 수정하기</Button>
+                                    <div style={{marginTop:"30px"}}></div>
                                     <h6 className="mb-3">카테고리 찜 목록</h6>
-                                    <div className="mb-3">
-                                        {['한식', '양식', '일식&아시안', '중식', '기타'].map((category, idx) => (
-                                            <Button key={idx} variant="outline-secondary" size="sm" className="me-2 mb-2">{category}</Button>
-                                        ))}
-                                    </div>
 
                                     <Button variant="outline-primary" size="sm" className="me-2">카테고리 찜하기</Button>
                                     <Button variant="outline-danger" size="sm">카테고리 제거하기</Button>
-                                    <div className="mt-3">
-                                        {['Label', 'Label', 'Label', 'Label', 'Label'].map((label, idx) => (
-                                            <Button key={idx} variant="dark" size="sm" className="me-2 mb-2">{label}</Button>
+
+                                    <div className="mb-3" style={{marginTop:"10px"}}>
+                                        {categories && categories.map((category, idx) => (
+                                            <Button key={idx} variant="outline-secondary" size="sm" className="me-2 mb-2">{category.category_name}</Button>
                                         ))}
                                     </div>
+
                                 </>
                             )}
                             {activeTab === 'activity' && (
@@ -242,13 +277,11 @@ const UserPage = ({user, profilePic}) => {
                                         ))}
                                     </Row>
                                     <h6 className="mb-3">카테고리 최신 레시피</h6>
-                                    <div className="mt-3">
-                                        {['Label', 'Label', 'Label', 'Label', 'Label'].map((label, idx) => (
-                                            <Button key={idx} variant="dark" size="sm"
-                                                    className="me-2 mb-2">{label}</Button>
-                                        ))}
-                                    </div>
-                                    <Row xs={2} md={3} lg={6} className="g-2">
+                                    {categories && categories.map((category, idx) => (
+                                        <Button key={idx} variant="outline-secondary" size="sm"
+                                                className="me-2 mb-2">{category.category_name}</Button>
+                                    ))}
+                                    <Row xs={2} md={3} lg={6} className="g-2 mb-4">
                                         {[...Array(6)].map((_, idx) => (
                                             <Col key={idx}>
                                                 <div style={{
@@ -259,6 +292,22 @@ const UserPage = ({user, profilePic}) => {
                                             </Col>
                                         ))}
                                     </Row>
+                                    { (user.user_code <= 11 || user.chef_code === 1 )
+                                        && <div>
+                                                <h6 className="mb-3"> 레시피</h6>
+                                                <Row xs={2} md={3} lg={6} className="g-2">
+                                                    {[...Array(6)].map((_, idx) => (
+                                                        <Col key={idx}>
+                                                            <div style={{
+                                                                width: '100%',
+                                                                paddingBottom: '100%',
+                                                                background: '#f0f0f0'
+                                                            }}></div>
+                                                        </Col>
+                                                    ))}
+                                                </Row>
+                                           </div>
+                                    }
                                 </>
                             )}
                         </Card.Body>
