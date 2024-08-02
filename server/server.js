@@ -27,6 +27,7 @@ const exGetUser = require('./exGetUser');
 // app.get('/hello', (req, res) => {
 app.use('/hello', exGetUser, (req, res) => {
     res.json({ message: 'Hello from server!', user: req.user, profilePic: req.profilePic});
+    
 });
 
 const uploadUserImg = require('./uploadUserImg');
@@ -39,6 +40,11 @@ const signupRouter = require("./router/signUp.js");
 
 // 회원가입 라우트 요청시 사용
 app.use("/signup", signupRouter);
+
+const loginRouter = require("./router/login.js");
+
+// 로그인 라우트 요청시 사용
+app.use("/api/login", loginRouter);
 
 // 정적 파일 서빙 (프로덕션 모드)
 if (process.env.NODE_ENV === 'production') {

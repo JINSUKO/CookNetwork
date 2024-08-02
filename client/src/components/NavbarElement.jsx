@@ -29,7 +29,7 @@ function NavbarElement() {
       <Navbar expand="lg" className="bg-body-tertiary">
         <Container className="d-flex justify-content-between align-items-center flex-nowrap">
           <Navbar.Brand href="/" bg="light" data-bs-theme="light" className="flex-shrink-0">전체</Navbar.Brand>
-          <Nav className="mx-auto" d-flex justify-content-center flex-grow-1 flex-shrink-0 >
+          <Nav className="mx-auto d-flex justify-content-center flex-grow-1 flex-shrink-0" >
             <Nav.Link href="/korean" className="px-2">한식</Nav.Link>
             <Nav.Link href="/western" className="px-2">양식</Nav.Link>
             <Nav.Link href="/chinese" className="px-2">중식</Nav.Link>

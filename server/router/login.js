@@ -10,14 +10,16 @@ router.post('/', async(req,res)=>{
     const queryString = `SELECT * FROM users WHERE user_id = ? AND user_password = ?`;
 
     try{
-         const [user] = await maria.excute(queryString, [id, pw])
+         const [user] = await maria.execute(queryString, [id, pw])
          
          if(user.length > 0){
-            // 로그인 성공
+            res.json({ login: '1'});
          } else{
-            // 로그인 실패
+            res.json({ login: '0'});
          }
     } catch(error){
         console.log(error)
     }
 })
+
+module.exports = router;
