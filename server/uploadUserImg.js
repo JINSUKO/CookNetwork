@@ -23,18 +23,20 @@ const upload = multer({ storage: storage });
 router.post('/', upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({error: '업로드할 이미지가 없습니다.'});
 
+    try {
+        console.log(req.file);
+        console.log(req.body);
 
-    console.log(req.file);
-    console.log(req.body);
-    //파일 위치 db에 저장하는 코드 추가해야함.
+        const query = 'UPDATE users SET user_img = ? WHERE user_code = ?;'
 
-    const query = 'UPDATE users SET user_img = ? WHERE user_code = ?;'
+        const result = await maria.execute(query, [req.file.filename, req.body.user_code]);
 
-    const result = await maria.execute(query, [req.file.filename, req.body.user_code]);
+        console.log(result);
 
-    console.log(result);
-
-    return res.status(200).json({result});
+        return res.status(200).json({result});
+    } catch (e) {
+        return res.status(400).json({error: e});
+    }
 
 });
 
