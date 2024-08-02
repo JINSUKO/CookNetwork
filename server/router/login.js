@@ -10,12 +10,13 @@ router.post('/', async(req,res)=>{
     const queryString = `SELECT * FROM users WHERE user_id = ? AND user_password = ?`;
 
     try{
-         const [user] = await maria.execute(queryString, [id, pw])
-         
-         if(user.length > 0){
-            res.json({ login: '1'});
+         const [userdata] = await maria.execute(queryString, [id, pw])
+        
+         if(userdata.length > 0){
+            let user = userdata[0]
+            res.json(user);
          } else{
-            res.json({ login: '0'});
+            res.status(406).json({message: "Login Fail"});
          }
     } catch(error){
         console.log(error)
