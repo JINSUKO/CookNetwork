@@ -11,7 +11,7 @@ import Chinese from './pages/Chinese';
 import Japanese from './pages/Japanese';
 import RecipeDetail from './components/RecipeDetail'
 import Chat from "./chat/chatIndex";
-import UserPage from "./pages/UserPage";
+import UserMyPage from "./pages/UserMyPage.jsx";
 
 import './App.css'
 // import 'bootstrap/dist/css/bootstrap.min.css';
@@ -126,7 +126,7 @@ function App() {
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/recipe/:id' element = {<RecipeDetail />}/>
-          <Route path = '/mypage' element = {user ? <UserPage user={user} profilePic={profilePic}/> : <Login />}/>
+          <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic}/> : <Login />}/>
         </Routes>
       </Router>
       <Chat/>
