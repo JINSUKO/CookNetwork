@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import Main from './pages/Main'
+import SignUp from './pages/SignUp'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Layout/Header'
 import Footer from './components/Layout/Footer'
-import Main from './pages/Main'
-import SignUp from './pages/SignUp'
 import Login from './pages/Login'
 import Korean from './pages/Korean';
 import Western from './pages/Western';
@@ -14,11 +14,10 @@ import Chat from "./chat/chatIndex";
 import UserPage from "./pages/UserPage";
 
 import './App.css'
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState('　')
     const [user, setUser] = useState(null);
     const [profilePic, setProfilePic] = useState('');
 
@@ -29,6 +28,10 @@ function App() {
     //   ? ''
     //   : 'http://localhost:3000';
 
+    // fetch(`${API_URL}/signup`, { method: "POST" })
+    //   .then(response => response.json())
+    //   .then(data => setMessage(data.message))
+    //   .catch(error => console.error('Error:', error));
     // db에서 유저 데이터 받아오는 코드
       // 로그인 유지 기능 없어서 임시로 작성해놓은 코드
     fetch(`${API_URL}/hello`)
@@ -135,4 +138,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
