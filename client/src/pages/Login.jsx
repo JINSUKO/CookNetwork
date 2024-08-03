@@ -7,7 +7,8 @@ import styles from '../assets/styles/Login.module.css';
 
 function Login() {
 
-  const API_URL = 'http://192.168.0.103:3000';
+  // const API_URL = 'http://192.168.0.103:3000';
+  const API_URL = 'http://192.168.220.1:3000';
 
   const [user, setUser] = useState({
     userId: '',
@@ -49,12 +50,18 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // 로그인 성공 
-        console.log('로그인 성공:', data);
-        location.href = '/';
-        
+        // 로그인 성공
+
         // 여기서 로그인 성공 후 토큰 저장, 리다이렉트 등 로직을 구현합니다.
-      
+        console.log('로그인 성공:', data);
+
+        // 로그인 성공 시 로그인 상태 유지를 위한 토큰을 받아온다.
+        localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        localStorage.setItem('loginUser', JSON.stringify(data.user));
+
+        alert(data.message); // 사용자 인식 시킬려고 추가해봄.
+        // location.href = '/';
       } else {
         console.log(data)
         setErrors( {general: data.message || '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.'});

@@ -20,9 +20,9 @@ router.get('/', async (req, res, next) => {
 
         req.user = users[0]
 
-        profileBasePath = path.join(__dirname, 'uploads', 'users', 'profile_images/');
+        const profileBasePath = path.join(__dirname, 'uploads', 'users', 'profile_images/');
 
-        const profilePic = await fs.readFileSync(path.join(profileBasePath, req.user.user_img), 'base64');
+        const profilePic = fs.readFileSync(path.join(profileBasePath, req.user.user_img), 'base64');
         console.log(req.user)
         req.profilePic = 'data:image/jpeg;base64,' + profilePic;
 
