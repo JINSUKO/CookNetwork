@@ -14,7 +14,7 @@ import Chat from "./chat/chatIndex";
 import UserMyPage from "./pages/UserMyPage.jsx";
 
 import './App.css'
-import SearchResult from './components/SearchResult.jsx';
+import SearchResultPage from './components/SearchResult.jsx';
 
 
 function App() {
@@ -121,8 +121,8 @@ function App() {
   return (
     <div className="App">
       <p>{message}</p>
-      <Header />
       <Router>
+        <Header />
         <Routes>
           <Route path = '/' element = {<Main />}/>
           <Route path = '/korean' element = {<Korean />}/>
@@ -131,7 +131,7 @@ function App() {
           <Route path = '/japanese' element = {<Japanese />}/>
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
-          <Route path = '/search' element = {<SearchResult/>}/>
+          <Route path = '/search' element = {<SearchResultPage/>}/>
           <Route path = '/recipe/:id' element = {<RecipeDetail />}/>
           <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic}/> : <Login />}/>
         </Routes>
