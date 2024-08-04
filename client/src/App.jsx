@@ -14,6 +14,7 @@ import Chat from "./chat/chatIndex";
 import UserMyPage from "./pages/UserMyPage.jsx";
 
 import './App.css'
+import SearchResult from './components/SearchResult.jsx';
 
 
 function App() {
@@ -21,7 +22,9 @@ function App() {
   const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState('');
 
-  const API_URL ='http://192.168.0.103:3000';
+  // const API_URL ='http://192.168.0.103:3000';
+  // const API_URL ='http://192.168.0.14:3000';
+  const API_URL ='http://192.168.0.13:3000';
   console.log(user&& user.user_code  )
   useEffect(() => {
     // const API_URL = import.meta.env.PROD
@@ -128,6 +131,7 @@ function App() {
           <Route path = '/japanese' element = {<Japanese />}/>
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
+          <Route path = '/search' element = {<SearchResult/>}/>
           <Route path = '/recipe/:id' element = {<RecipeDetail />}/>
           <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic}/> : <Login />}/>
         </Routes>
