@@ -1,6 +1,5 @@
 /* SearchBar.jsx 
 검색 입력고 API 요청 처리 컴포넌트입니다.
-검색창 컴포넌트 중 자식 컴포넌트에 해당합니다.
 메인 상단 검색창, 버튼은 부트스트랩을 사용하였습니다.
 
 검색어와 같은 값들을 걸러내기 -> filter 함수 사용
@@ -11,11 +10,11 @@
 */
 
 import React, { useState } from "react";
-import Button from 'react-bootstrap/Button';
-import Form from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import SearchResult from "./SearchResult";
 import FilteredResult from "./FilteredResult";
 import SearchCategoryDrop from "./SearchCategoryDrop";
+import "../assets/styles/SearchBar.css"
 
 function SearchBar() {
   // 검색한 키워드 저장
@@ -88,7 +87,8 @@ function SearchBar() {
 
           placeholder="레시피를 검색하세요"
           />
-        <Button type="submit" value="검색" className="search-button " variant="dark"/>
+        <Button type="submit" variant="warning" className="search-button" ><span>검색</span>
+        </Button>
       </Form>
       {/* <FilteredResult data={results} /> */}
       {/* <SearchResult results={results} isLoading={isLoading} error={error} /> */}
