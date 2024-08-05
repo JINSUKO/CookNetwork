@@ -121,33 +121,37 @@ const io = new socketIO.Server(server, {
     },
 });
 
+const userList = new Map();
+
 const handleSocketMessage = (socket, data) => {
-    console.log(`${socket.id}: `,data);
+    console.log(data);
 
     socket.broadcast.emit('Message', data);
     chatLog.chatDataLog(data)
 };
 
 const handleSocketDisconnect = (socket) => {
-    console.log('접속 해제: ',socket.id);
-
-    userList.delete(socket.id)
-    console.log('Current User: ', [...userList.values()]);
-
-    socket.broadcast.emit('USER_LEAVE',socket.id);
+    const userid = userList.get(socket.id);
+    console.log('접속 해제: ',userid);
+    if(userid){
+        socket.broadcast.emit('USER_LEAVE',userid);
+        userList.delete(socket.id)
+        console.log('현재 접속 유저: ', [...userList.values()]);
+    }
 };
 
-const userList = new Set([]);
-
 const handleConnection = (socket) => {
-    userList.add(socket.id);
-    console.log('유저 접속: ',socket.id);
-    console.log('Current User: ', [...userList.values()]);
-
-    socket.broadcast.emit('USER_ENTER',socket.id);
-
-    socket.on("Message",(data) => handleSocketMessage(socket, data));
-    socket.on('disconnect', () => handleSocketDisconnect(socket));
+    socket.on('USER_ENTER', (user) =>{
+        if(!userList.has(user.id)){
+        userList.set(socket.id, user);
+        console.log('유저 접속: ',user.id);
+        console.log('현재 접속 유저: ', [...userList.values()]);
+        socket.broadcast.emit('USER_ENTER', user);
+        }    
+    });
+        socket.on("Message",(data) => handleSocketMessage(socket, data));
+        socket.on('disconnect', () => handleSocketDisconnect(socket));
+    
 };
 
 io.on('connection',handleConnection);

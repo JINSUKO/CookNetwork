@@ -1,13 +1,13 @@
 import React from "react";
-import logo from '../../assets/images/logo.png';
-import NavbarElement from "../NavbarElement.jsx";
+import Logo from "../Logo.jsx";
+import NavbarElement from "../NavbarElement";
 
-function Header({user}) {
+function Header() {
 
   return ( 
     <header>
-      <img src={logo} alt="로고 이미지" width={200}/>
-      <NavbarElement user={user} />
+      <Logo />
+      <NavbarElement />
     </header>
   )
 }

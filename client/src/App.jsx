@@ -5,15 +5,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Layout/Header'
 import Footer from './components/Layout/Footer'
 import Login from './pages/Login'
-import Korean from './pages/Korean';
-import Western from './pages/Western';
-import Chinese from './pages/Chinese';
-import Japanese from './pages/Japanese';
 import RecipeDetail from './components/RecipeDetail'
 import Chat from "./chat/chatIndex";
-import UserMyPage from "./pages/UserMyPage.jsx";
-import Logout from "./components/Logout.jsx";
-import ProtectedPage from "./pages/authToken/ProtectedPage.jsx";
+import UserMyPage from "./pages/UserMyPage";
+import SearchResultPage from './components/SearchResult';
+import RecipeList from './components/RecipeList';
+import Logout from "./components/Logout";
+import ProtectedPage from "./pages/authToken/ProtectedPage";
 
 import './App.css'
 
@@ -123,21 +121,20 @@ function App() {
   //   setErrors('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   // }
 
-
-
   return (
     <div className="App">
       <p>{message}</p>
-      <Header user={user} />
       <Router>
+        <Header />
         <Routes>
           <Route path = '/' element = {<Main />}/>
-          <Route path = '/korean' element = {<Korean />}/>
-          <Route path = '/western' element = {<Western />}/>
-          <Route path = '/chinese' element = {<Chinese />}/>
-          <Route path = '/japanese' element = {<Japanese />}/>
+          <Route path = '/korean' element = {<RecipeList category="korean" />}/>
+          <Route path = '/western' element = {<RecipeList category="western" />}/>
+          <Route path = '/chinese' element = {<RecipeList category="chinese" />}/>
+          <Route path = '/japanese' element = {<RecipeList category="japanese" />}/>
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
+          <Route path = '/search' element = {<SearchResultPage/>}/>
           <Route path = '/recipe/:id' element = {<RecipeDetail />}/>
           <Route element = {<ProtectedPage />}>
             <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic}/> : <Login />}/>
@@ -145,7 +142,7 @@ function App() {
             <Route path="/logout" element={user && <Logout user={user}/>}/>
         </Routes>
       </Router>
-      <Chat/>
+      {user && <Chat userData = {user}/>}
       <Footer/>
     </div>
   )
