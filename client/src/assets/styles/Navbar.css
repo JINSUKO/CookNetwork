@@ -1,7 +1,6 @@
 /* Navbar.css */
 .search-form {
   flex-wrap: nowrap;
-  overflow: hidden;
 }
 
 .search-input {
@@ -18,9 +17,23 @@
   width: auto;  
 }
 
+.search-form {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
 .navbar .nav-link {
   padding: 0.5rem 1rem;
 }
+
+/* 드롭다운 */
+.search-form .dropdown {
+  margin-right: 10px;
+}
+
+
+
 /* 
 미디어쿼리 사용? ..
 @media (max-width: 992px) {

@@ -9,7 +9,7 @@ const UserMyPage = ({user, profilePic}) => {
     const API_URL = 'http://localhost:3000';
 
     const [activeTab, setActiveTab] = useState('userInfo');
-    const [profileImgDB, setProfileImgDB] = useState(profilePic);
+    const [profileImgDBbase64, setProfileImgDBbase64] = useState(profilePic);
     const [profileImg, setProfileImg] = useState(null);
     const [categories, setCategories] = useState(null);
 
@@ -20,14 +20,14 @@ const UserMyPage = ({user, profilePic}) => {
         // 파일이 선택되었을 때의 로직
         const file = event.target.files[0];
 
-        if (!file) return setProfileImgDB(profilePic);
+        if (!file) return setProfileImgDBbase64(profilePic);
 
         if (!file.type.startsWith('image/')) return alert('이미지 파일만 선택해주세요.');
 
         setProfileImg(file);
         const reader = new FileReader();
         reader.onload = (e) => {
-            setProfileImgDB(e.target.result);
+            setProfileImgDBbase64(e.target.result);
         }
         reader.readAsDataURL(file);
 
@@ -41,8 +41,6 @@ const UserMyPage = ({user, profilePic}) => {
 
         fileInputRef.current.click();
     };
-
-
 
     // 프로필 이미지 변경 확인 대화상자 부분 시작
     const [showImgConfirmModal, setShowImgConfirmModal] = useState(false);
@@ -72,14 +70,14 @@ const UserMyPage = ({user, profilePic}) => {
             console.log('프로필 이미지 업로드 성공!');
 
         } catch (e) {
-            console.error('Error:', e);
+            console.error(e);
         }
     };
 
     const uploadProfileCancel = () => {
         console.log('프로필 사진 업로드 취소');
         setShowImgConfirmModal(false);
-        setProfileImgDB(profilePic);
+        setProfileImgDBbase64(profilePic);
     };
 
     const ImgConfirmModal = ({ show, message, onConfirm, onCancel }) => {
@@ -113,7 +111,7 @@ const UserMyPage = ({user, profilePic}) => {
                 body: JSON.stringify({user_code: user.user_code})
             });
 
-            if (!response) throw new Error((await response.json()).error);
+            if (!response.ok) throw new Error((await response.json()).error);
 
             const result = await response.json();
 
@@ -122,7 +120,7 @@ const UserMyPage = ({user, profilePic}) => {
             setCategories(result);
 
         } catch (e) {
-            console.error('Error:', e);
+            console.error(e);
         }
     }
 
@@ -135,66 +133,76 @@ const UserMyPage = ({user, profilePic}) => {
 
     // 닉네임 수정 기능 시작
     const [showUserNameModal, setShowUserNameModal] = useState(false);
-    const [checkConfirm, setCheckConfirm] = useState(true);
+    const [username, setUsername] = useState(user.username);
 
-    const usernameConfirm = async () => {
-        setShowUserNameModal(false);
-
-        try {
-            const response = await fetch(`${API_URL}/api/userNameUpdate`, {
-                method: 'PUT',
-                heather: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify()
-            })
-
-            if (!response) throw new Error((await response.json()).error);
-
-            const result = await response.json();
-
-            console.log('username 업데이트 성공!');
+    const UserNameModal = ({ show, preUsername, setUsername}) => {
 
 
-        } catch (e) {
-            console.log('Error:', e);
-        }
-    };
-
-    const usernameCancel = () => {
-        console.log('유저 닉네임 변경 취소');
-        setShowUserNameModal(false);
-        setProfileImgDB(profilePic);
-    };
-
-    const UserNameModal = ({ show, preUsername, setCheckConfirm, onConfirm, onCancel }) => {
-
-        const [username, setUsername] = useState(preUsername);
         const [usernameError, setUsernameError] = useState('');
+        const [postUsername, setPostUsername] = useState('');
+        const [checkConfirm, setCheckConfirm] = useState(true);
+
+        const usernameConfirm = async (e) => {
+
+            if (!checkConfirm) return alert('닉네임이 유효하지 않습니다. 다시 입력해주세요.');
 
 
-        const getUsernameEventListener = () => {
+            setShowUserNameModal(false);
+
+            console.log(postUsername);
+            try {
+                const response = await fetch(`${API_URL}/api/userNameUpdate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({username: postUsername, user_code: user.user_code})
+                });
+
+                if (!response.ok) throw new Error((await response.json()).error);
+
+                const result = await response.json();
+                setUsername(postUsername)
+
+                console.log('username 업데이트 성공!');
+
+
+            } catch (e) {
+                console.log(e);
+            }
+        };
+
+        const usernameCancel = () => {
+            console.log('유저 닉네임 변경 취소');
+            setShowUserNameModal(false);
+            setProfileImgDBbase64(profilePic);
+        };
+
+        const getUsernameEventListener = (e) => {
             const regNickname = /^[a-zA-Z가-힣]{2,16}$/;
 
             // 닉네임
-            if (!regNickname.test(username)) {
+            if (!regNickname.test(e.target.value)) {
                 setUsernameError("닉네임은 한글 또는 영문 2~16자로 작성하세요.");
                 setCheckConfirm(false);
             } else {
                 setUsernameError('');
                 setCheckConfirm(true);
-            };
+            }
+
+            setPostUsername(e.target.value);
         }
 
         return (
-            <Modal show={show} onHide={onCancel} centered>
+            <Modal show={show} onHide={usernameCancel} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Action</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    변경 전: {username}
+                    변경 전: {preUsername}
                     <br/>
-                    변경 후: <input type='text' defaultValue={''} onChange={getUsernameEventListener}/ >
+                    변경 후: <input type='text' defaultValue={''} onChange={getUsernameEventListener} />
+                    <p>{usernameError}</p>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={usernameConfirm}>
@@ -205,7 +213,7 @@ const UserMyPage = ({user, profilePic}) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        );
+        )
     };
     // 닉네임 수정 기능 끝
 
@@ -218,7 +226,7 @@ const UserMyPage = ({user, profilePic}) => {
                 {/* Left Column */}
                 <Col md={4}>
                     <div className="text-center">
-                        <Image src={profileImgDB} style={{
+                        <Image src={profileImgDBbase64} style={{
                             width: '150px',
                             height: '150px',
                             borderRadius: '50%',
@@ -227,7 +235,7 @@ const UserMyPage = ({user, profilePic}) => {
                             justifyContent: 'center',
                             margin: '0 auto'
                         }}/>
-                        <h5 className="mb-3">{user.username}</h5>
+                        <h5 className="mb-3">{username}</h5>
                         <div className="mb-3">
                             <input
                                 type="file"
@@ -258,10 +266,8 @@ const UserMyPage = ({user, profilePic}) => {
                             <Button variant="dark" size="sm" className="mb-2" onClick={() => {setShowUserNameModal(true)}} >닉네임 수정하기</Button>
                             <UserNameModal
                                 show={showUserNameModal}
-                                preUsername={user.username}
-                                setCheckConfirm={setCheckConfirm}
-                                onConfirm={usernameConfirm}
-                                onCancel={usernameCancel}
+                                preUsername={username}
+                                setUsername={setUsername}
                             />
                         </div>
                         <Row className="justify-content-center g-2 mb-3">
@@ -314,7 +320,7 @@ const UserMyPage = ({user, profilePic}) => {
                         <Card.Body>
                             {activeTab === 'userInfo' && (
                                 <>
-                                    <Card.Title className="mb-3">닉네임: {user.username}</Card.Title>
+                                    <Card.Title className="mb-3">닉네임: {username}</Card.Title>
                                     <Card.Text>
                                         성별: {user.sex ? "여" : "남"}<br />
                                         이메일: {user.email}<br />
@@ -400,7 +406,7 @@ const UserMyPage = ({user, profilePic}) => {
                 </Col>
             </Row>
         </Container>
-    );
+    )
 };
 
 export default UserMyPage;

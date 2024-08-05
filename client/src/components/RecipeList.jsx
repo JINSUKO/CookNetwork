@@ -20,7 +20,7 @@ function RecipeList() {
 
   return (
     <Container className="text-start">
-      <h3>다양한 레시피를 확인해보세요</h3>
+      <h5>다양한 레시피를 확인해보세요!</h5>
       <Row lg={5} className="g-4">
         {recipes.map((recipe) => (
         <Col key={recipe.id}>  

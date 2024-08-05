@@ -11,9 +11,10 @@
 */
 
 import React, { useState } from "react";
-import Button from 'react-bootstrap/Button';
+import {Form, Button} from "react-bootstrap";
 import SearchResult from "./SearchResult";
 import FilteredResult from "./FilteredResult";
+import SearchCategoryDrop from "./SearchCategoryDrop";
 
 function SearchBar() {
   // 검색한 키워드 저장
@@ -71,24 +72,25 @@ function SearchBar() {
 
   return(
     <div>
-      <form onSubmit={handleSubmit} className="search-form">
-        <input 
+      <Form onSubmit={handleSubmit} className="search-form d-flex align-items-center" style={{ position: 'relative' }}>
+        <SearchCategoryDrop />
+        <Form.Control 
+          type="search"
           className="search-input"
           required
           value={search}    // 검색한 키워드
           onChange={(event) => setSearch(event.target.value)}
 
           {...results.filter((props) => {
-            return props.title.replace(" ","").toLocaleLowerCase().includes(search.toLocaleLowerCase()) //수정필요
-          })}
+            return props.title.replace(" ","").toLocaleLowerCase().includes(search.toLocaleLowerCase())
+          })}  //수정필요
 
-          type="text"
           placeholder="레시피를 검색하세요"
           />
-        <Button as="input" type="submit" value="검색" className="search-button" />
-      </form>
+        <Button type="submit" value="검색" className="search-button " variant="dark"/>
+      </Form>
       {/* <FilteredResult data={results} /> */}
-      <SearchResult results={results} isLoading={isLoading} error={error} />
+      {/* <SearchResult results={results} isLoading={isLoading} error={error} /> */}
     </div>
   )
 }

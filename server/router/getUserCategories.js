@@ -1,7 +1,6 @@
 const express = require('express');
-const path = require('path');
 
-const maria = require('./module/sql');
+const maria = require('../module/sql');
 
 const router = express.Router();
 
