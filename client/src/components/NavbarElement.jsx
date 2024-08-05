@@ -1,16 +1,23 @@
 /* NavbarElement.jsx 
-수평 네비게이션바
-네비게이션바는 react-router-dom 라이브러리 사용 (npm install react-router-dom)
+-react-router-dom 라이브러리 사용 (npm install react-router-dom)
+-useNavigate 훅을 사용하여 검색어를 파라미터로 전달
 */
 
 import React from 'react';
-import { Link } from 'react-router-dom';
-import '../assets/styles/Navbar.css'
-import { Container, Nav, Navbar, Form, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import SearchBar from './SearchBar';
+import { Container, Nav, Navbar } from 'react-bootstrap';
+import '../assets/styles/Navbar.css'
+
 
 
 function NavbarElement() {
+  const navigate = useNavigate();
+
+  const handleSearch = (searchTerm) => {
+    navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+  };
+
   return (
     <div>
       {/* 상단오른쪽 공지사항, 회원가입, 로그인 링크도 네비바로 작성 */}
@@ -36,7 +43,7 @@ function NavbarElement() {
             <Nav.Link href="/chinese" className="px-2">중식</Nav.Link>
             <Nav.Link href="/japanese" className="px-2">일식</Nav.Link>
           </Nav>
-          <SearchBar />
+          <SearchBar onSearch={handleSearch} />
         </Container>
       </Navbar>
 

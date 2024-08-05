@@ -12,6 +12,8 @@ import Japanese from './pages/Japanese';
 import RecipeDetail from './components/RecipeDetail'
 import Chat from "./chat/chatIndex";
 import UserMyPage from "./pages/UserMyPage.jsx";
+import SearchResultPage from './components/SearchResult.jsx';
+import RecipeList from './components/RecipeList.jsx';
 
 import './App.css'
 
@@ -21,7 +23,10 @@ function App() {
   const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState('');
 
-  const API_URL ='http://192.168.0.103:3000';
+  // const API_URL ='http://192.168.0.103:3000';
+  // const API_URL ='http://192.168.0.14:3000';
+  const API_URL ='http://192.168.0.13:3000';
+  console.log(user&& user.user_code  )
   useEffect(() => {
     // const API_URL = import.meta.env.PROD
     //   ? ''
@@ -117,16 +122,17 @@ function App() {
   return (
     <div className="App">
       <p>{message}</p>
-      <Header />
       <Router>
+        <Header />
         <Routes>
           <Route path = '/' element = {<Main />}/>
-          <Route path = '/korean' element = {<Korean />}/>
-          <Route path = '/western' element = {<Western />}/>
-          <Route path = '/chinese' element = {<Chinese />}/>
-          <Route path = '/japanese' element = {<Japanese />}/>
+          <Route path = '/korean' element = {<RecipeList category="korean" />}/>
+          <Route path = '/western' element = {<RecipeList category="western" />}/>
+          <Route path = '/chinese' element = {<RecipeList category="chinese" />}/>
+          <Route path = '/japanese' element = {<RecipeList category="japanese" />}/>
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
+          <Route path = '/search' element = {<SearchResultPage/>}/>
           <Route path = '/recipe/:id' element = {<RecipeDetail />}/>
           <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic}/> : <Login />}/>
         </Routes>

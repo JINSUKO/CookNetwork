@@ -1,12 +1,12 @@
 import React from "react";
-import logo from '../../assets/images/logo.png';
+import Logo from "../Logo.jsx";
 import NavbarElement from "../NavbarElement.jsx";
 
 function Header() {
 
   return ( 
     <header>
-      <img src={logo} alt="로고 이미지" width={200}/>
+      <Logo />
       <NavbarElement />
     </header>
   )

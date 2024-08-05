@@ -29,7 +29,6 @@ function SearchResult({ results, isLoading, error }) {
           <li key={result.recipeId}>
             <h3>{result.title}</h3>
             <p>{result.img}</p>
-            {/* 레시피 리스트 카드에 담는 방법? */}
           </li>
         ))}
       </ul>

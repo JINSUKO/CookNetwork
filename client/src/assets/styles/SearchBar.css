@@ -8,6 +8,7 @@
 }
 
 .search-input {
+  height: 40px;
   flex-grow: 1;
   padding: 10px 15px;
   font-size: 16px;
@@ -17,17 +18,18 @@
   background-color: white;
 }
 
-.search-button {
-  padding: 10px 20px;
+.btn-warning.search-button {
+  height: 40px;
+  padding: 5px 20px;
   font-size: 16px;
   color: white;
-  background-color: #FF8C00; /* 어두운 주황색 */
+  background-color: #f17f42; 
   border: none;
   border-radius: 0 25px 25px 0;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.search-button:hover {
-  background-color: #E67300; /* 호버 시 약간 더 어두운 주황색 */
+.btn-warning:hover {
+  background-color: #f29e71;
 }
