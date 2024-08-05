@@ -25,7 +25,7 @@ function NavbarElement({ user }) {
         <Nav.Item as="li">
           <Nav.Link href="/">공지사항</Nav.Link>
         </Nav.Item>
-        {
+         {
           <>
           {
             user ? (

@@ -125,7 +125,7 @@ function App() {
     <div className="App">
       <p>{message}</p>
       <Router>
-        <Header />
+        <Header user={user}/>
         <Routes>
           <Route path = '/' element = {<Main />}/>
           <Route path = '/korean' element = {<RecipeList category="korean" />}/>

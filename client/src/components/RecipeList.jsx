@@ -9,7 +9,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import recipeData from "./recipeData";
 
 
 function RecipeList({ category }) {   // category를 props로 받음
