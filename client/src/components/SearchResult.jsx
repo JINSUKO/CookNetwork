@@ -8,7 +8,11 @@
 
 import React from 'react';
 
-function SearchResult({ results, isLoading, error }) {
+function SearchResult({ results, isLoading, error }) {    // results: 검색결과 배열
+  if (!results) {
+    return ;
+  }
+  
   if (isLoading) {    // 검색 로딩중 표시
     return <p>검색 중...</p>;
   }
