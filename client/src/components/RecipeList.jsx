@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import recipeData from "./recipeData";
+import recipeData from "./Data";
 
 
 function RecipeList({ category }) {   // category를 props로 받음
@@ -22,7 +22,7 @@ function RecipeList({ category }) {   // category를 props로 받음
 
   const fetchRecipes = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/recipes?category=${category}`, {
+      const response = await fetch(`${API_URL}/api/recipes/category/${category}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -45,13 +45,14 @@ function RecipeList({ category }) {   // category를 props로 받음
       <h5>{category}: 다양한 레시피를 확인해보세요!</h5>
       <Row lg={5} className="g-4">
         {recipes.map((recipe) => (
-        <Col key={recipe.id}>  
+        <Col key={recipe.recipe_id}>  
           <Link to={`/recipe/${recipe.id}`} style={{ textDecoration: 'none' }}>
             <Card style={{ cursor: 'pointer' }}>
-            <Card.Img variant="top" src="https://recipe1.ezmember.co.kr/cache/recipe/2016/08/12/f434121cb72feba6e3509b7d38177ec01_m.jpg" />
+            <Card.Img variant="top" src="recipe.recipe_img" />
             <Card.Body>
-              <Card.Title>레시피 이름</Card.Title>
-              
+              <Card.Title>{recipe.recipe_name}
+
+              </Card.Title>
               <Button variant="dark">보러가기</Button>
             </Card.Body>
           </Card>
