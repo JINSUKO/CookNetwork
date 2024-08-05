@@ -19,15 +19,28 @@ router.post('/', async(req,res)=>{
         const [userdata] = await maria.execute(queryString, [userId, password]); // [id, pw] => [userId, password] 변경
         if(userdata.length > 0){
 
-            const accessToken = generateAccessToken(userdata.user_id);
-            const refreshToken = generateRefreshToken(userdata.user_id);
-            
+            // query 를 보낼 때 select에서 민감하지 않는 정보의 컬럼만 가져와야한다.
+            // 사용자 정보는 부분적으로 마스킹해서 정보를 가려놓고 민감하지 않은 정보만 클라이언트에 넘겨야함.
+            // 지금은 그대로 넘김.
+            const { user_id, username, user_img, sex, email, chef_code } = userdata[0];
+
+            const accessToken = generateAccessToken(user_id);
+            const { refreshToken, jti } = generateRefreshToken(user_id);
+
+            // refresh token은 클라이언트 쿠키에 저장합니다.
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                sameSite: 'strict', // 빌드 할때 프록시를 사용하든, 크로스 도메인 에서 쿠키가 넘어가지않게 해야 한다.
+                maxAge: 10 * 60 * 60 * 1000, // 60분 후 만료 - 시간이 안 맞아서 expires 속성 사용합니다.
+                path: '/',
+                // expires: new Date(Date.now() + 9 * 60 * 60 * 1000) // 60분 후 만료
+            })
+
             // jti => session_id 컬럼 사용
             // refresh token 생성 시각 => lastlogin_date 컬럼 사용
-            const updateJtiQuery = `UPDATE users SET session_id = ? WHERE user_code = ?;`;
-            const result = await maria.execute(updateJtiQuery, [refreshToken.jti, userdata[0].user_code]);
+            const updateJtiQuery = `UPDATE users SET session_id = ?, lastlogin_date = CURRENT_TIMESTAMP WHERE user_id = ?;`;
+            const result = await maria.execute(updateJtiQuery, [jti, user_id]);
 
-            const { user_id, username, user_img, sex, email, chef_code } = userdata[0];
 
             // console.log(refreshToken.jti);
 
@@ -38,18 +51,15 @@ router.post('/', async(req,res)=>{
             let profilePic = fs.readFileSync(path.join(profileBasePath, user_img), 'base64');
             profilePic = 'data:image/jpeg;base64,' + profilePic;
 
-            // query 를 보낼 때 select에서 민감하지 않는 정보의 컬럼만 가져와야한다.
-            // 사용자 정보는 부분적으로 마스킹해서 정보를 가려놓고 민감하지 않은 정보만 클라이언트에 넘겨야함.
-            // 지금은 그대로 넘김.
 
             // 새로 로그인 하면서 변경된 refresh token 생성 시각(lastlogin_date 컬럼의 값)을 얻어야하는데,
             // db에 select 조회를 한 번 더 하기보다는 서버에서 new Date()로 시간을 비슷하게 생성하여 사용하는게 나은 것 같음.
             const user = { user_id, username, user_img: profilePic, sex, email, chef_code, lastlogin_date: new Date() };
 
+            // access token은 클라이언트 로컬 저장소에 저장합니다..
             return res.json({ // return 추가 : 요청에 응답하고 router 함수 종료.
                 user,
                 accessToken,
-                refreshToken,
                 message: '로그인 성공'
             });
         } else{

@@ -4,6 +4,8 @@
 import {useState, useRef, useEffect} from 'react';
 import {Image, Container, Row, Col, Nav, InputGroup, FormControl, Button, Card, Modal} from 'react-bootstrap';
 
+import authFetch from '../fetchInterceptorAuthToken'
+
 const UserMyPage = ({user, profilePic}) => {
 
     const API_URL = 'http://localhost:3000';
@@ -15,6 +17,9 @@ const UserMyPage = ({user, profilePic}) => {
 
     console.log('categories', categories)
     const fileInputRef = useRef(null);
+
+    const accessToken = localStorage.getItem('accessToken');
+    console.log('잘오고 있지? at UserMypage first', accessToken)
 
     const handleFileInputChange = (event) => {
         // 파일이 선택되었을 때의 로직
@@ -51,7 +56,7 @@ const UserMyPage = ({user, profilePic}) => {
         const formData = new FormData();
         console.log('fetch 직전 file:', profileImg)
         formData.append('file', profileImg);
-        formData.append('user_code', user.user_code);
+        formData.append('user_id', user.user_id);
 
         try {
             const response = await fetch(`${API_URL}/api/uploadUserImg`, {
@@ -102,21 +107,30 @@ const UserMyPage = ({user, profilePic}) => {
 
     // 마이페이지에서 유저가 등록한 선호 카테고리 목록 데이터 요청 코드.
     const getUserCategories = async () => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        console.log('잘오고 있지? at UserMypage fourth', accessToken)
+
         try {
             const response = await fetch(`${API_URL}/api/userCategories`, {
+            // const response = await authFetch(`${API_URL}/api/userCategories`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({user_code: user.user_code})
+                body: JSON.stringify({user_id: user.user_id})
             });
+            let accessToken = localStorage.getItem('accessToken');
+            console.log('잘오고 있지? at UserMypage fifth', accessToken)
 
             if (!response.ok) throw new Error((await response.json()).error);
-
-            const result = await response.json();
+            accessToken = localStorage.getItem('accessToken');
+            console.log('잘오고 있지? at UserMypage sixth', accessToken)
+            const result = await response.json(); // 이 코드 이후로 토큰이 사라짐.
 
             console.log("유저의 카테고리 목록 호출 성공!");
-
+            accessToken = localStorage.getItem('accessToken');
+            console.log('잘오고 있지? at UserMypage seconed', accessToken)
             setCategories(result);
 
         } catch (e) {
@@ -125,7 +139,8 @@ const UserMyPage = ({user, profilePic}) => {
     }
 
     useEffect(() => {
-
+    const accessToken = localStorage.getItem('accessToken');
+    console.log('잘오고 있지? at UserMypage third', accessToken)
         // 마이페이지에서 유저가 등록한 선호 카테고리 목록 데이터 요청 코드.
         getUserCategories();
 

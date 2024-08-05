@@ -12,6 +12,8 @@ import Japanese from './pages/Japanese';
 import RecipeDetail from './components/RecipeDetail'
 import Chat from "./chat/chatIndex";
 import UserMyPage from "./pages/UserMyPage.jsx";
+import Logout from "./components/Logout.jsx";
+import ProtectedPage from "./pages/authToken/ProtectedPage.jsx";
 
 import './App.css'
 
@@ -22,9 +24,10 @@ function App() {
   const [profilePic, setProfilePic] = useState('');
 
   // const API_URL ='http://192.168.0.103:3000';
-  // const API_URL ='http://192.168.0.14:3000';
-  const API_URL ='http://192.168.0.13:3000';
-  console.log(user&& user.user_code  )
+  const API_URL ='http://192.168.0.14:3000';
+  // const API_URL ='http://192.168.0.13:3000';
+  // const API_URL ='http://192.168.220.1:3000';
+console.log(user&& user.user_code  )
   useEffect(() => {
     // const API_URL = import.meta.env.PROD
     //   ? ''
@@ -40,14 +43,25 @@ function App() {
       .then(response => response.json())
       .then(data => {
                 setMessage(data.message)
-                console.log(data.user)
+                // console.log(data.user)
                 // console.log(data.profilePic)
-                setUser(data.user)
+                // setUser(data.user)
 
-                setProfilePic(data.profilePic);
+                // setProfilePic(data.profilePic);
             }
        )
       .catch(error => console.error('Error:', error));
+
+    let loginUser = localStorage.getItem('loginUser');
+
+    if (loginUser) {
+
+        loginUser = JSON.parse(loginUser)
+        setUser(loginUser);
+        setProfilePic(loginUser.user_img);
+        console.log('loginUser', loginUser);
+    }
+
   }, [])
 
   // 서버로 데이터 전송하는 함수 handleSignUp
@@ -117,10 +131,12 @@ function App() {
   //   setErrors('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   // }
 
+
+
   return (
     <div className="App">
       <p>{message}</p>
-      <Header />
+      <Header user={user} />
       <Router>
         <Routes>
           <Route path = '/' element = {<Main />}/>
@@ -131,7 +147,11 @@ function App() {
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/recipe/:id' element = {<RecipeDetail />}/>
-          <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic}/> : <Login />}/>
+          <Route element = {<ProtectedPage />}>
+            <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic}/> : <Login />}/>
+          </Route>
+          {/*<Route path = "/logout" element = {user && <Logout user={user} />} />*/}
+          <Route path = "/logout" element = {user && <Logout user={user} />} />
         </Routes>
       </Router>
       <Chat/>

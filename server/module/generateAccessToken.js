@@ -9,7 +9,8 @@ require('dotenv').config();
  * @returns { JWT Access Token }
  */
 const generateAccessToken = (userId) => {
-    const ACCESS_TOKEN_EXPIRY = '15m'; // Access Token 만료시간 15분으로 설정함.
+    // const ACCESS_TOKEN_EXPIRY = '15m'; // Access Token 만료시간 15분으로 설정함.
+    const ACCESS_TOKEN_EXPIRY = '1s'; // Access Token 만료시간 15분으로 설정함.
 
     const SECRET_KEY = process.env.SECRET_KEY_ACCESS;
     console.log(SECRET_KEY);

@@ -8,7 +8,7 @@ import styles from '../assets/styles/Login.module.css';
 function Login() {
 
   // const API_URL = 'http://192.168.0.103:3000';
-  const API_URL = 'http://192.168.220.1:3000';
+  const API_URL = 'http://192.168.0.14:3000';
 
   const [user, setUser] = useState({
     userId: '',
@@ -39,6 +39,7 @@ function Login() {
     try {
       const response = await fetch(`${API_URL}/api/login`, {
         method: 'POST',
+        credentials: 'include', // 로그인 인증 요청에서도 이거 설정해야지 쿠키가 넘어감..
         headers: {
           'Content-Type': 'application/json',
         },
@@ -57,7 +58,6 @@ function Login() {
 
         // 로그인 성공 시 로그인 상태 유지를 위한 토큰을 받아온다.
         localStorage.setItem('accessToken', data.accessToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
         localStorage.setItem('loginUser', JSON.stringify(data.user));
 
         alert(data.message); // 사용자 인식 시킬려고 추가해봄.

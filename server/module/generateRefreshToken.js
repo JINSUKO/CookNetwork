@@ -28,7 +28,7 @@ const generateRefreshToken = (userId) => {
     // refresh token 유효를 확인하기 위해서 jti를 사용해야해서,
     // refresh token 생성에 사용한 jti도 같이 반환한다.
     return {
-        token: jwt.sign( payload, SECRET_KEY, {expiresIn: REFRESH_TOKEN_EXPIRY} ),
+        refreshToken: jwt.sign( payload, SECRET_KEY, {expiresIn: REFRESH_TOKEN_EXPIRY} ),
         jti
     }
 }

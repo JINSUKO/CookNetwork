@@ -3,14 +3,14 @@
 네비게이션바는 react-router-dom 라이브러리 사용 (npm install react-router-dom)
 */
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
 import '../assets/styles/Navbar.css'
 import { Container, Nav, Navbar, Form, Button } from 'react-bootstrap';
 import SearchBar from './SearchBar';
 
 
-function NavbarElement() {
+function NavbarElement({ user }) {
   return (
     <div>
       {/* 상단오른쪽 공지사항, 회원가입, 로그인 링크도 네비바로 작성 */}
@@ -18,12 +18,31 @@ function NavbarElement() {
         <Nav.Item as="li">
           <Nav.Link href="/">공지사항</Nav.Link>
         </Nav.Item>
-        <Nav.Item as="li">
-          <Nav.Link href="/signup">회원가입</Nav.Link>
-        </Nav.Item>
-        <Nav.Item as="li">
-          <Nav.Link href="/login">로그인</Nav.Link>
-        </Nav.Item>
+        {
+          <>
+          {
+            user ? (
+                <>
+                  <Nav.Item as="li">
+                    <Nav.Link href="/mypage">마이페이지</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item as="li">
+                    <Nav.Link href="/logout">로그아웃</Nav.Link>
+                  </Nav.Item>
+                </>
+            ) : (
+                <>
+                  <Nav.Item as="li">
+                    <Nav.Link href="/signup">회원가입</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item as="li">
+                    <Nav.Link href="/login">로그인</Nav.Link>
+                  </Nav.Item>
+                </>
+            )
+          }
+          </>
+      }
       </Nav>
 
       {/* 헤더 아래 네비바 */}
