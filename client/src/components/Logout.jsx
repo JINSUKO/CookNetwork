@@ -1,25 +1,22 @@
-import authFetch from '../fetchInterceptorAuthToken';
 import {useEffect} from "react";
 
 const Logout = ({ user }) => {
 
     useEffect(() => {
-        // const API_URL ='http://192.168.0.103:3000';
-        // const API_URL ='http://192.168.0.14:3000';
-        // const API_URL ='http://192.168.0.13:3000';
-        const API_URL ='http://192.168.220.1:3000';
+        const API_URL = import.meta.env.VITE_HOST_IP;
 
         const logout = async () => {
             try {
                 // 로그아웃 이벤트리스너
                 const token = localStorage.getItem('accessToken');
+                console.log('logout accessToken:',token)
 
                 await fetch(`${API_URL}/api/logout`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`,
-                        'credentials': 'include'
-                    }
+                    },
+                    credentials: 'include'
                 });
 
                 localStorage.removeItem('accessToken');

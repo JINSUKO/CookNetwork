@@ -23,11 +23,8 @@ function App() {
   const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState('');
 
-  // const API_URL ='http://192.168.0.103:3000';
-  const API_URL ='http://192.168.0.14:3000';
-  // const API_URL ='http://192.168.0.13:3000';
-  // const API_URL ='http://192.168.220.1:3000';
-console.log(user&& user.user_code  )
+  const API_URL = import.meta.env.VITE_HOST_IP;
+
   useEffect(() => {
     // const API_URL = import.meta.env.PROD
     //   ? ''
@@ -43,11 +40,6 @@ console.log(user&& user.user_code  )
       .then(response => response.json())
       .then(data => {
                 setMessage(data.message)
-                // console.log(data.user)
-                // console.log(data.profilePic)
-                // setUser(data.user)
-
-                // setProfilePic(data.profilePic);
             }
        )
       .catch(error => console.error('Error:', error));
@@ -150,8 +142,7 @@ console.log(user&& user.user_code  )
           <Route element = {<ProtectedPage />}>
             <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic}/> : <Login />}/>
           </Route>
-          {/*<Route path = "/logout" element = {user && <Logout user={user} />} />*/}
-          <Route path = "/logout" element = {user && <Logout user={user} />} />
+            <Route path="/logout" element={user && <Logout user={user}/>}/>
         </Routes>
       </Router>
       <Chat/>

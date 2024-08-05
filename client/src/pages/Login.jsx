@@ -7,9 +7,7 @@ import styles from '../assets/styles/Login.module.css';
 
 function Login() {
 
-  // const API_URL = 'http://192.168.0.103:3000';
-  const API_URL = 'http://192.168.0.14:3000';
-
+  const API_URL = import.meta.env.VITE_HOST_IP; // 브라우저의 url과 hostname이 같아야 cookie가 넘어감.
   const [user, setUser] = useState({
     userId: '',
     password: '',
@@ -39,10 +37,10 @@ function Login() {
     try {
       const response = await fetch(`${API_URL}/api/login`, {
         method: 'POST',
-        credentials: 'include', // 로그인 인증 요청에서도 이거 설정해야지 쿠키가 넘어감..
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // 로그인 인증 요청에서도 이거 설정해야지 쿠키가 넘어감..
         body: JSON.stringify(user)
       });
 

@@ -13,7 +13,6 @@ router.delete('/', (req, res)=>{
 
     const authHeader = req.headers.authorization;
 
-    clearRefreshToken(res);
 
     if (!authHeader) {
         return res.status(202).json({ error: '이미 로그아웃 상태입니다.' });
@@ -25,9 +24,10 @@ router.delete('/', (req, res)=>{
 
     const accessToken = authHeader.substring(7);
 
-    console.log('SECRET_KEY_ACCESS',SECRET_KEY_ACCESS);
-    console.log('authHeader',authHeader);
+    console.log('SECRET_KEY_ACCESS', SECRET_KEY_ACCESS);
+    console.log('authHeader', authHeader);
 
+    clearRefreshToken(res);
 
     jwt.verify(accessToken, SECRET_KEY_ACCESS, async (err, decoded) => {
         if (err) {

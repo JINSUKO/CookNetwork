@@ -1,31 +1,32 @@
 import {Navigate, Outlet} from "react-router-dom";
-import {memo} from "react";
+import {memo, useEffect, useState} from "react";
 
 import authFetch from '../../fetchInterceptorAuthToken'
 
-const ProtectedPage = ({ children }) => {
+const ProtectedPage = () => {
     // const API_URL ='http://192.168.0.103:3000';
     // const API_URL ='http://192.168.0.14:3000';
     // const API_URL ='http://192.168.0.13:3000';
-    const API_URL ='http://192.168.220.1:3000';
+    // const API_URL ='http://192.168.220.1:3000';
+    const API_URL ='http://localhost:3000';
 
-    try {
-        authFetch(`${API_URL}/api/authPage`)
-            .then(data => {
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const data = await authFetch(`${API_URL}/api/authPage`);
                 console.log(data.message);
-            })
-            .catch(err => console.error(err));
+            } catch (e) {
+                console.error(e);
+            }
+        };
 
-        const accessToken = localStorage.getItem("accessToken");
-        console.log('잘오고 있지? at ProtectedPage third', accessToken)
+        checkAuth();
 
-        return children ? children : <Outlet />;
+    }, []);
 
-    } catch (e) {
-        console.error(e);
+    if (!localStorage.getItem('accessToken')) { return <Navigate to="/login" replace />; }
 
-        return <Navigate to="/login" replace />;
-    }
+    return <Outlet />;
 
 }
 

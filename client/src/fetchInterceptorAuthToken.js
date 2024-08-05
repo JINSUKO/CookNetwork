@@ -5,12 +5,6 @@
 * 사용자가 보내는 fetch 요청을 이 코드 블록에서 가로채서 검증 코드를 붙인 후 요청 여부를 여기서 판단합니다.
 * 따라서 interceptor 역할을 하는 코드라고 할 수 있습니다. */
 
-/**
- *
- * @param url
- * @param options
- * @returns {Promise<any>}
- */
 const fetchInterceptorAuthToken = async (url, options = {}) => {
     const accessToken = localStorage.getItem('accessToken');
 
@@ -22,16 +16,24 @@ const fetchInterceptorAuthToken = async (url, options = {}) => {
     if (accessToken) {
         options.headers.Authorization = `Bearer ${accessToken}`;
         options.credentials = 'include';
-    };
+    }
 
-    console.log('options:', options);
     try {
         const response = await fetch(url, options);
 
         // Access Token이 없거나, Access Token 정보가 이상한 경우.
         // response.status === 401 || response.status === 403
         // if (!response.ok) { return await response.json() ; }
-        if (!response.ok) { throw new Error((await response.json()).error); }
+        if (!response.ok) {
+
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('loginUser');
+            alert(` 로그인을 진행해주세요.`)
+            // 로그인 페이지로 리다이렉트
+            window.location.href = '/login';
+
+            throw new Error((await response.json()).error);
+        }
 
         const data = await response.json();
 
@@ -42,14 +44,10 @@ const fetchInterceptorAuthToken = async (url, options = {}) => {
         return data;
 
     } catch (e) {
-        console.error(e);
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('loginUser');
-        alert(`${e} 로그인을 진행해주세요.`)
-        // 로그인 페이지로 리다이렉트
-        // window.location.href = '/login';
-    }
 
+        console.error(e);
+
+    }
 }
 
 export default fetchInterceptorAuthToken;

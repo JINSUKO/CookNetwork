@@ -4,7 +4,6 @@ const cors = require('cors');
 const morgan = require('morgan');
 const socketIO = require('socket.io');
 const cookieParser = require('cookie-parser');
-const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const chatLog = require('./module/openChat.js');
 const authAccessToken = require('./module/authAccessToken.js');
@@ -24,12 +23,6 @@ app.use(cookieParser())
 app.use(cors({
     origin: ['http://localhost:5000', 'http://192.168.0.103:5000', 'http://192.168.0.139:5000', 'http://192.168.0.14:5000', 'http://192.168.220.1:5000'],
     credentials: true
-}));
-
-// 4. 프록시 미들웨어 (모든 /api 요청에 대해)
-app.use('/api', createProxyMiddleware({
-  target: 'http://localhost:3000',
-  changeOrigin: true,
 }));
 
 // Body parser

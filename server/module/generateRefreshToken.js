@@ -2,7 +2,6 @@
 
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
-const {expires} = require("express-session/session/cookie");
 
 require("dotenv").config();
 

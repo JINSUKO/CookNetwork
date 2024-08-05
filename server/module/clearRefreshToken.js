@@ -1,8 +1,5 @@
 const clearRefreshToken = (response) => {
-    response.clearCookie('refreshToken', {
-        httpOnly: true,
-        sameSite: 'strict'
-    });
+    response.clearCookie('refreshToken');
 }
 
 module.exports = clearRefreshToken;
