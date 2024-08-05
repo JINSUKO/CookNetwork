@@ -127,14 +127,11 @@ function App() {
         <Header />
         <Routes>
           <Route path = '/' element = {<Main />}/>
-          <Route path = '/korean' element = {<RecipeList category="korean" />}/>
-          <Route path = '/western' element = {<RecipeList category="western" />}/>
-          <Route path = '/chinese' element = {<RecipeList category="chinese" />}/>
-          <Route path = '/japanese' element = {<RecipeList category="japanese" />}/>
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/search' element = {<SearchResultPage/>}/>
-          <Route path = '/recipe/:id' element = {<RecipeDetail />}/>
+          <Route path = '/:category' element = {<RecipeList/>}/>
+          <Route path = '/:recipe_id' element = {<RecipeDetail />}/>
           <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic}/> : <Login />}/>
         </Routes>
       </Router>
