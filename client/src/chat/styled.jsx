@@ -19,9 +19,7 @@ export const StyledApp = {
   ChatItem: ({ children, me }) => <li className={`${me ? '' : ''}`}>{children}</li>,
   ChatName: ({ children }) => <strong className="chat-name">{children}</strong>,
   ChatMessage: ({ children }) => <p className="chat-message">{children}</p>,
-  NameInput: ({ children, ...props }) => (
-    <input className="name-input" {...props} />
-  ),
+  NameInput: ({ children }) => <strong className="name-input">{children}</strong>,
   MessageInput: (props) => (
     <input className="message-input" {...props} autoComplete='off'/>
   ),

@@ -21,10 +21,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState('');
 
-  // const API_URL ='http://192.168.0.103:3000';
-  // const API_URL ='http://192.168.0.14:3000';
-  const API_URL ='http://192.168.0.13:3000';
-  console.log(user&& user.user_code  )
+  const API_URL ='http://192.168.0.103:3000';
   useEffect(() => {
     // const API_URL = import.meta.env.PROD
     //   ? ''
@@ -134,7 +131,7 @@ function App() {
           <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic}/> : <Login />}/>
         </Routes>
       </Router>
-      <Chat/>
+      {user && <Chat userData = {user}/>}
       <Footer/>
     </div>
   )
