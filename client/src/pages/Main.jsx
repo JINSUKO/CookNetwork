@@ -24,7 +24,7 @@ function Main() {
 
     <div>태그 컴포넌트</div>
     <div>
-      <RecipeList/>
+      <RecipeList />
     </div>
 
     <div className="footer">
