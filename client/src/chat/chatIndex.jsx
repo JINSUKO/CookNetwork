@@ -1,7 +1,7 @@
-import { forwardRef, useEffect, useRef, useState } from 'react';
-import { Socket, io } from 'socket.io-client';
+import {useEffect, useRef, useState} from 'react';
+import {io} from 'socket.io-client';
 
-import { StyledApp } from './styled.jsx';
+import {StyledApp} from './styled.jsx';
 
 const{
   Container,
