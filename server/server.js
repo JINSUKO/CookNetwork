@@ -60,19 +60,22 @@ app.use('/api/userInfoUpdate', userInfoUpdate);
 
 // 회원가입 라우트 연결
 const signupRouter = require("./router/signUp.js");
-
 // 회원가입 라우트 요청시 사용
-app.use("/signup", signupRouter);
+app.use("/api/signup", signupRouter);
 
+// 로그인 라우트 연결
 const loginRouter = require("./router/login.js");
-
 // 로그인 라우트 요청시 사용
 app.use("/api/login", loginRouter);
 
+// 카테고리 라우트 연결
+const categoryRouter = require("./router/searchCategory.js");
+// 카테고리 라우트 요청시 사용
+app.use("/api/category", categoryRouter)
 
-// 로그아웃 라우트 요청시 사용
+// 로그아웃 라우트 연결
 const logoutRouter = require("./router/logout.js");
-
+// 로그아웃 라우트 요청시 사용
 app.use("/api/logout", logoutRouter);
 
 // 로그인 승인 페이지 라우트 요청시 사용
@@ -144,13 +147,17 @@ const handleSocketDisconnect = (socket) => {
     }
 };
 
-const handleConnection = (socket) => {
-    socket.on('USER_ENTER', (user) =>{
+const handleConnection = async (socket) => {
+    socket.on('USER_ENTER', async (user) =>{
         if(!userList.has(user.id)){
         userList.set(socket.id, user);
         console.log('유저 접속: ',user.id);
         console.log('현재 접속 유저: ', [...userList.values()]);
-        socket.broadcast.emit('USER_ENTER', user);
+        await socket.broadcast.emit('USER_ENTER', user);
+
+        const chatlog = await chatLog.getChatLog()
+        console.log(chatlog)
+        await socket.broadcast.emit('CHAT_LOG', chatlog)
         }    
     });
         socket.on("Message",(data) => handleSocketMessage(socket, data));
