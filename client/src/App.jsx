@@ -130,8 +130,8 @@ function App() {
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/search' element = {<SearchResultPage/>}/>
-          <Route path = '/:category' element = {<RecipeList/>}/>
-          <Route path = '/:recipe_id' element = {<RecipeDetail />}/>
+          <Route path = '/category/:category' element = {<RecipeList/>}/>
+          <Route path = '/recipe/:recipe_id' element = {<RecipeDetail />}/>
           <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic}/> : <Login />}/>
         </Routes>
       </Router>

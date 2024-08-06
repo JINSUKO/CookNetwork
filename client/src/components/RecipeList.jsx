@@ -3,22 +3,19 @@
 -동적 라우팅을 위해 useParams, useCallback 사용
 */
 
-import React, { useState, useEffect, useParams, useCallback } from "react";
-import { Link } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
+import React, { useState, useEffect, useCallback } from "react";
+import { Link, useParams } from 'react-router-dom';
+import { Container, Row, Col, Button, Card} from 'react-bootstrap';
 
 function RecipeList() { 
   const { category } = useParams();
+  console.log(category)
   const [recipes, setRecipes] = useState([]);
-  const API_URL = 'http://localhost:3000';
+  const API_URL = 'http://192.168.0.103:3000';
 
   const fetchRecipes = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/api/${category}`, {
+      const response = await fetch(`${API_URL}/api/category/${category}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
