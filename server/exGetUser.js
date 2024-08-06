@@ -18,13 +18,13 @@ router.get('/', async (req, res, next) => {
     try {
         const [users] = await maria.execute(querystirng);
 
-        req.user = users[0]
+        res.locals.user = users[0];
 
-        profileBasePath = path.join(__dirname, 'uploads', 'users', 'profile_images/');
+        const profileBasePath = path.join(__dirname, 'uploads', 'users', 'profile_images/');
 
-        const profilePic = await fs.readFileSync(path.join(profileBasePath, req.user.user_img), 'base64');
-        console.log(req.user)
-        req.profilePic = 'data:image/jpeg;base64,' + profilePic;
+        const profilePic = fs.readFileSync(path.join(profileBasePath, res.locals.user.user_img), 'base64');
+        console.log(res.locals.user)
+        res.locals.profilePic = 'data:image/jpeg;base64,' + profilePic;
 
     } catch (e) {
         console.error('Error: ', e);

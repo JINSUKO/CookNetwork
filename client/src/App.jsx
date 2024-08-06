@@ -5,15 +5,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Layout/Header'
 import Footer from './components/Layout/Footer'
 import Login from './pages/Login'
-import Korean from './pages/Korean';
-import Western from './pages/Western';
-import Chinese from './pages/Chinese';
-import Japanese from './pages/Japanese';
 import RecipeDetail from './components/RecipeDetail'
 import Chat from "./chat/chatIndex";
-import UserMyPage from "./pages/UserMyPage.jsx";
-import SearchResultPage from './components/SearchResult.jsx';
-import RecipeList from './components/RecipeList.jsx';
+import UserMyPage from "./pages/UserMyPage";
+import SearchResultPage from './components/SearchResult';
+import RecipeList from './components/RecipeList';
+import Logout from "./components/Logout";
+import ProtectedPage from "./pages/authToken/ProtectedPage";
 
 import './App.css'
 
@@ -43,14 +41,20 @@ function App() {
       .then(response => response.json())
       .then(data => {
                 setMessage(data.message)
-                console.log(data.user)
-                // console.log(data.profilePic)
-                setUser(data.user)
-
-                setProfilePic(data.profilePic);
             }
        )
       .catch(error => console.error('Error:', error));
+
+    let loginUser = localStorage.getItem('loginUser');
+
+    if (loginUser) {
+
+        loginUser = JSON.parse(loginUser)
+        setUser(loginUser);
+        setProfilePic(loginUser.user_img);
+        console.log('loginUser', loginUser);
+    }
+
   }, [])
   console.log(user&& user.user_code)
   // 서버로 데이터 전송하는 함수 handleSignUp
@@ -124,7 +128,7 @@ function App() {
     <div className="App">
       <p>{message}</p>
       <Router>
-        <Header />
+        <Header user={user}/>
         <Routes>
           <Route path = '/' element = {<Main />}/>
           <Route path = '/login' element = {<Login />}/>

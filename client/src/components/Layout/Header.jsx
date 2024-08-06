@@ -1,13 +1,13 @@
 import React from "react";
 import Logo from "../Logo.jsx";
-import NavbarElement from "../NavbarElement.jsx";
+import NavbarElement from "../NavbarElement";
 
-function Header() {
+function Header({user}) {
 
   return ( 
     <header>
       <Logo />
-      <NavbarElement />
+      <NavbarElement user={user}/>
     </header>
   )
 }

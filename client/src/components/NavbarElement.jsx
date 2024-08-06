@@ -11,7 +11,7 @@ import '../assets/styles/Navbar.css'
 
 
 
-function NavbarElement() {
+function NavbarElement({ user }) {
   const navigate = useNavigate();
 
   const handleSearch = (searchTerm) => {
@@ -25,12 +25,31 @@ function NavbarElement() {
         <Nav.Item as="li">
           <Nav.Link href="/">공지사항</Nav.Link>
         </Nav.Item>
-        <Nav.Item as="li">
-          <Nav.Link href="/signup">회원가입</Nav.Link>
-        </Nav.Item>
-        <Nav.Item as="li">
-          <Nav.Link href="/login">로그인</Nav.Link>
-        </Nav.Item>
+         {
+          <>
+          {
+            user ? (
+                <>
+                  <Nav.Item as="li">
+                    <Nav.Link href="/mypage">마이페이지</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item as="li">
+                    <Nav.Link href="/logout">로그아웃</Nav.Link>
+                  </Nav.Item>
+                </>
+            ) : (
+                <>
+                  <Nav.Item as="li">
+                    <Nav.Link href="/signup">회원가입</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item as="li">
+                    <Nav.Link href="/login">로그인</Nav.Link>
+                  </Nav.Item>
+                </>
+            )
+          }
+          </>
+      }
       </Nav>
 
       {/* 헤더 아래 네비바 */}

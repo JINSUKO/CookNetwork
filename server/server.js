@@ -3,8 +3,11 @@ const path = require('path');
 const cors = require('cors');
 const morgan = require('morgan');
 const socketIO = require('socket.io');
+const cookieParser = require('cookie-parser');
 
 const chatLog = require('./module/openChat.js');
+const authAccessToken = require('./module/authAccessToken.js');
+const authRefreshToken = require('./module/authRefreshToken.js');
 
 require('dotenv').config();
 // require('dotenv').config({ path: '.env.local' })
@@ -13,9 +16,12 @@ const app = express();
 // Morgan logging dev 모드 설정
 app.use(morgan('dev'));
 
+// Cookie Parser
+app.use(cookieParser())
+
 // CORS 설정
 app.use(cors({
-    origin: ['http://localhost:5000', 'http://192.168.0.103:5000', 'http://192.168.0.139:5000', 'http://192.168.0.14:5000'],
+    origin: ['http://localhost:5000', 'http://192.168.0.103:5000', 'http://192.168.0.139:5000', 'http://192.168.0.14:5000', 'http://192.168.220.1:5000'],
     credentials: true
 }));
 
@@ -25,11 +31,13 @@ app.use(express.json());
 // 유저 정보 불러오는 요청시 사용. 임시로 만들어 놓음.
 const exGetUser = require('./exGetUser');
 // API 라우트
-// app.get('/hello', (req, res) => {
-app.use('/hello', exGetUser, (req, res) => {
-    res.json({ message: 'Hello from server!', user: req.user, profilePic: req.profilePic});
-    
+// app.use('/hello', exGetUser, (req, res) => {
+//     res.json({ message: 'Hello from server!', user: res.locals.user, profilePic: res.locals.profilePic});
+// });
+app.get('/hello', (req, res) => {
+    res.json({ message: 'Hello from server!'});
 });
+
 
 // 유저 관련 요청은 /user/*로 미들웨어 하나로 모아 놓을 예정.
 // 유저 프로필 이미지 불러오는 요청시 사용
@@ -56,6 +64,23 @@ const loginRouter = require("./router/login.js");
 
 // 로그인 라우트 요청시 사용
 app.use("/api/login", loginRouter);
+
+
+// 로그아웃 라우트 요청시 사용
+const logoutRouter = require("./router/logout.js");
+
+app.use("/api/logout", logoutRouter);
+
+// 로그인 승인 페이지 라우트 요청시 사용
+app.get("/api/authPage", authAccessToken, authRefreshToken, (req, res) => {
+    console.log(res.locals.accessExpired)
+    if (res.locals.accessExpired) {
+        return res.json({ accessToken: res.locals.accessToken, message: '회원 전용 페이지에 접근 승인 되었습니다.' });
+    } else {
+        return res.json({ message: '회원 전용 페이지에 접근 승인 되었습니다.' });
+    }
+
+});
 
 // 정적 파일 서빙 (프로덕션 모드)
 if (process.env.NODE_ENV === 'production') {

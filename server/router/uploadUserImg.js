@@ -27,9 +27,9 @@ router.post('/', upload.single('file'), async (req, res) => {
         console.log(req.file);
         console.log(req.body);
 
-        const query = 'UPDATE users SET user_img = ? WHERE user_code = ?;'
+        const query = 'UPDATE users SET user_img = ? WHERE user_id = ?;'
 
-        const result = await maria.execute(query, [req.file.filename, req.body.user_code]);
+        const result = await maria.execute(query, [req.file.filename, req.body.user_id]);
 
         console.log(result);
 
