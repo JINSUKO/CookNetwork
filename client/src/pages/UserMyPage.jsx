@@ -1,10 +1,11 @@
 /* 사용자의 마이페이지
 *   운영자, 셰프, 일반 유저 모두 동일한 마이페이지 사용함.
 * */
-import {useState, useRef, useEffect} from 'react';
+import {useState, useRef, useEffect, useLayoutEffect} from 'react';
 import {Image, Container, Row, Col, Nav, InputGroup, FormControl, Button, Card, Modal} from 'react-bootstrap';
 import UserNameModal from '../components/UserNameModal'
 import UserInfoModal from '../components/UserInfoModal'
+import UserCategoryModifyModal from '../components/UserCategoryModifyModal'
 
 import authFetch from '../fetchInterceptorAuthToken'
 
@@ -19,7 +20,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
     const [activeTab, setActiveTab] = useState('userInfo');
     const [profileImgDBbase64, setProfileImgDBbase64] = useState(profilePic);
     const [profileImg, setProfileImg] = useState(null);
-    const [categories, setCategories] = useState(null);
+    const [categories, setCategories] = useState([]);
 
     console.log('categories', categories)
     const fileInputRef = useRef(null);
@@ -125,7 +126,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({user_id: user.user_id})
+                body: JSON.stringify({user_id: loginUser.user_id})
             });
             if (!response.ok) throw new Error((await response.json()).error);
 
@@ -144,7 +145,6 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
         getUserCategories();
 
     }, []);
-
     // 닉네임 수정 기능 시작
     const [showUserNameModal, setShowUserNameModal] = useState(false);
     const [username, setUsername] = useState(loginUser.username);
@@ -157,6 +157,10 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
     const [sex, setSex] = useState(loginUser.sex);
     const [password, setPassword] = useState('');
     // 일반 정보 수정 기능 끝
+
+    // 카테고리 등록 삭제 시작
+    const [showUserCategories, setShowUserCategories] = useState(false);
+    // 카테고리 등록 삭제 시작
 
 
     return (
@@ -223,7 +227,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                             </Col>
                         </Row>
                         <div className="mb-3">
-                            {categories && categories.map((category, idx) => (
+                            {categories.map((category, idx) => (
                                 <Button key={idx} variant="outline-secondary" size="sm" className="me-2 mb-2">{category.category_name}</Button>
                             ))}
                             {/*{['Label', 'Label', 'Label'].map((label, idx) => (*/}
@@ -279,7 +283,13 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                                     <div style={{marginTop:"30px"}}></div>
                                     <h6 className="mb-3">카테고리 찜 목록</h6>
 
-                                    <Button variant="outline-primary" size="sm" className="me-2">카테고리 찜하기</Button>
+                                    <Button variant="outline-primary" size="sm" className="me-2" onClick={() => {setShowUserCategories(true)}}>카테고리 찜하기</Button>
+                                    <UserCategoryModifyModal
+                                        show={showUserCategories}
+                                        userCategories={categories}
+                                        setShowUserCategories={setShowUserCategories}
+                                        loginUser={loginUser}
+                                    />
                                     <Button variant="outline-danger" size="sm">카테고리 제거하기</Button>
 
                                     <div className="mb-3" style={{marginTop:"10px"}}>
@@ -317,7 +327,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                                         ))}
                                     </Row>
                                     <h6 className="mb-3">카테고리 최신 레시피</h6>
-                                    {categories && categories.map((category, idx) => (
+                                    {categories.map((category, idx) => (
                                         <Button key={idx} variant="outline-secondary" size="sm"
                                                 className="me-2 mb-2">{category.category_name}</Button>
                                     ))}

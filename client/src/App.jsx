@@ -37,8 +37,7 @@ function App() {
     //   .catch(error => console.error('Error:', error));
     // db에서 유저 데이터 받아오는 코드
       // 로그인 유지 기능 없어서 임시로 작성해놓은 코드
-    console.log('fdsaf', user && user.userId)
-    user && fetch(`${API_URL}/hello/${user && user.user_id}`)
+    fetch(`${API_URL}/hello`)
       .then(response => response.json())
       .then(data => {
                 setMessage(data.message)
@@ -48,7 +47,6 @@ function App() {
       .catch(error => console.error('Error:', error));
 
   }, [])
-  console.log(user&& user.user_code)
   // 서버로 데이터 전송하는 함수 handleSignUp
   const handleSignUp = async (signUpData) => {
     try {
@@ -130,7 +128,14 @@ function App() {
           <Route path = '/recipe/:recipe_id' element = {<RecipeDetail />}/>
           <Route path = '/logout' element={user && <Logout user={user}/>}/>
           <Route element = {<ProtectedPage />}>
-            <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic} setProfilePic={setProfilePic} loginUser={loginUser}/> : <Login />}/>
+            <Route
+              path = '/mypage' element = { user ? <UserMyPage
+                                                      user={user}
+                                                      profilePic={profilePic}
+                                                      setProfilePic={setProfilePic}
+                                                      loginUser={loginUser}/>
+                                                : <Login />}
+            />
           </Route>
         </Routes>
       </Router>
