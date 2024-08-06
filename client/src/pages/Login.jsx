@@ -7,7 +7,7 @@ import styles from '../assets/styles/Login.module.css';
 
 function Login() {
 
-  const API_URL = 'http://192.168.0.103:3000';
+  const API_URL = import.meta.env.VITE_HOST_IP;
 
   const [user, setUser] = useState({
     userId: '',

@@ -11,7 +11,7 @@ function RecipeList() {
   const { category } = useParams();
   console.log(category)
   const [recipes, setRecipes] = useState([]);
-  const API_URL = 'http://192.168.0.103:3000';
+  const API_URL = import.meta.env.VITE_HOST_IP;
 
   const fetchRecipes = useCallback(async () => {
     try {
