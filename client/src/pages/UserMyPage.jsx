@@ -4,6 +4,7 @@
 import {useState, useRef, useEffect} from 'react';
 import {Image, Container, Row, Col, Nav, InputGroup, FormControl, Button, Card, Modal} from 'react-bootstrap';
 import UserNameModal from '../components/UserNameModal'
+import UserInfoModal from '../components/UserInfoModal'
 
 import authFetch from '../fetchInterceptorAuthToken'
 
@@ -23,8 +24,6 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
     console.log('categories', categories)
     const fileInputRef = useRef(null);
 
-    const accessToken = localStorage.getItem('accessToken');
-    console.log('잘오고 있지? at UserMypage first', accessToken)
 
     const handleFileInputChange = (event) => {
         // 파일이 선택되었을 때의 로직
@@ -141,8 +140,6 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
     }
 
     useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    console.log('잘오고 있지? at UserMypage third', accessToken)
         // 마이페이지에서 유저가 `등록한 선호 카테고리 목록 데이터 요청 코드.
         getUserCategories();
 
@@ -151,9 +148,15 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
     // 닉네임 수정 기능 시작
     const [showUserNameModal, setShowUserNameModal] = useState(false);
     const [username, setUsername] = useState(loginUser.username);
-
-
     // 닉네임 수정 기능 끝
+
+
+    // 일반 정보 수정 기능 시작
+    const [showUserInfoModal, setShowUserInfoModal] = useState(false);
+    const [email, setEmail] = useState(loginUser.email);
+    const [sex, setSex] = useState(loginUser.sex);
+    const [password, setPassword] = useState('');
+    // 일반 정보 수정 기능 끝
 
 
     return (
@@ -204,7 +207,6 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                             <Button variant="dark" size="sm" className="mb-2" onClick={() => {setShowUserNameModal(true)}} >닉네임 수정하기</Button>
                             <UserNameModal
                                 show={showUserNameModal}
-                                preUsername={username}
                                 setUsername={setUsername}
                                 setShowUserNameModal={setShowUserNameModal}
                                 loginUser={loginUser}
@@ -260,13 +262,20 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                         <Card.Body>
                             {activeTab === 'userInfo' && (
                                 <>
-                                    <Card.Title className="mb-3">닉네임: {username}</Card.Title>
+                                    <Card.Title className="mb-3">닉네임: {loginUser.username}</Card.Title>
                                     <Card.Text>
-                                        성별: {user.sex ? "여" : "남"}<br />
-                                        이메일: {user.email}<br />
-                                        유저 등급: {user.user_code <= 10 ? "운영자 계정" : (user.chef_code ? "셰프 계정" : "일반 계정")}
+                                        성별: {sex ? "여" : "남"}<br />
+                                        이메일: {email}<br />
+                                        유저 등급: {loginUser.user_code <= 10 ? "운영자 계정" : (loginUser.chef_code ? "셰프 계정" : "일반 계정")}
                                     </Card.Text>
-                                    <Button variant="dark" size="sm" className="mb-2">회원 정보 수정하기</Button>
+                                    <Button variant="dark" size="sm" className="mb-2" onClick={() => {setShowUserInfoModal(true)}}>회원 정보 수정하기</Button>
+                                    <UserInfoModal
+                                        show={showUserInfoModal}
+                                        setEmail={setEmail}
+                                        setSex={setSex}
+                                        setShowUserInfoModal={setShowUserInfoModal}
+                                        loginUser={loginUser}
+                                    />
                                     <div style={{marginTop:"30px"}}></div>
                                     <h6 className="mb-3">카테고리 찜 목록</h6>
 

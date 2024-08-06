@@ -1,14 +1,14 @@
 import {useState} from "react";
 import {Button, Modal} from "react-bootstrap";
 
-const UserNameModal = ({ show, preUsername, setUsername, setShowUserNameModal, loginUser}) => {
+const UserNameModal = ({ show, setUsername, setShowUserNameModal, loginUser}) => {
     const API_URL = import.meta.env.VITE_HOST_IP;
 
     const [usernameError, setUsernameError] = useState('');
     const [postUsername, setPostUsername] = useState('');
     const [checkConfirm, setCheckConfirm] = useState(true);
 
-    const usernameConfirm = async (e) => {
+    const usernameConfirm = async () => {
 
         if (!checkConfirm) return alert('닉네임이 유효하지 않습니다. 다시 입력해주세요.');
 
@@ -45,7 +45,6 @@ const UserNameModal = ({ show, preUsername, setUsername, setShowUserNameModal, l
     const usernameCancel = () => {
         console.log('유저 닉네임 변경 취소');
         setShowUserNameModal(false);
-        setProfileImgDBbase64(profilePic);
     };
 
     const getUsernameEventListener = (e) => {
@@ -69,7 +68,7 @@ const UserNameModal = ({ show, preUsername, setUsername, setShowUserNameModal, l
                 <Modal.Title>Confirm Action</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                변경 전: {preUsername}
+                변경 전: {loginUser.username}
                 <br/>
                 변경 후: <input type='text' defaultValue={''} onChange={getUsernameEventListener} />
                 <p>{usernameError}</p>

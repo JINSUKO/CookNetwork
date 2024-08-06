@@ -49,8 +49,12 @@ const userCategories = require('./router/getUserCategories');
 app.use('/api/userCategories', userCategories);
 
 // 유저 닉네임 변경 요청시 사용
-const userNameUpdate = require('./router/UpdateUsername');
+const userNameUpdate = require('./router/updateUsername');
 app.use('/api/userNameUpdate', userNameUpdate);
+
+// 유저 일반 정보 변경 요청시 사용
+const userInfoUpdate = require('./router/updateUserInfo');
+app.use('/api/userInfoUpdate', userInfoUpdate);
 
 // 여기에 다른 API 라우트들을 추가합니다...
 
