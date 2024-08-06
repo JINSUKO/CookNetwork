@@ -10,7 +10,7 @@ const UserNameModal = ({ show, setUsername, setShowUserNameModal, loginUser}) =>
 
     const usernameConfirm = async () => {
 
-        if (!checkConfirm) return alert('닉네임이 유효하지 않습니다. 다시 입력해주세요.');
+        if (!checkConfirm || !postUsername) return alert('닉네임이 유효하지 않습니다. 다시 입력해주세요.');
 
 
         setShowUserNameModal(false);
