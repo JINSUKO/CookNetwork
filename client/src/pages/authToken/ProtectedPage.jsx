@@ -4,11 +4,8 @@ import {memo, useEffect, useState} from "react";
 import authFetch from '../../fetchInterceptorAuthToken'
 
 const ProtectedPage = () => {
-    // const API_URL ='http://192.168.0.103:3000';
-    // const API_URL ='http://192.168.0.14:3000';
-    // const API_URL ='http://192.168.0.13:3000';
-    // const API_URL ='http://192.168.220.1:3000';
-    const API_URL ='http://localhost:3000';
+
+    const API_URL = import.meta.env.VITE_HOST_IP;
 
     useEffect(() => {
         const checkAuth = async () => {

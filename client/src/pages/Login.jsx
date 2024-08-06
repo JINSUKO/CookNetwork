@@ -55,8 +55,8 @@ function Login() {
         console.log('로그인 성공:', data);
 
         // 로그인 성공 시 로그인 상태 유지를 위한 토큰을 받아온다.
-        localStorage.setItem('accessToken', data.accessToken);
-        localStorage.setItem('loginUser', JSON.stringify(data.user));
+        localStorage.setItem('accessToken', data.accessToken)
+        localStorage.setItem('loginUser', JSON.stringify(data.user))
 
         alert(data.message); // 사용자 인식 시킬려고 추가해봄.
         // location.href = '/';

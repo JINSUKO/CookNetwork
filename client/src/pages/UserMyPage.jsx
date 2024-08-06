@@ -6,7 +6,11 @@ import {Image, Container, Row, Col, Nav, InputGroup, FormControl, Button, Card, 
 
 import authFetch from '../fetchInterceptorAuthToken'
 
-const UserMyPage = ({user, profilePic}) => {
+
+// localStorage 에서 받아온 loginUser로 user, profilePic 를 대체하는 코드로 수정해야함.
+const UserMyPage = ({user, profilePic, loginUser}) => {
+
+    loginUser = JSON.parse(loginUser)
 
     const API_URL = 'http://localhost:3000';
 
@@ -70,6 +74,12 @@ const UserMyPage = ({user, profilePic}) => {
             }
 
             const result = await response.json();
+
+
+
+            loginUser.user_img = profileImgDBbase64;
+
+            localStorage.setItem('loginUser', JSON.stringify(loginUser));
             // console.log('profile img upload result:', result.result);
 
             console.log('프로필 이미지 업로드 성공!');
@@ -108,9 +118,6 @@ const UserMyPage = ({user, profilePic}) => {
     // 마이페이지에서 유저가 등록한 선호 카테고리 목록 데이터 요청 코드.
     const getUserCategories = async () => {
 
-        const accessToken = localStorage.getItem('accessToken');
-        console.log('잘오고 있지? at UserMypage fourth', accessToken)
-
         try {
             const response = await fetch(`${API_URL}/api/userCategories`, {
             // const response = await authFetch(`${API_URL}/api/userCategories`, {
@@ -120,17 +127,11 @@ const UserMyPage = ({user, profilePic}) => {
                 },
                 body: JSON.stringify({user_id: user.user_id})
             });
-            let accessToken = localStorage.getItem('accessToken');
-            console.log('잘오고 있지? at UserMypage fifth', accessToken)
-
             if (!response.ok) throw new Error((await response.json()).error);
-            accessToken = localStorage.getItem('accessToken');
-            console.log('잘오고 있지? at UserMypage sixth', accessToken)
-            const result = await response.json(); // 이 코드 이후로 토큰이 사라짐.
+
+            const result = await response.json();
 
             console.log("유저의 카테고리 목록 호출 성공!");
-            accessToken = localStorage.getItem('accessToken');
-            console.log('잘오고 있지? at UserMypage seconed', accessToken)
             setCategories(result);
 
         } catch (e) {
@@ -148,7 +149,7 @@ const UserMyPage = ({user, profilePic}) => {
 
     // 닉네임 수정 기능 시작
     const [showUserNameModal, setShowUserNameModal] = useState(false);
-    const [username, setUsername] = useState(user.username);
+    const [username, setUsername] = useState(loginUser.username);
 
     const UserNameModal = ({ show, preUsername, setUsername}) => {
 
@@ -171,13 +172,17 @@ const UserMyPage = ({user, profilePic}) => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({username: postUsername, user_code: user.user_code})
+                    body: JSON.stringify({username: postUsername, user_code: loginUser.user_code})
                 });
 
                 if (!response.ok) throw new Error((await response.json()).error);
 
                 const result = await response.json();
                 setUsername(postUsername)
+
+                loginUser.username = postUsername;
+
+                localStorage.setItem('loginUser', JSON.stringify(loginUser));
 
                 console.log('username 업데이트 성공!');
 
