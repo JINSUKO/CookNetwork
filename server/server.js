@@ -58,7 +58,7 @@ app.use('/api/userNameUpdate', userNameUpdate);
 const signupRouter = require("./router/signUp.js");
 
 // 회원가입 라우트 요청시 사용
-app.use("/signup", signupRouter);
+app.use("/api/signup", signupRouter);
 
 const loginRouter = require("./router/login.js");
 

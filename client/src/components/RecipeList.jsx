@@ -10,7 +10,7 @@ import { Container, Row, Col, Button, Card} from 'react-bootstrap';
 function RecipeList({ categoryProp }) { 
   const { category } = useParams();
   console.log(category)
-  const currentCategory = categoryProp || category || 'all'; 
+  const currentCategory = categoryProp || category || 'main'; 
   const [recipes, setRecipes] = useState([]);
   const API_URL = import.meta.env.VITE_HOST_IP;
 
@@ -46,7 +46,7 @@ function RecipeList({ categoryProp }) {
 
   return (
     <Container className="text-start">
-      <h5>{currentCategory === 'all' ? '모든 레시피' : `${currentCategory} 카테고리`}: 다양한 레시피를 확인해보세요!</h5>
+      <h5>{currentCategory === 'main' ? '모든 레시피' : `${currentCategory} 카테고리`}: 다양한 레시피를 확인해보세요!</h5>
       <Row lg={5} className="g-4">
         {recipes.map((recipe) => (
         <Col key={recipe.recipe_id}>  
