@@ -3,13 +3,8 @@
 */
 
 import { React, useState } from 'react';
-import logo from '../assets/images/logo.png';
-import SearchBar from '../components/SearchBar.jsx'
 import RecipeList from '../components/RecipeList.jsx'
 import '../assets/styles/Main.css'
-// import 'bootstrap/dist/css/bootstrap.min.css';
-import NavbarElement from '../components/NavbarElement.jsx';
-import Header from '../components/Layout/Header.jsx';
 
 
 
@@ -18,18 +13,10 @@ function Main() {
 
   return ( 
   <div>
-    {/* <div className="header">
-      <Header/>
-    </div> */}
-
-    <div>태그 컴포넌트</div>
     <div>
-      <RecipeList />
+      <RecipeList categoryProp="all" />
     </div>
 
-    <div className="footer">
-      <footer></footer>
-    </div>
   </div>
   )
 }

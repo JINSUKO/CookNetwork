@@ -7,15 +7,21 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Link, useParams } from 'react-router-dom';
 import { Container, Row, Col, Button, Card} from 'react-bootstrap';
 
-function RecipeList() { 
+function RecipeList({ categoryProp }) { 
   const { category } = useParams();
   console.log(category)
+  const currentCategory = categoryProp || category || 'all'; 
   const [recipes, setRecipes] = useState([]);
   const API_URL = import.meta.env.VITE_HOST_IP;
 
   const fetchRecipes = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/api/category/${category}`, {
+      // 삼항연산자를 사용하여 API 엔드포인트 요청 url 결정
+      const url = currentCategory === 'main'
+        ? `${API_URL}/api/main`   // 전체 레시피 리스트를 가져오는 main 카테고리
+        : `${API_URL}/api/category/${currentCategory}`;   // 특정 카테고리
+
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -26,12 +32,12 @@ function RecipeList() {
         throw new Error((await response.json()).error);
       }
       const result = await response.json();
-      console.log(`${category} 레시피 목록 호출 성공`);
+      console.log(`${currentCategory} 레시피 목록 호출 성공`);
       setRecipes(result);
     } catch (e) {
       console.error('Error:', e);
     }
-  }, [category]);   // 카테고리 값이 변경될 때 함수 재생성
+  }, [currentCategory]);   // 카테고리 값이 변경될 때 함수 재생성
   
   useEffect(() => {   // 컴포넌트가 마운트될 때 fetch 함수 호출
     fetchRecipes();
@@ -40,7 +46,7 @@ function RecipeList() {
 
   return (
     <Container className="text-start">
-      <h5>{category}: 다양한 레시피를 확인해보세요!</h5>
+      <h5>{currentCategory === 'all' ? '모든 레시피' : `${currentCategory} 카테고리`}: 다양한 레시피를 확인해보세요!</h5>
       <Row lg={5} className="g-4">
         {recipes.map((recipe) => (
         <Col key={recipe.recipe_id}>  
