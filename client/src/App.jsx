@@ -23,10 +23,9 @@ function App() {
   const [user, setUser] = useState(loginUser && JSON.parse(loginUser));
   const [profilePic, setProfilePic] = useState(loginUser && JSON.parse(loginUser).user_img);
 
-  const API_URL = import.meta.env.VITE_HOST_IP;
-
-
-
+  const HOST_IP  = import.meta.env.VITE_HOST_IP
+  const API_URL = HOST_IP;
+  
   useEffect(() => {
     // const API_URL = import.meta.env.PROD
     //   ? ''
@@ -49,7 +48,7 @@ function App() {
       .catch(error => console.error('Error:', error));
 
   }, [])
-
+  console.log(user&& user.user_code)
   // 서버로 데이터 전송하는 함수 handleSignUp
   const handleSignUp = async (signUpData) => {
     try {
@@ -127,9 +126,9 @@ function App() {
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/search' element = {<SearchResultPage/>}/>
-          <Route path="/logout" element={user && <Logout user={user}/>}/>
-          <Route path = '/:category' element = {<RecipeList/>}/>
-          <Route path = '/:recipe_id' element = {<RecipeDetail />}/>
+          <Route path = '/category/:category' element = {<RecipeList/>}/>
+          <Route path = '/recipe/:recipe_id' element = {<RecipeDetail />}/>
+          <Route path = '/logout' element={user && <Logout user={user}/>}/>
           <Route element = {<ProtectedPage />}>
             <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic} setProfilePic={setProfilePic} loginUser={loginUser}/> : <Login />}/>
           </Route>
