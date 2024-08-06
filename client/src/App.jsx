@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Main from './pages/Main'
+import Board from './pages/Board';
 import SignUp from './pages/SignUp'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Layout/Header'
@@ -14,7 +15,6 @@ import Logout from "./components/Logout";
 import ProtectedPage from "./pages/authToken/ProtectedPage";
 
 import './App.css'
-
 
 function App() {
   const [message, setMessage] = useState('');
@@ -131,6 +131,7 @@ function App() {
         <Header user={user}/>
         <Routes>
           <Route path = '/' element = {<Main />}/>
+          <Route path = '/board' element = {<Board />}/>
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/search' element = {<SearchResultPage/>}/>
