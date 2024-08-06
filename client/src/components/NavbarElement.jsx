@@ -18,12 +18,20 @@ function NavbarElement({ user }) {
     navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
   };
 
+  // 카테고리 배열 정의
+  const categories = [
+    { name: '한식', path: 'korean' },
+    { name: '양식', path: 'western' },
+    { name: '중식', path: 'chinese' },
+    { name: '일식', path: 'japanese' }
+  ];
+
   return (
     <div>
       {/* 상단오른쪽 공지사항, 회원가입, 로그인 링크도 네비바로 작성 */}
       <Nav className="justify-content-end" defaultActiveKey="/" as="ul">
         <Nav.Item as="li">
-          <Nav.Link href="/">공지사항</Nav.Link>
+          <Nav.Link href="/board">공지사항</Nav.Link>
         </Nav.Item>
          {
           <>
@@ -57,10 +65,16 @@ function NavbarElement({ user }) {
         <Container className="d-flex justify-content-between align-items-center flex-nowrap ">
           <Nav className="mx-auto d-flex justify-content-center flex-grow-1 flex-shrink-0" style={{ overflow: 'visible' }}>
             <Navbar.Brand href="/" bg="light" data-bs-theme="light" className="flex-shrink-0">전체</Navbar.Brand>
-            <Nav.Link href="/korean" className="px-2">한식</Nav.Link>
-            <Nav.Link href="/western" className="px-2">양식</Nav.Link>
-            <Nav.Link href="/chinese" className="px-2">중식</Nav.Link>
-            <Nav.Link href="/japanese" className="px-2">일식</Nav.Link>
+
+            {categories.map((category) => (
+            <Nav.Link 
+              key={category.path}
+              href={`/category/${category.path}`} 
+              className="px-2"
+              >{category.name}
+            </Nav.Link>
+            ))}
+
           </Nav>
           <SearchBar onSearch={handleSearch} />
         </Container>

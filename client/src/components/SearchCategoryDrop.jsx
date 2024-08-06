@@ -4,23 +4,33 @@
 */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 function SearchCategoryDrop() {
   const [category, setCategory] = useState("카테고리");
+  const navigate = useNavigate();
 
-  const handleSelect = (eventkey, event) => {
+  const categories = [
+    { name: '전체', path: '/' },
+    { name: '한식', path: '/category/korean' },
+    { name: '양식', path: '/category/western' },
+    { name: '중식', path: '/category/chinese' },
+    { name: '일식', path: '/category/japanese' }
+  ];
+
+  const handleSelect = (event) => {
     setCategory(event.target.text);
     
   };
 
   return (
     <NavDropdown title={category} id="nav-dropdown" onSelect={handleSelect} >
-      <NavDropdown.Item eventKey="4.1">전체</NavDropdown.Item>
-      <NavDropdown.Item eventKey="4.2">한식</NavDropdown.Item>
-      <NavDropdown.Item eventKey="4.3">양식</NavDropdown.Item>
-      <NavDropdown.Item eventKey="4.4">중식</NavDropdown.Item>
-      <NavDropdown.Item eventKey="4.5">일식</NavDropdown.Item>
+      {categories.map((cat, index) => (
+      <NavDropdown.Item key={index} >
+        {cat.name}
+      </NavDropdown.Item>
+      ))}
     </NavDropdown>
   );
 }

@@ -7,11 +7,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Link, useParams } from 'react-router-dom';
 import { Container, Row, Col, Button, Card} from 'react-bootstrap';
 
-function RecipeList({ categoryProp }) { 
+function RecipeList() { 
   const { category } = useParams();
   console.log(category)
-  const currentCategory = categoryProp || category || 'main'; 
-  const [recipes, setRecipes] = useState([]);
+  const currentCategory = category || 'main';   // category 없으면 main으로
+  const [recipes, setRecipes] = useState([]);   // recipes 데이터 빈 배열로 설정
   const API_URL = import.meta.env.VITE_HOST_IP;
 
   const fetchRecipes = useCallback(async () => {
@@ -27,13 +27,16 @@ function RecipeList({ categoryProp }) {
           'Content-Type': 'application/json'
         }
       });
-
       if(!response.ok) {
         throw new Error((await response.json()).error);
       }
+
+      // 레시피 데이터 result를 받아 recipes에 저장
       const result = await response.json();
-      console.log(`${currentCategory} 레시피 목록 호출 성공`);
-      setRecipes(result);
+      console.log(result)
+      if (result) {
+        console.log(`${currentCategory} 레시피 목록 호출 성공`);
+        setRecipes(result);}
     } catch (e) {
       console.error('Error:', e);
     }
@@ -46,7 +49,7 @@ function RecipeList({ categoryProp }) {
 
   return (
     <Container className="text-start">
-      <h5>{currentCategory === 'main' ? '모든 레시피' : `${currentCategory} 카테고리`}: 다양한 레시피를 확인해보세요!</h5>
+      {/* <h5>{currentCategory === 'main' ? '모든 레시피' : `${currentCategory} 카테고리`} <br/> 다양한 레시피를 확인해보세요!</h5>
       <Row lg={5} className="g-4">
         {recipes.map((recipe) => (
         <Col key={recipe.recipe_id}>  
@@ -63,7 +66,7 @@ function RecipeList({ categoryProp }) {
         </Link>
       </Col>
       ))}
-      </Row>
+      </Row> */}
     </Container>
   )
 }
