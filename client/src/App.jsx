@@ -17,11 +17,15 @@ import './App.css'
 
 
 function App() {
+  let loginUser = localStorage.getItem('loginUser');
+
   const [message, setMessage] = useState('');
-  const [user, setUser] = useState(null);
-  const [profilePic, setProfilePic] = useState('');
+  const [user, setUser] = useState(loginUser && JSON.parse(loginUser));
+  const [profilePic, setProfilePic] = useState(loginUser && JSON.parse(loginUser).user_img);
 
   const API_URL = import.meta.env.VITE_HOST_IP;
+
+
 
   useEffect(() => {
     // const API_URL = import.meta.env.PROD
@@ -34,23 +38,15 @@ function App() {
     //   .catch(error => console.error('Error:', error));
     // db에서 유저 데이터 받아오는 코드
       // 로그인 유지 기능 없어서 임시로 작성해놓은 코드
-    fetch(`${API_URL}/hello`)
+    console.log('fdsaf', user && user.userId)
+    user && fetch(`${API_URL}/hello/${user && user.user_id}`)
       .then(response => response.json())
       .then(data => {
                 setMessage(data.message)
+
             }
        )
       .catch(error => console.error('Error:', error));
-
-    let loginUser = localStorage.getItem('loginUser');
-
-    if (loginUser) {
-
-        loginUser = JSON.parse(loginUser)
-        setUser(loginUser);
-        setProfilePic(loginUser.user_img);
-        console.log('loginUser', loginUser);
-    }
 
   }, [])
 
@@ -135,7 +131,7 @@ function App() {
           <Route path = '/:category' element = {<RecipeList/>}/>
           <Route path = '/:recipe_id' element = {<RecipeDetail />}/>
           <Route element = {<ProtectedPage />}>
-            <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic}/> : <Login />}/>
+            <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic} setProfilePic={setProfilePic} loginUser={loginUser}/> : <Login />}/>
           </Route>
         </Routes>
       </Router>
