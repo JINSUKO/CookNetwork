@@ -3,27 +3,34 @@
 -useNavigate 훅을 사용하여 검색어를 파라미터로 전달
 */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SearchBar from './SearchBar';
+import FetchRecipeList from './FetchRecipeList';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import '../assets/styles/Navbar.css'
-
-
 
 function NavbarElement({ user }) {
   const navigate = useNavigate();
 
-  const handleSearch = (searchTerm) => {
-    navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
-  };
+  
+
+  // 카테고리 배열 정의
+  const categories = [
+    { name: '전체', path: '/' },
+    { name: '한식', path: 'category/korean' },
+    { name: '양식', path: 'category/western' },
+    { name: '중식', path: 'category/chinese' },
+    { name: '일식', path: 'category/japanese' }
+  ];
 
   return (
     <div>
       {/* 상단오른쪽 공지사항, 회원가입, 로그인 링크도 네비바로 작성 */}
       <Nav className="justify-content-end" defaultActiveKey="/" as="ul">
         <Nav.Item as="li">
-          <Nav.Link href="/">공지사항</Nav.Link>
+          <Nav.Link href="/board">공지사항</Nav.Link>
         </Nav.Item>
          {
           <>
@@ -56,13 +63,20 @@ function NavbarElement({ user }) {
       <Navbar expand="lg" className="bg-body-tertiary">
         <Container className="d-flex justify-content-between align-items-center flex-nowrap ">
           <Nav className="mx-auto d-flex justify-content-center flex-grow-1 flex-shrink-0" style={{ overflow: 'visible' }}>
-            <Navbar.Brand href="/" bg="light" data-bs-theme="light" className="flex-shrink-0">전체</Navbar.Brand>
-            <Nav.Link href="/korean" className="px-2">한식</Nav.Link>
-            <Nav.Link href="/western" className="px-2">양식</Nav.Link>
-            <Nav.Link href="/chinese" className="px-2">중식</Nav.Link>
-            <Nav.Link href="/japanese" className="px-2">일식</Nav.Link>
+            {/* <Navbar.Brand href="/" bg="light" data-bs-theme="light" className="flex-shrink-0">전체</Navbar.Brand> */}
+
+            {categories.map((category) => (
+              <Nav.Item key={category.path}>
+                <Link 
+                  to={category.path} 
+                  className="nav-link px-2"
+                >{category.name}
+                </Link>
+              </Nav.Item>
+            ))}
+
           </Nav>
-          <SearchBar onSearch={handleSearch} />
+          {/* <SearchBar onSearch={handleSearch} /> */}
         </Container>
       </Navbar>
 

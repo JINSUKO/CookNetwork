@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Main from './pages/Main'
+import Board from './pages/Board';
 import SignUp from './pages/SignUp'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Layout/Header'
@@ -9,12 +10,11 @@ import RecipeDetail from './components/RecipeDetail'
 import Chat from "./chat/chatIndex";
 import UserMyPage from "./pages/UserMyPage";
 import SearchResultPage from './components/SearchResult';
-import RecipeList from './components/RecipeList';
+import FetchRecipeList from './components/FetchRecipeList';
 import Logout from "./components/Logout";
 import ProtectedPage from "./pages/authToken/ProtectedPage";
 
 import './App.css'
-
 
 function App() {
   let loginUser = localStorage.getItem('loginUser');
@@ -120,11 +120,12 @@ function App() {
       <Router>
         <Header user={user}/>
         <Routes>
-          {/*<Route path = '/' element = {<Main />}/>*/}
+          <Route path = '/' element = {<Main />}/>
+          <Route path = '/board' element = {<Board />}/>
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
-          <Route path = '/search' element = {<SearchResultPage/>}/>
-          <Route path = '/category/:category' element = {<RecipeList/>}/>
+          <Route path = '/search/:search' element = {<SearchResultPage/>}/>
+          <Route path = '/category/:category' element = {<FetchRecipeList/>}/>
           <Route path = '/recipe/:recipe_id' element = {<RecipeDetail />}/>
           <Route path = '/logout' element={user && <Logout user={user}/>}/>
           <Route element = {<ProtectedPage />}>
