@@ -10,14 +10,14 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 
 function SearchCategoryDrop({ onCategoryChange }) {   // SearchBar에 함수 전달
   const [category, setCategory] = useState("카테고리");
-  const navigate = useNavigate();
 
+  // 카테고리로 사용될 배열
   const categories = [
     { name: '전체', path: '/' },
-    { name: '한식', path: '/category/korean' },
-    { name: '양식', path: '/category/western' },
-    { name: '중식', path: '/category/chinese' },
-    { name: '일식', path: '/category/japanese' }
+    { name: '한식', path: '/search/korean' },
+    { name: '양식', path: '/search/western' },
+    { name: '중식', path: '/search/chinese' },
+    { name: '일식', path: '/search/japanese' }
   ];
 
   // 카테고리로 사용될 배열
