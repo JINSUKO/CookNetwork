@@ -1,8 +1,11 @@
 /* 사용자의 마이페이지
 *   운영자, 셰프, 일반 유저 모두 동일한 마이페이지 사용함.
 * */
-import {useState, useRef, useEffect} from 'react';
+import {useState, useRef, useEffect, useLayoutEffect} from 'react';
 import {Image, Container, Row, Col, Nav, InputGroup, FormControl, Button, Card, Modal} from 'react-bootstrap';
+import UserNameModal from '../components/UserNameModal'
+import UserInfoModal from '../components/UserInfoModal'
+import UserCategoryModifyModal from '../components/UserCategoryModifyModal'
 
 import authFetch from '../fetchInterceptorAuthToken'
 
@@ -12,18 +15,16 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
 
     loginUser = JSON.parse(loginUser)
 
-    const API_URL = 'http://localhost:3000';
+    const API_URL = import.meta.env.VITE_HOST_IP;
 
     const [activeTab, setActiveTab] = useState('userInfo');
     const [profileImgDBbase64, setProfileImgDBbase64] = useState(profilePic);
     const [profileImg, setProfileImg] = useState(null);
-    const [categories, setCategories] = useState(null);
+    const [categories, setCategories] = useState([]);
 
     console.log('categories', categories)
     const fileInputRef = useRef(null);
 
-    const accessToken = localStorage.getItem('accessToken');
-    console.log('잘오고 있지? at UserMypage first', accessToken)
 
     const handleFileInputChange = (event) => {
         // 파일이 선택되었을 때의 로직
@@ -125,7 +126,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({user_id: user.user_id})
+                body: JSON.stringify({user_id: loginUser.user_id})
             });
             if (!response.ok) throw new Error((await response.json()).error);
 
@@ -140,102 +141,26 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
     }
 
     useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    console.log('잘오고 있지? at UserMypage third', accessToken)
-        // 마이페이지에서 유저가 등록한 선호 카테고리 목록 데이터 요청 코드.
+        // 마이페이지에서 유저가 `등록한 선호 카테고리 목록 데이터 요청 코드.
         getUserCategories();
 
     }, []);
-
     // 닉네임 수정 기능 시작
     const [showUserNameModal, setShowUserNameModal] = useState(false);
     const [username, setUsername] = useState(loginUser.username);
-
-    const UserNameModal = ({ show, preUsername, setUsername}) => {
-
-
-        const [usernameError, setUsernameError] = useState('');
-        const [postUsername, setPostUsername] = useState('');
-        const [checkConfirm, setCheckConfirm] = useState(true);
-
-        const usernameConfirm = async (e) => {
-
-            if (!checkConfirm) return alert('닉네임이 유효하지 않습니다. 다시 입력해주세요.');
-
-
-            setShowUserNameModal(false);
-
-            console.log(postUsername);
-            try {
-                const response = await fetch(`${API_URL}/api/userNameUpdate`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({username: postUsername, user_code: loginUser.user_code})
-                });
-
-                if (!response.ok) throw new Error((await response.json()).error);
-
-                const result = await response.json();
-                setUsername(postUsername)
-
-                loginUser.username = postUsername;
-
-                localStorage.setItem('loginUser', JSON.stringify(loginUser));
-
-                console.log('username 업데이트 성공!');
-
-
-            } catch (e) {
-                console.log(e);
-            }
-        };
-
-        const usernameCancel = () => {
-            console.log('유저 닉네임 변경 취소');
-            setShowUserNameModal(false);
-            setProfileImgDBbase64(profilePic);
-        };
-
-        const getUsernameEventListener = (e) => {
-            const regNickname = /^[a-zA-Z가-힣]{2,16}$/;
-
-            // 닉네임
-            if (!regNickname.test(e.target.value)) {
-                setUsernameError("닉네임은 한글 또는 영문 2~16자로 작성하세요.");
-                setCheckConfirm(false);
-            } else {
-                setUsernameError('');
-                setCheckConfirm(true);
-            }
-
-            setPostUsername(e.target.value);
-        }
-
-        return (
-            <Modal show={show} onHide={usernameCancel} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Confirm Action</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    변경 전: {preUsername}
-                    <br/>
-                    변경 후: <input type='text' defaultValue={''} onChange={getUsernameEventListener} />
-                    <p>{usernameError}</p>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={usernameConfirm}>
-                        Confirm
-                    </Button>
-                    <Button variant="secondary" onClick={usernameCancel}>
-                        Cancel
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        )
-    };
     // 닉네임 수정 기능 끝
+
+
+    // 일반 정보 수정 기능 시작
+    const [showUserInfoModal, setShowUserInfoModal] = useState(false);
+    const [email, setEmail] = useState(loginUser.email);
+    const [sex, setSex] = useState(loginUser.sex);
+    const [password, setPassword] = useState('');
+    // 일반 정보 수정 기능 끝
+
+    // 카테고리 등록 삭제 시작
+    const [showUserCategories, setShowUserCategories] = useState(false);
+    // 카테고리 등록 삭제 시작
 
 
     return (
@@ -286,8 +211,9 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                             <Button variant="dark" size="sm" className="mb-2" onClick={() => {setShowUserNameModal(true)}} >닉네임 수정하기</Button>
                             <UserNameModal
                                 show={showUserNameModal}
-                                preUsername={username}
                                 setUsername={setUsername}
+                                setShowUserNameModal={setShowUserNameModal}
+                                loginUser={loginUser}
                             />
                         </div>
                         <Row className="justify-content-center g-2 mb-3">
@@ -301,7 +227,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                             </Col>
                         </Row>
                         <div className="mb-3">
-                            {categories && categories.map((category, idx) => (
+                            {categories.map((category, idx) => (
                                 <Button key={idx} variant="outline-secondary" size="sm" className="me-2 mb-2">{category.category_name}</Button>
                             ))}
                             {/*{['Label', 'Label', 'Label'].map((label, idx) => (*/}
@@ -340,17 +266,30 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                         <Card.Body>
                             {activeTab === 'userInfo' && (
                                 <>
-                                    <Card.Title className="mb-3">닉네임: {username}</Card.Title>
+                                    <Card.Title className="mb-3">닉네임: {loginUser.username}</Card.Title>
                                     <Card.Text>
-                                        성별: {user.sex ? "여" : "남"}<br />
-                                        이메일: {user.email}<br />
-                                        유저 등급: {user.user_code <= 10 ? "운영자 계정" : (user.chef_code ? "셰프 계정" : "일반 계정")}
+                                        성별: {sex ? "여" : "남"}<br />
+                                        이메일: {email}<br />
+                                        유저 등급: {loginUser.user_code <= 10 ? "운영자 계정" : (loginUser.chef_code ? "셰프 계정" : "일반 계정")}
                                     </Card.Text>
-                                    <Button variant="dark" size="sm" className="mb-2">회원 정보 수정하기</Button>
+                                    <Button variant="dark" size="sm" className="mb-2" onClick={() => {setShowUserInfoModal(true)}}>회원 정보 수정하기</Button>
+                                    <UserInfoModal
+                                        show={showUserInfoModal}
+                                        setEmail={setEmail}
+                                        setSex={setSex}
+                                        setShowUserInfoModal={setShowUserInfoModal}
+                                        loginUser={loginUser}
+                                    />
                                     <div style={{marginTop:"30px"}}></div>
                                     <h6 className="mb-3">카테고리 찜 목록</h6>
 
-                                    <Button variant="outline-primary" size="sm" className="me-2">카테고리 찜하기</Button>
+                                    <Button variant="outline-primary" size="sm" className="me-2" onClick={() => {setShowUserCategories(true)}}>카테고리 찜하기</Button>
+                                    <UserCategoryModifyModal
+                                        show={showUserCategories}
+                                        userCategories={categories}
+                                        setShowUserCategories={setShowUserCategories}
+                                        loginUser={loginUser}
+                                    />
                                     <Button variant="outline-danger" size="sm">카테고리 제거하기</Button>
 
                                     <div className="mb-3" style={{marginTop:"10px"}}>
@@ -388,7 +327,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                                         ))}
                                     </Row>
                                     <h6 className="mb-3">카테고리 최신 레시피</h6>
-                                    {categories && categories.map((category, idx) => (
+                                    {categories.map((category, idx) => (
                                         <Button key={idx} variant="outline-secondary" size="sm"
                                                 className="me-2 mb-2">{category.category_name}</Button>
                                     ))}

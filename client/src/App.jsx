@@ -23,10 +23,9 @@ function App() {
   const [user, setUser] = useState(loginUser && JSON.parse(loginUser));
   const [profilePic, setProfilePic] = useState(loginUser && JSON.parse(loginUser).user_img);
 
-  const API_URL = import.meta.env.VITE_HOST_IP;
-
-
-
+  const HOST_IP  = import.meta.env.VITE_HOST_IP
+  const API_URL = HOST_IP;
+  
   useEffect(() => {
     // const API_URL = import.meta.env.PROD
     //   ? ''
@@ -38,8 +37,7 @@ function App() {
     //   .catch(error => console.error('Error:', error));
     // db에서 유저 데이터 받아오는 코드
       // 로그인 유지 기능 없어서 임시로 작성해놓은 코드
-    console.log('fdsaf', user && user.userId)
-    user && fetch(`${API_URL}/hello/${user && user.user_id}`)
+    fetch(`${API_URL}/hello`)
       .then(response => response.json())
       .then(data => {
                 setMessage(data.message)
@@ -49,7 +47,6 @@ function App() {
       .catch(error => console.error('Error:', error));
 
   }, [])
-
   // 서버로 데이터 전송하는 함수 handleSignUp
   const handleSignUp = async (signUpData) => {
     try {
@@ -127,11 +124,18 @@ function App() {
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/search' element = {<SearchResultPage/>}/>
-          <Route path="/logout" element={user && <Logout user={user}/>}/>
-          <Route path = '/:category' element = {<RecipeList/>}/>
-          <Route path = '/:recipe_id' element = {<RecipeDetail />}/>
+          <Route path = '/category/:category' element = {<RecipeList/>}/>
+          <Route path = '/recipe/:recipe_id' element = {<RecipeDetail />}/>
+          <Route path = '/logout' element={user && <Logout user={user}/>}/>
           <Route element = {<ProtectedPage />}>
-            <Route path = '/mypage' element = {user ? <UserMyPage user={user} profilePic={profilePic} setProfilePic={setProfilePic} loginUser={loginUser}/> : <Login />}/>
+            <Route
+              path = '/mypage' element = { user ? <UserMyPage
+                                                      user={user}
+                                                      profilePic={profilePic}
+                                                      setProfilePic={setProfilePic}
+                                                      loginUser={loginUser}/>
+                                                : <Login />}
+            />
           </Route>
         </Routes>
       </Router>

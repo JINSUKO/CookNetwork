@@ -17,9 +17,8 @@ const{
 } = StyledApp;
 const socket_IP  = import.meta.env.VITE_SOCKET_IP
 // const socket = new io('http://192.168.0.103:3001/'); // 관용님 학원 pc ip
-const socket = new io(socket_IP); // 도희님 학원 pc ip
+const socket = new io(socket_IP); 
 // const socket = new io('http://192.168.0.14:3001/'); // 진수님 학원 wifi ip
-//const socket = new io('http://192.168.0.13:3001/'); // 진수님 학원 wifi ip
 
 function chatIndex({ userData }) {
   const { user_code, user_id, username } = userData || {}
