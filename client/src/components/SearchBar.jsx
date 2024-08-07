@@ -27,6 +27,12 @@ function SearchBar({ onSearch }) {    // onSearch를 prop으로 받기
     console.log(category)
   }
 
+  // 검색을 수행하는 onSearch 함수
+  const handleSearch = (searchInput, category) => {
+    setSearchInput(searchKeysearchInputword)
+    navigate(`/search?q=${encodeURIComponent(searchKeyword)}&category=${encodeURIComponent(category)}`);
+  };
+
   // submit(검색) 버튼 클릭시 이벤트 함수
   const handleSubmit = (event) => {   
     event.preventDefault();
@@ -46,7 +52,11 @@ function SearchBar({ onSearch }) {    // onSearch를 prop으로 받기
           onChange={handleInputChange} 
           placeholder="레시피를 검색하세요"
           />
-        <Button type="submit" variant="warning" className="search-button">
+        <Button 
+          type="submit" 
+          variant="warning" 
+          className="search-button"
+          onSearch={handleSearch}>
           <span>검색</span>
         </Button>
       </Form>

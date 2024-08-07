@@ -6,14 +6,14 @@
 */
 
 import React, { useState } from 'react';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import NavDropdown from 'react-bootstrap/NavDropdown'; 
 
 function SearchCategoryDrop({ onCategoryChange }) {   // SearchBar에 함수 전달
   const [category, setCategory] = useState("카테고리");
 
   // 카테고리로 사용될 배열
   const categories = [
-    { name: '전체', path: '/' },
+    { name: '전체', path: '/search/' },
     { name: '한식', path: '/search/korean' },
     { name: '양식', path: '/search/western' },
     { name: '중식', path: '/search/chinese' },

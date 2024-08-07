@@ -7,19 +7,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import SearchBar from './SearchBar';
-import FilteredResult from './FilteredResult';
+import FetchRecipeList from './FetchRecipeList';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import '../assets/styles/Navbar.css'
 
 function NavbarElement({ user }) {
   const navigate = useNavigate();
-  const [searchKeyword, setSearchKeyword] = useState('');
 
-  // 검색을 수행하는 함수
-  const handleSearch = (searchKeyword, category) => {
-    setSearchKeyword(searchKeyword)
-    navigate(`/search?q=${encodeURIComponent(searchKeyword)}&category=${encodeURIComponent(category)}`);
-  };
+  
 
   // 카테고리 배열 정의
   const categories = [
@@ -81,7 +76,7 @@ function NavbarElement({ user }) {
             ))}
 
           </Nav>
-          <SearchBar onSearch={handleSearch} />
+          {/* <SearchBar onSearch={handleSearch} /> */}
         </Container>
       </Navbar>
 

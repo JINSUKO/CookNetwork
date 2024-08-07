@@ -4,10 +4,11 @@
 */
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Container, Row, Col, Button, Card} from 'react-bootstrap';
+import RecipeListPage from "../pages/RecipeListPage";
 
-function RecipeList() { 
+function FetchRecipeList() { 
   const { category } = useParams();
   console.log(category)
   const currentCategory = category || 'main';   // category 없으면 main으로
@@ -18,7 +19,7 @@ function RecipeList() {
     try {
       // 삼항연산자를 사용하여 API 엔드포인트 요청 url 결정
       const url = currentCategory === 'main'
-        ? `${API_URL}/api/main`   // 전체 레시피 리스트를 가져오는 main 카테고리
+        ? `${API_URL}/api/category/main`   // 전체 레시피 리스트를 가져오는 main 카테고리
         : `${API_URL}/api/category/${currentCategory}`;   // 특정 카테고리
 
       const response = await fetch(url, {
@@ -49,26 +50,9 @@ function RecipeList() {
 
   return (
     <Container className="text-start">
-      {/* <h5>{currentCategory === 'main' ? '모든 레시피' : `${currentCategory} 카테고리`} <br/> 다양한 레시피를 확인해보세요!</h5>
-      <Row lg={5} className="g-4">
-        {recipes.map((recipe) => (
-        <Col key={recipe.recipe_id}>  
-          <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
-            <Card style={{ cursor: 'pointer' }}>
-            <Card.Img variant="top" src={recipe.recipe_img} />
-            <Card.Body>
-              <Card.Title>
-                {recipe.recipe_name}
-              </Card.Title>
-              <Button variant="dark">보러가기</Button>
-            </Card.Body>
-          </Card>
-        </Link>
-      </Col>
-      ))}
-      </Row> */}
+      <RecipeListPage />
     </Container>
   )
 }
 
-export default RecipeList;
+export default FetchRecipeList;

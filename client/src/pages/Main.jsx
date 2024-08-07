@@ -3,7 +3,7 @@
 */
 
 import { React, useState } from 'react';
-import RecipeList from '../components/RecipeList.jsx'
+import RecipeList from '../components/FetchRecipeList.jsx'
 import '../assets/styles/Main.css'
 
 

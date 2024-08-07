@@ -28,7 +28,7 @@ function SearchResultPage() {
 
   // fetch 함수
   const fetchSearchResults = async (query) => {
-    setIsLoading(true);   // SearchResult 컴포넌트에서 함수를 가져와 사용
+    setIsLoading(true);   
     setError(null)
 
     try {
