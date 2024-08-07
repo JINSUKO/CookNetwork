@@ -194,6 +194,7 @@ const handleConnection = async (socket) => {
         // 비동기로 실행할 경우 db 접속 -> 데이터 획득 하는 속도보다
         // 클라이언트 소켓에 'CHAT_LOG'을 보내는 속도가 빨라
         // 'chatlog'가 제대로 클라이언트에 도달하지 않음
+        // setTimeout도 사용가능 
         }    
     });
         // 클라이언트 소켓에서 "Message"를 emit할때 실행
