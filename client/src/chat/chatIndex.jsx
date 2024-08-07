@@ -16,14 +16,14 @@ const{
   SubmitButton
 } = StyledApp;
 const socket_IP  = import.meta.env.VITE_SOCKET_IP
-console.log(socket_IP)
 // const socket = new io('http://192.168.0.103:3001/'); // 관용님 학원 pc ip
 const socket = new io(socket_IP); 
 // const socket = new io('http://192.168.0.14:3001/'); // 진수님 학원 wifi ip
 
 function chatIndex({ userData }) {
-  const { user_code, user_id, username} = userData || {}
+  const { user_code, user_id, username } = userData || {}
   const [messageHistory, setMessageHistory] = useState([]);
+  const [oldMessageLog, setOldMessageLog] = useState([]);
 
   const uid = useRef(null);
   const historyElement = useRef(null);
@@ -33,6 +33,7 @@ function chatIndex({ userData }) {
     name: username || '',
     message: '',
   });
+  
   useEffect(() => {
     if(user_code && user_id && username){
       socket.emit('USER_ENTER',{ code: user_code, id: user_id, name: username});
@@ -49,23 +50,29 @@ function chatIndex({ userData }) {
     const onUserLeave = (user) =>{
       console.log(`${user.name}(${user.id}) 접속 해제`);
     };
-
+    const onChatLog = (data) =>{
+      setOldMessageLog(data);
+    }
+    
     socket.on('Message', onMessage);
     socket.on('USER_ENTER', onUserEnter);
     socket.on('USER_LEAVE', onUserLeave);
+    socket.on('CHAT_LOG',onChatLog);
 
     return () => {
       socket.off('Message', onMessage);
       socket.off('USER_ENTER', onUserEnter);
       socket.off('USER_LEAVE', onUserLeave);
+      socket.off('CHAT_LOG', onChatLog);
     };
-  }, [user_code, user_id, username]);
+  }, [user_code, user_id, username]); 
 
   useEffect(() => {
     if(historyElement.current){
       historyElement.current.scrollTop = historyElement.current.scrollHeight;
     }
-  }, [messageHistory]);
+    console.log(messageHistory)
+  }, [messageHistory,oldMessageLog]);
 
   const handleChange = (event) =>{
     setUserMessage((prevState) => ({
@@ -90,15 +97,23 @@ function chatIndex({ userData }) {
   return (
     <Container>
       <HistoryWrapper ref={historyElement}>
-        {messageHistory.length === 0 ? (
-          <NoHistory>첫 메시지를 남겨보세요🥳</NoHistory>
+      {oldMessageLog.length === 0 && messageHistory.length === 0 ? (
+          <NoHistory>Loading...</NoHistory>
         ) : (
-          messageHistory.map(({ id, name, message }, index) => (
+          <>
+          {oldMessageLog.map(({ user_code, user_name, chat_data }, index) => (
+            <ChatItem key={index} me={user_code === userData.user_code}>
+              <ChatName>{user_name}</ChatName>
+              <ChatMessage>{chat_data}</ChatMessage>
+            </ChatItem>
+          ))}
+          {messageHistory.map(({ id, name, message }, index) => (
             <ChatItem key={index} me={id === user_code}>
               <ChatName>{name}</ChatName>
               <ChatMessage>{message}</ChatMessage>
             </ChatItem>
-          ))
+          ))}
+          </>
         )}
       </HistoryWrapper>
       <Form onSubmit={handleSubmit}>

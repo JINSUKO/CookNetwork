@@ -16,7 +16,7 @@ export const StyledApp = {
     </ul>
   )),
   NoHistory: ({ children }) => <div className='no-history'>{children}</div>,
-  ChatItem: ({ children, me }) => <li className={`${me ? '' : ''}`}>{children}</li>,
+  ChatItem: ({ children, me }) => <li className={`${me ? 'me' : 'other'}`}>{children}</li>,
   ChatName: ({ children }) => <strong className="chat-name">{children}</strong>,
   ChatMessage: ({ children }) => <p className="chat-message">{children}</p>,
   NameInput: ({ children }) => <strong className="name-input">{children}</strong>,

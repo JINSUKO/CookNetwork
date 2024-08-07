@@ -15,7 +15,7 @@ const UserInfoModal = ({ show, setEmail, setSex, setShowUserInfoModal, loginUser
 
     const userInfoConfirm = async () => {
 
-        if (!checkConfirm) return alert('유저 정보가 유효하지 않습니다. 다시 입력해주세요.');
+        if (!checkConfirm || !postEmail) return alert('유저 정보가 유효하지 않습니다. 다시 입력해주세요.');
 
 
         setShowUserInfoModal(false);
@@ -74,6 +74,7 @@ const UserInfoModal = ({ show, setEmail, setSex, setShowUserInfoModal, loginUser
         setPostSex(e.target.value);
     }
 
+    // 비밀번호 수정 기능 나중에 구현.
     const getUserPwEventListener = (e) => {
         const regPw = /^[0-9a-zA-Z]{8,16}$/;
 
