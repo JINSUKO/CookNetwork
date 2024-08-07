@@ -119,55 +119,82 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-
+// 메인 서버
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
 
+// 채팅(socket) 서버
 const chat_PORT = 3001;
 const server= app.listen(chat_PORT, () => console.log(`Chat Server is running at ${chat_PORT}`))
 
+// 소켓 서버 생성(모든 ip 접근 가능)
 const io = new socketIO.Server(server, {
     cors: {
         origin: '*',
     },
 });
 
+// 접속 유저를 저장하기 위한 Map 생성
 const userList = new Map();
 
+// 클라이언트에서 메세지를 받음
 const handleSocketMessage = (socket, data) => {
     console.log(data);
 
+    // 접속된 모든 socket에 'Message'이름으로 전달
     socket.broadcast.emit('Message', data);
+    //받은 메세지를 (유저코드, 유저닉네임, 채팅시간, 채팅내역)형태로 db에 저장하는 모듈
     chatLog.chatDataLog(data)
 };
 
 const handleSocketDisconnect = (socket) => {
+    // 유저 접속내역에서 클라이언트의 socket id를 키값으로 내용을 받아옴
     const userid = userList.get(socket.id);
     console.log('접속 해제: ',userid);
     if(userid){
+        // 접속된 모든 socket에 'USER_LEAVE'이름으로 전달
         socket.broadcast.emit('USER_LEAVE',userid);
+        // 유저리스트 Map에서 해당하는 유저 제거
         userList.delete(socket.id)
         console.log('현재 접속 유저: ', [...userList.values()]);
     }
 };
 
+
 const handleConnection = async (socket) => {
+    // 비동기로 실행
+    // 클라이언이 소켓에서 'USER_ENTER'를 emit할때 실행
     socket.on('USER_ENTER', async (user) =>{
+        // 유저 리스트에 없을 경우에만 실행(중복 실행 방지)
         if(!userList.has(user.id)){
+        // 유저리스트 Map에 socket.id: user정보 형태로 저장
         userList.set(socket.id, user);
+
         console.log('유저 접속: ',user.id);
         console.log('현재 접속 유저: ', [...userList.values()]);
+        // 동기로 실행 
+        // 클라이언트 소켓에 'USER_ENTER'이름으로 'user' 전달
         await socket.broadcast.emit('USER_ENTER', user);
-
+        
+        // 동기로 실행
+        // db에 접속해 최근 10개의 채팅 데이터를 불러오는 모듈
         const chatlog = await chatLog.getChatLog()
         console.log(chatlog)
+        // 동기로 실행
+        // 클라이언트 소켓에 'CHAT_LOG' 이름으로 'chatlog' 전달
         await socket.broadcast.emit('CHAT_LOG', chatlog)
+        // Promise로 실행하는 이유는 
+        // 비동기로 실행할 경우 db 접속 -> 데이터 획득 하는 속도보다
+        // 클라이언트 소켓에 'CHAT_LOG'을 보내는 속도가 빨라
+        // 'chatlog'가 제대로 클라이언트에 도달하지 않음
         }    
     });
+        // 클라이언트 소켓에서 "Message"를 emit할때 실행
         socket.on("Message",(data) => handleSocketMessage(socket, data));
+        // 클라이언트 소켓이 서버를 떠날때 실행 ( socket 내장 함수 )
         socket.on('disconnect', () => handleSocketDisconnect(socket));
     
 };
-
+// 클라이언트 소켓이 서버 접속시 실행 ( socket 내장 함수 )
 io.on('connection',handleConnection);
 
