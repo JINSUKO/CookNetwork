@@ -45,8 +45,14 @@ const uploadUserImg = require('./router/uploadUserImg');
 app.use('/api/uploadUserImg', uploadUserImg);
 
 // 유저가 등록한 카테고리 불러오는 요청시 사용
-const userCategories = require('./router/getUserCategories');
-app.use('/api/userCategories', userCategories);
+const userCategoryNames = require('./router/getUserCategoryNames');
+app.use('/api/userCategoryNames', userCategoryNames);
+
+
+// 유저 카테고리 변경 요청시 사용
+const userCategoryUpdate = require('./router/updateUserCategories');
+app.use('/api/updateUserCategories', userCategoryUpdate);
+
 
 // 유저 닉네임 변경 요청시 사용
 const userNameUpdate = require('./router/updateUsername');
@@ -57,8 +63,9 @@ const userInfoUpdate = require('./router/updateUserInfo');
 app.use('/api/userInfoUpdate', userInfoUpdate);
 
 // 모든 카테고리 불러오는 요청시 사용
-const categoriesRouter = require('./router/categories');
-app.use('/api/categories', categoriesRouter);
+const allCategoryNamesRouter = require('./router/getAllCategoryName');
+app.use('/api/allCategoryName', allCategoryNamesRouter);
+
 
 // 여기에 다른 API 라우트들을 추가합니다...
 
