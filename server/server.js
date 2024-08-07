@@ -195,6 +195,6 @@ const handleConnection = async (socket) => {
         socket.on('disconnect', () => handleSocketDisconnect(socket));
     
 };
-// 클라이언트 소켓이 서버 접속시 실행 ( socket 내장 함수 )
+// 서버가 작동할시 실행 ( socket 내장 함수 )
 io.on('connection',handleConnection);
 
