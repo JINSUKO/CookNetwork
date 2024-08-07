@@ -4,14 +4,14 @@
 
 import React from 'react';
 
-function FilteredResult({ data, searchTerm }) {
+function FilteredResult({ data, searchKeyword }) {
   const filteredData = data.filter((item) => {
-    return item.title.toLowerCase().includes(searchTerm.toLowerCase());
+    item.title.toLowerCase().includes(searchKeyword.toLowerCase());
   });
 
   // 공백 무시 검색
   const filteredDataIgnoreSpaces = data.filter((item) => {
-    return item.title.replace(/\s/g, "").toLowerCase().includes(searchTerm.replace(/\s/g, "").toLowerCase());
+    item.title.replace(/\s/g, "").toLowerCase().includes(searchKeyword.replace(/\s/g, "").toLowerCase());
   });
 
   return (
