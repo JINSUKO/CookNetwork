@@ -120,7 +120,7 @@ function App() {
       <Router>
         <Header user={user}/>
         <Routes>
-          <Route path = '/' element = {<Main />}/>
+          {/*<Route path = '/' element = {<Main />}/>*/}
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/search' element = {<SearchResultPage/>}/>

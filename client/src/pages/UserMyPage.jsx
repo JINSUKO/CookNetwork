@@ -20,7 +20,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
     const [activeTab, setActiveTab] = useState('userInfo');
     const [profileImgDBbase64, setProfileImgDBbase64] = useState(profilePic);
     const [profileImg, setProfileImg] = useState(null);
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState(null);
 
     console.log('categories', categories)
     const fileInputRef = useRef(null);
@@ -120,8 +120,8 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
     const getUserCategories = async () => {
 
         try {
-            const response = await fetch(`${API_URL}/api/userCategories`, {
-            // const response = await authFetch(`${API_URL}/api/userCategories`, {
+            const response = await fetch(`${API_URL}/api/userCategoryNames`, {
+            // const response = await authFetch(`${API_URL}/api/userCategoryNames`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -227,8 +227,8 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                             </Col>
                         </Row>
                         <div className="mb-3">
-                            {categories.map((category, idx) => (
-                                <Button key={idx} variant="outline-secondary" size="sm" className="me-2 mb-2">{category.category_name}</Button>
+                            {categories && categories.map((category, idx) => (
+                                <Button key={idx} variant="outline-secondary" size="sm" className="me-2 mb-2">{category}</Button>
                             ))}
                             {/*{['Label', 'Label', 'Label'].map((label, idx) => (*/}
                             {/*    <Button key={idx} variant="dark" size="sm" className="me-2 mb-2">{label}</Button>*/}
@@ -284,17 +284,18 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                                     <h6 className="mb-3">카테고리 찜 목록</h6>
 
                                     <Button variant="outline-primary" size="sm" className="me-2" onClick={() => {setShowUserCategories(true)}}>카테고리 찜하기</Button>
-                                    <UserCategoryModifyModal
+                                    {categories && <UserCategoryModifyModal
                                         show={showUserCategories}
                                         userCategories={categories}
+                                        setUserCategories={setCategories}
                                         setShowUserCategories={setShowUserCategories}
                                         loginUser={loginUser}
-                                    />
+                                    />}
                                     <Button variant="outline-danger" size="sm">카테고리 제거하기</Button>
 
                                     <div className="mb-3" style={{marginTop:"10px"}}>
                                         {categories && categories.map((category, idx) => (
-                                            <Button key={idx} variant="outline-secondary" size="sm" className="me-2 mb-2">{category.category_name}</Button>
+                                            <Button key={idx} variant="outline-secondary" size="sm" className="me-2 mb-2">{category}</Button>
                                         ))}
                                     </div>
 
@@ -329,7 +330,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                                     <h6 className="mb-3">카테고리 최신 레시피</h6>
                                     {categories.map((category, idx) => (
                                         <Button key={idx} variant="outline-secondary" size="sm"
-                                                className="me-2 mb-2">{category.category_name}</Button>
+                                                className="me-2 mb-2">{category}</Button>
                                     ))}
                                     <Row xs={2} md={3} lg={6} className="g-2 mb-4">
                                         {[...Array(6)].map((_, idx) => (

@@ -1,5 +1,5 @@
 import {Navigate, Outlet} from "react-router-dom";
-import {memo, useEffect, useState} from "react";
+import {memo, useEffect} from "react";
 
 import authFetch from '../../fetchInterceptorAuthToken'
 
