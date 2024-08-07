@@ -124,7 +124,7 @@ function App() {
           <Route path = '/board' element = {<Board />}/>
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
-          <Route path = '/search' element = {<SearchResultPage/>}/>
+          <Route path = '/search/:search' element = {<SearchResultPage/>}/>
           <Route path = '/category/:category' element = {<RecipeList/>}/>
           <Route path = '/recipe/:recipe_id' element = {<RecipeDetail />}/>
           <Route path = '/logout' element={user && <Logout user={user}/>}/>

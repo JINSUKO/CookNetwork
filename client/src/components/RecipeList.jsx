@@ -44,7 +44,7 @@ function RecipeList() {
   
   useEffect(() => {   // 컴포넌트가 마운트될 때 fetch 함수 호출
     fetchRecipes();
-  }, [fetchRecipes]);   // 카테고리가 바뀔때마다 다시 실행
+  }, [category]);   // 카테고리가 바뀔때마다 다시 실행
 
 
   return (

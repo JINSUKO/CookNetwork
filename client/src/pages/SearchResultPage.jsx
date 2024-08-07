@@ -40,12 +40,12 @@ function SearchResultPage() {
       }
     );
       if (!response.ok) {
-        throw new Error('검색 요청에 실패했습니다.');
+        throw new Error(`검색 요청에 실패했습니다.: ${response.status}`);
       }
       const data = await response.json();
       setResults(data);
     } catch (error) {
-      console.error('검색 중 오류 발생:', error);
+      console.error('검색 중 오류 발생:', error.message);
       setError('검색 중 오류가 발생했습니다. 다시 시도해 주세요.');
     } finally {
       setIsLoading(false);
@@ -90,10 +90,10 @@ function SearchResultPage() {
 
 
   return (
-    <Container className="text-start">
+    <Container>
       <h3>검색 결과</h3>
       <Row lg={5} className="g-4">
-        {results.map((recipe) => (
+        {results.map((recipe) => (    // results 배열에 저장된 검색결과를 사용
           <Col key={recipe.recipe_id}>  
             <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
               <Card style={{ cursor: 'pointer' }}>

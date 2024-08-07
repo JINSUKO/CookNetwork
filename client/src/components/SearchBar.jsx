@@ -13,31 +13,43 @@ import SearchCategoryDrop from "./SearchCategoryDrop";
 import "../assets/styles/SearchBar.css"
 
 function SearchBar({ onSearch }) {    // onSearch를 prop으로 받기
-  const [search, setSearch] = useState("") ;    // useState 사용하여 검색한 키워드 저장
+  const [searchInput, setSearchInput] = useState("") ;    // useState 사용하여 검색한 키워드 저장
+  const [selectedCategory, setSelectedCategory] = useState("all")
 
-  const handleSubmit = (event) => {   // submit(검색) 버튼 클릭시 아벤트 함수
+  // onChange 함수 
+  const handleInputChange = (event) => {
+    setSearchInput(event.target.value);   // 입력된 검색어 값 저장
+    console.log(searchInput)
+  }
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);  // 선택한 카테고리 값 저장
+    console.log(category)
+  }
+
+  // submit(검색) 버튼 클릭시 이벤트 함수
+  const handleSubmit = (event) => {   
     event.preventDefault();
-    onSearch(search);   // onSearch를 호출하여 현재 검색어를 NavbarElement.jsx에 전달
+    onSearch(searchInput, selectedCategory);   // onSearch를 호출하여 현재 검색어와 선택된 카테고리를 NavbarElement.jsx에 전달
   };
 
 
   return(
     <div>
       <Form onSubmit={handleSubmit} className="search-form d-flex align-items-center" style={{ position: 'relative' }}>
-        <SearchCategoryDrop />
+        <SearchCategoryDrop onCategoryChange={handleCategoryChange}/>
         <Form.Control
           type="search"
           className="search-input"
           required
-          value={search}    // 검색한 키워드
-          onChange={(event) => setSearch(event.target.value)}
+          value={searchInput}    // 검색한 키워드
+          onChange={handleInputChange} 
           placeholder="레시피를 검색하세요"
           />
-        <Button type="submit" variant="warning" className="search-button" ><span>검색</span>
+        <Button type="submit" variant="warning" className="search-button">
+          <span>검색</span>
         </Button>
       </Form>
-      {/* <FilteredResult data={results} /> */}
-      {/* <SearchResult results={results} isLoading={isLoading} error={error} /> */}
     </div>
   )
 }
