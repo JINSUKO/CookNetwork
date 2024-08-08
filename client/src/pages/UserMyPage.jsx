@@ -8,6 +8,7 @@ import UserInfoModal from '../components/UserInfoModal'
 import UserCategoryModifyModal from '../components/UserCategoryModifyModal'
 
 import authFetch from '../fetchInterceptorAuthToken'
+import UserSelectedCategories from "../components/UserSelectedCategories.jsx";
 
 
 // localStorage 에서 받아온 loginUser로 user, profilePic 를 대체하는 코드로 수정해야함.
@@ -21,6 +22,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
     const [profileImgDBbase64, setProfileImgDBbase64] = useState(profilePic);
     const [profileImg, setProfileImg] = useState(null);
     const [categories, setCategories] = useState(null);
+    const [userCategoryRecipes, setUserCategoryRecipes] = useState(null);
 
     console.log('categories', categories)
     const fileInputRef = useRef(null);
@@ -43,7 +45,6 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
 
 
         setShowImgConfirmModal(true)
-
 
     };
 
@@ -134,6 +135,25 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
 
             console.log("유저의 카테고리 목록 호출 성공!");
             setCategories(result);
+            console.log(result)
+
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // 마이페이지에서 유저가 등록한 모든 선호 카테고리의 레시피 데이터 요청 코드.
+    const getUserCategoryRecipes = async () => {
+        try {
+            const response = await fetch(`${API_URL}/api/userCategoryRecipes?user_id=${user.user_id}`);
+
+            if (!response.ok) throw new Error((await response.json()).error);
+
+            const result = await response.json();
+            setUserCategoryRecipes(result);
+            console.log(result)
+
+            console.log("유저의 모든 카테고리 레시피 데이터 호출 성공!");
 
         } catch (e) {
             console.error(e);
@@ -141,10 +161,14 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
     }
 
     useEffect(() => {
-        // 마이페이지에서 유저가 `등록한 선호 카테고리 목록 데이터 요청 코드.
+        // 마이페이지에서 유저가 등록한 선호 카테고리 목록 데이터 요청 코드.
         getUserCategories();
+        // 마이페이지에서 유저가 등록한 모든 선호 카테고리의 레시피 데이터 요청 코드.
+        getUserCategoryRecipes();
 
-    }, []);
+    }, [activeTab]); // activeTab 이 변경될 때 마다 UserMyPage가 렌더링 되어, useEffect를 다시 실행시킨다.
+                          // == 탭을 누를 때 서버로 데이터 요청을 보내서 최신 데이터를 UserMyPage에 새로 보낸다.
+
     // 닉네임 수정 기능 시작
     const [showUserNameModal, setShowUserNameModal] = useState(false);
     const [username, setUsername] = useState(loginUser.username);
@@ -283,7 +307,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                                     <div style={{marginTop:"30px"}}></div>
                                     <h6 className="mb-3">카테고리 찜 목록</h6>
 
-                                    <Button variant="outline-primary" size="sm" className="me-2" onClick={() => {setShowUserCategories(true)}}>카테고리 찜하기</Button>
+                                    <Button variant="outline-success" size="sm" className="me-2" onClick={() => {setShowUserCategories(true)}}>카테고리 찜하기</Button>
                                     {categories && <UserCategoryModifyModal
                                         show={showUserCategories}
                                         userCategories={categories}
@@ -291,7 +315,6 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                                         setShowUserCategories={setShowUserCategories}
                                         loginUser={loginUser}
                                     />}
-                                    <Button variant="outline-danger" size="sm">카테고리 제거하기</Button>
 
                                     <div className="mb-3" style={{marginTop:"10px"}}>
                                         {categories && categories.map((category, idx) => (
@@ -304,8 +327,8 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                             {activeTab === 'activity' && (
                                 <>
                                     <h6 className="mb-3">최근 평가한 레시피</h6>
-                                    <Row xs={2} md={3} lg={6} className="g-2 mb-4">
-                                        {[...Array(6)].map((_, idx) => (
+                                    <Row xs={2} md={3} lg={4} className="g-2 mb-4">
+                                        {[...Array(8)].map((_, idx) => (
                                             <Col key={idx}>
                                                 <div style={{
                                                     width: '100%',
@@ -316,8 +339,8 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                                         ))}
                                     </Row>
                                     <h6 className="mb-3">최근 북마크 레시피</h6>
-                                    <Row xs={2} md={3} lg={6} className="g-2 mb-4">
-                                        {[...Array(6)].map((_, idx) => (
+                                    <Row xs={2} md={3} lg={4} className="g-2 mb-4">
+                                        {[...Array(8)].map((_, idx) => (
                                             <Col key={idx}>
                                                 <div style={{
                                                     width: '100%',
@@ -327,27 +350,12 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                                             </Col>
                                         ))}
                                     </Row>
-                                    <h6 className="mb-3">카테고리 최신 레시피</h6>
-                                    {categories.map((category, idx) => (
-                                        <Button key={idx} variant="outline-secondary" size="sm"
-                                                className="me-2 mb-2">{category}</Button>
-                                    ))}
-                                    <Row xs={2} md={3} lg={6} className="g-2 mb-4">
-                                        {[...Array(6)].map((_, idx) => (
-                                            <Col key={idx}>
-                                                <div style={{
-                                                    width: '100%',
-                                                    paddingBottom: '100%',
-                                                    background: '#f0f0f0'
-                                                }}></div>
-                                            </Col>
-                                        ))}
-                                    </Row>
+                                    { <UserSelectedCategories categories={categories} userCategoryRecipes={userCategoryRecipes} /> }
                                     { (user.user_code <= 11 || user.chef_code === 1 )
                                         && <div>
-                                                <h6 className="mb-3"> 레시피</h6>
-                                                <Row xs={2} md={3} lg={6} className="g-2">
-                                                    {[...Array(6)].map((_, idx) => (
+                                                <h6 className="mb-3">최근 등록한 레시피</h6>
+                                                <Row xs={2} md={3} lg={4} className="g-2">
+                                                    {[...Array(8)].map((_, idx) => (
                                                         <Col key={idx}>
                                                             <div style={{
                                                                 width: '100%',

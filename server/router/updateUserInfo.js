@@ -9,9 +9,6 @@ router.post('/', async (req, res) => {
 
     const { email, sex, user_id } = req.body;
 
-    console.log(req.body);
-    console.log(typeof sex)
-
     try {
 
         const query = 'UPDATE users SET email = ?, sex = ? WHERE user_id = ?;'
