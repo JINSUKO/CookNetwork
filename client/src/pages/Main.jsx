@@ -1,9 +1,9 @@
 /*
-쇼핑몰 메인 페이지
+메인 페이지
 */
 
 import { React, useState } from 'react';
-import RecipeList from '../components/FetchRecipeList.jsx'
+import RecipeListPage from './RecipeListPage';
 import '../assets/styles/Main.css'
 
 
@@ -14,7 +14,7 @@ function Main() {
   return ( 
   <div>
     <div>
-      <RecipeList categoryProp="all" />
+      <RecipeListPage categoryProp="all" />
     </div>
 
   </div>
