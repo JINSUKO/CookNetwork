@@ -4,7 +4,6 @@
 */
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import FetchRecipeList from './FetchRecipeList';
@@ -12,9 +11,6 @@ import { Container, Nav, Navbar } from 'react-bootstrap';
 import '../assets/styles/Navbar.css'
 
 function NavbarElement({ user }) {
-  const navigate = useNavigate();
-
-  
 
   // 카테고리 배열 정의
   const categories = [
@@ -24,6 +20,11 @@ function NavbarElement({ user }) {
     { name: '중식', path: 'category/chinese' },
     { name: '일식', path: 'category/japanese' }
   ];
+
+  const handleSearch = (searchInput, selectedCategory) =>{
+    console.log(`검색어: ${searchInput} in 카테고리: ${selectedCategory}`);
+  }
+  
 
   return (
     <div>
@@ -61,9 +62,8 @@ function NavbarElement({ user }) {
 
       {/* 헤더 아래 네비바 */}
       <Navbar expand="lg" className="bg-body-tertiary">
-        <Container className="d-flex justify-content-between align-items-center flex-nowrap ">
-          <Nav className="mx-auto d-flex justify-content-center flex-grow-1 flex-shrink-0" style={{ overflow: 'visible' }}>
-            {/* <Navbar.Brand href="/" bg="light" data-bs-theme="light" className="flex-shrink-0">전체</Navbar.Brand> */}
+        <Container className="d-flex justify-content-center align-items-center flex-nowrap ">
+          <Nav className="mx-auto d-flex justify-content-evenly flex-grow-1 flex-shrink-0" style={{ overflow: 'visible' }}>
 
             {categories.map((category) => (
               <Nav.Item key={category.path}>
@@ -76,7 +76,10 @@ function NavbarElement({ user }) {
             ))}
 
           </Nav>
-          {/* <SearchBar onSearch={handleSearch} /> */}
+          
+        </Container>
+        <Container className='d-flex justify-content-center'>
+          <SearchBar onSearch={handleSearch}/>
         </Container>
       </Navbar>
 
