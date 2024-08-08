@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Layout/Header'
 import Footer from './components/Layout/Footer'
 import Login from './pages/Login'
-import RecipeDetail from './components/RecipeDetail'
+import RecipeDetailPage from './pages/RecipeDetailPage'
 import Chat from "./chat/chatIndex";
 import UserMyPage from "./pages/UserMyPage";
 import SearchResultPage from './components/SearchResult';
@@ -126,7 +126,7 @@ function App() {
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/search/:search' element = {<SearchResultPage/>}/>
           <Route path = '/category/:category' element = {<FetchRecipeList/>}/>
-          <Route path = '/recipe/:recipe_id' element = {<RecipeDetail />}/>
+          <Route path = '/recipe/:recipe_id' element = {<RecipeDetailPage />}/>
           <Route path = '/logout' element={user && <Logout user={user}/>}/>
           <Route element = {<ProtectedPage />}>
             <Route

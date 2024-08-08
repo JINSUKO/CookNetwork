@@ -12,7 +12,7 @@ import { Container, Nav, Navbar } from 'react-bootstrap';
 import '../assets/styles/Navbar.css'
 
 function NavbarElement({ user }) {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   
 
@@ -61,9 +61,8 @@ function NavbarElement({ user }) {
 
       {/* 헤더 아래 네비바 */}
       <Navbar expand="lg" className="bg-body-tertiary">
-        <Container className="d-flex justify-content-between align-items-center flex-nowrap ">
-          <Nav className="mx-auto d-flex justify-content-center flex-grow-1 flex-shrink-0" style={{ overflow: 'visible' }}>
-            {/* <Navbar.Brand href="/" bg="light" data-bs-theme="light" className="flex-shrink-0">전체</Navbar.Brand> */}
+        <Container className="d-flex justify-content-center align-items-center flex-nowrap ">
+          <Nav className="mx-auto d-flex justify-content-evenly flex-grow-1 flex-shrink-0" style={{ overflow: 'visible' }}>
 
             {categories.map((category) => (
               <Nav.Item key={category.path}>
@@ -76,7 +75,9 @@ function NavbarElement({ user }) {
             ))}
 
           </Nav>
-          {/* <SearchBar onSearch={handleSearch} /> */}
+          <Container className='align-items-center'>
+            <SearchBar />
+          </Container>
         </Container>
       </Navbar>
 
