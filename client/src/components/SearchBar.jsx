@@ -25,15 +25,22 @@ function SearchBar({ onSearch }) {    // onSearch를 prop으로 받기
     console.log(category)
   }
 
-  // 검색을 수행하는 onSearch 함수
-  const handleSearch = (event) => {
-    navigate(`/search?q=${encodeURIComponent(searchInput)}&category=${encodeURIComponent(category)}`);
+  // 검색을 수행하는 handleSearch 함수
+  const handleSearch = () => {
+    const searchPath = selectedCategory === 'all'
+      ? `/search/q=${encodeURIComponent(searchInput)}`   // 전체 카테고리 선택시
+      : `/search/q=${encodeURIComponent(searchInput)}&category=${encodeURIComponent(selectedCategory)}`;
+    
+    navigate(searchPath);
+    if (onSearch) {
+      onSearch(searchInput, selectedCategory);
+    }
   };
 
   // submit(검색) 버튼 클릭시 이벤트 함수
   const handleSubmit = (event) => {   
     event.preventDefault();
-    handleSearch();   // onSearch를 호출하여 현재 검색어와 선택된 카테고리를 NavbarElement.jsx에 전달
+    handleSearch();   // handleSearch를 호출하여 현재 검색어와 선택된 카테고리를 NavbarElement.jsx에 전달
   };
 
 
@@ -53,7 +60,7 @@ function SearchBar({ onSearch }) {    // onSearch를 prop으로 받기
           type="submit" 
           variant="warning" 
           className="search-button"
-          onSearch={handleSearch}>
+          onClick={handleSearch}>
           <span>검색</span>
         </Button>
       </Form>

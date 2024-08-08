@@ -32,7 +32,7 @@ function SearchResultPage() {
     setError(null)
 
     try {
-      const response = await fetch(`${API_URL}/api/search?query=${encodeURIComponent(query)}`, {    // 검색어 내 공백이나 특수문자 인코딩하여 가져옴
+      const response = await fetch(`${API_URL}/api/search/query=${encodeURIComponent(query)}`, {    // 검색어 내 공백이나 특수문자 인코딩하여 가져옴
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

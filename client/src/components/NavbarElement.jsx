@@ -4,7 +4,6 @@
 */
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import FetchRecipeList from './FetchRecipeList';
@@ -12,9 +11,6 @@ import { Container, Nav, Navbar } from 'react-bootstrap';
 import '../assets/styles/Navbar.css'
 
 function NavbarElement({ user }) {
-  // const navigate = useNavigate();
-
-  
 
   // 카테고리 배열 정의
   const categories = [
@@ -24,6 +20,11 @@ function NavbarElement({ user }) {
     { name: '중식', path: 'category/chinese' },
     { name: '일식', path: 'category/japanese' }
   ];
+
+  const handleSearch = (searchInput, selectedCategory) =>{
+    console.log(`검색어: ${searchInput} in 카테고리: ${selectedCategory}`);
+  }
+  
 
   return (
     <div>
@@ -75,9 +76,10 @@ function NavbarElement({ user }) {
             ))}
 
           </Nav>
-          <Container className='align-items-center'>
-            <SearchBar />
-          </Container>
+          
+        </Container>
+        <Container className='d-flex justify-content-center'>
+          <SearchBar onSearch={handleSearch}/>
         </Container>
       </Navbar>
 

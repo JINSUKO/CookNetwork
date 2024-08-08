@@ -10,10 +10,12 @@ import RecipeListPage from "../pages/RecipeListPage";
 
 function FetchRecipeList() { 
   const { category } = useParams();
-  console.log(category)
   const currentCategory = category || 'main';   // category 없으면 main으로
   const [recipes, setRecipes] = useState([]);   // recipes 데이터 빈 배열로 설정
   const API_URL = import.meta.env.VITE_HOST_IP;
+
+  console.log("category:", category);
+  console.log("path:", location.pathname);
 
   const getRecipes = useCallback(async () => {
     try {
@@ -34,18 +36,18 @@ function FetchRecipeList() {
 
       // 레시피 데이터 result를 받아 recipes에 저장
       const result = await response.json();
-      console.log(result)
+      console.log("성공:", result)
       if (result) {
         console.log(`${currentCategory} 레시피 목록 호출 성공`);
         setRecipes(result.recipes);}
     } catch (e) {
-      console.error('Error:', e);
+      console.error("실패:", e);
     }
   }, [currentCategory]);   // 카테고리 값이 변경될 때 함수 재생성
   
   useEffect(() => {   // 컴포넌트가 마운트될 때 fetch 함수 호출
     getRecipes();
-  }, [category]);   // currentCategory가 바뀔때마다 다시 실행
+  }, [currentCategory]);   // currentCategory가 바뀔때마다 다시 실행
 
 
   return (
