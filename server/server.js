@@ -29,7 +29,7 @@ app.use(cors({
 app.use(express.json());
 
 // 유저 정보 불러오는 요청시 사용. 임시로 만들어 놓음.
-const exGetUser = require('./exGetUser');
+// const exGetUser = require('./exGetUser');
 // API 라우트
 // app.use('/hello', exGetUser, (req, res) => {
 //     res.json({ message: 'Hello from server!', user: res.locals.user, profilePic: res.locals.profilePic});
@@ -48,11 +48,9 @@ app.use('/api/uploadUserImg', uploadUserImg);
 const userCategoryNames = require('./router/getUserCategoryNames');
 app.use('/api/userCategoryNames', userCategoryNames);
 
-
 // 유저 카테고리 변경 요청시 사용
 const userCategoryUpdate = require('./router/updateUserCategories');
 app.use('/api/updateUserCategories', userCategoryUpdate);
-
 
 // 유저 닉네임 변경 요청시 사용
 const userNameUpdate = require('./router/updateUsername');
@@ -65,6 +63,10 @@ app.use('/api/userInfoUpdate', userInfoUpdate);
 // 모든 카테고리 불러오는 요청시 사용
 const allCategoryNamesRouter = require('./router/getAllCategoryName');
 app.use('/api/allCategoryName', allCategoryNamesRouter);
+
+// 유저가 등록한 모든 선호 카테고리의 레시피 데이터 요청시 사용.
+const userCateoryRecipesRouter = require('./router/getUserCateoryRecipes');
+app.use('/api/userCategoryRecipes', userCateoryRecipesRouter);
 
 
 // 여기에 다른 API 라우트들을 추가합니다...

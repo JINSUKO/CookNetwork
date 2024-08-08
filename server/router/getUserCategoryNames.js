@@ -17,7 +17,6 @@ router.post('/', async (req, res) => {
                         JOIN categories c ON uc.category_id = c.category_id;`
 
         let [userCategories] = await maria.execute(query, [req.body.user_id]);
-        console.log(userCategories)
 
         // [{a:b}, {a,c}, ...] => { a: [ b, c, ...]} 로 변경하는 함수 코드.
         let userCategoriesList = (() => {

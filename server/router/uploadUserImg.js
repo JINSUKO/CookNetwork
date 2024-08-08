@@ -24,14 +24,11 @@ router.post('/', upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({error: '업로드할 이미지가 없습니다.'});
 
     try {
-        console.log(req.file);
-        console.log(req.body);
 
         const query = 'UPDATE users SET user_img = ? WHERE user_id = ?;'
 
         const result = await maria.execute(query, [req.file.filename, req.body.user_id]);
 
-        console.log(result);
 
         return res.status(200).json({result});
     } catch (e) {
