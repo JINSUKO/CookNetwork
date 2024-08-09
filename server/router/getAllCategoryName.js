@@ -8,7 +8,6 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
 
-    console.log('fdsa', req.body);
     try {
         const query = `SELECT category_name FROM categories;`
 

@@ -23,6 +23,29 @@ router.delete('/', async (req, res) => {
 
 });
 
+/*
+`쿼리 밑의 코드로 개선 예정`
+
+`WITH user_data AS (
+    SELECT user_code, user_id
+    FROM users
+    WHERE user_id = 'aaa'
+),
+category_data AS (
+    SELECT category_id, category_name
+    FROM categories
+    WHERE category_name IN ('메인반찬', '국/탕')
+),
+DATA(user_id, category_name) AS (
+    VALUES
+        ('aaa', '메인반찬'),
+        ('aaa', '국/탕')
+)
+INSERT INTO user_category (user_code, category_id)
+SELECT ud.user_code, cd.category_id
+FROM DATA
+JOIN user_data ud ON ud.user_id = data.user_id
+JOIN category_data cd ON cd.category_name = data.category_name;`*/
 
 router.post('/', async (req, res) => {
 
