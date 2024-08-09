@@ -91,6 +91,11 @@ const searchRouter = require("./router/searchDetails.js");
 // 검색 라우트 요청시 사용
 app.use("/api/search",searchRouter)
 
+// 상세 페이지 라우트 연결
+const detailpageRouter = require("./router/detailPage.js");
+app.use("/api/recipe",detailpageRouter)
+
+
 // 로그아웃 라우트 연결
 const logoutRouter = require("./router/logout.js");
 // 로그아웃 라우트 요청시 사용
