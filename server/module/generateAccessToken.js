@@ -2,7 +2,7 @@
 
 const jwt = require('jsonwebtoken');
 
-require('dotenv').config();
+require('dotenv').config({ path: '.env.local' });
 
 /**
  * @param userId: 접근 승인 토큰 성성을 위한 해당 계정의 아이디 필요.
