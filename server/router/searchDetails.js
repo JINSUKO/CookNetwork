@@ -15,12 +15,12 @@ router.get('/',async (req,res)=>{
             const searchWord = '%' + searchData.q + '%'
             const [recipes] = await maria.execute(queryString,[searchWord]);
             console.log(searchWord)
-            const profileBasePath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
+            const recipeImgPath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
 
             const searchRecipes = await Promise.all(recipes.map(async (recipe) => {
-                let profilePic = fs.readFileSync(path.join(profileBasePath, recipe.recipe_img), 'base64');
-                profilePic = 'data:image/jpeg;base64,' + profilePic;
-                return { ...recipe, recipe_img: profilePic };
+                let recipePic = fs.readFileSync(path.join(recipeImgPath, recipe.recipe_img), 'base64');
+                recipePic = 'data:image/jpeg;base64,' + recipePic;
+                return { ...recipe, recipe_img: recipePic };
             }));
         
             return res.json(searchRecipes);
