@@ -6,8 +6,6 @@ const UserCategoryModifyModal = ({ show, userCategories, setUserCategories, setS
 
     const [categories, setCategories] = useState([]);
 
-    const parentCategoryDiv = useRef('');
-
     let selectedCategoriesList = [...userCategories];
 
     // 모든 카테고리 내용 가져오는 코드 시작
@@ -107,7 +105,7 @@ const UserCategoryModifyModal = ({ show, userCategories, setUserCategories, setS
             <Modal.Header closeButton>
                 <Modal.Title>Confirm Action</Modal.Title>
             </Modal.Header>
-            <Modal.Body ref={parentCategoryDiv}>
+            <Modal.Body>
                 {categories.map( // 모든 카테고리 내역을 화면에 보여주면서 해당 유저가 선택해놓은 카테고리를 선택 표시해둔다.
                     (category, idx) => {
                         if (userCategories.includes(category)) {

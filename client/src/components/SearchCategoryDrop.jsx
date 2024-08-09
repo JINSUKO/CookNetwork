@@ -13,14 +13,16 @@ function SearchCategoryDrop({ onCategoryChange }) {   // SearchBar에 함수 전
 
   // 카테고리로 사용될 배열
   const categories = [
-    { name: '전체', path: '/search/' },
-    { name: '한식', path: '/search/korean' },
-    { name: '양식', path: '/search/western' },
-    { name: '중식', path: '/search/chinese' },
-    { name: '일식', path: '/search/japanese' }
+    { name: '전체', path: 'all' },
+    { name: '한식', path: 'korean' },
+    { name: '양식', path: 'western' },
+    { name: '중식', path: 'chinese' },
+    { name: '일식', path: 'japanese' }
   ];
 
+
   const handleSelect = (eventKey) => {
+    console.log(eventKey)
     const selectedCategory = categories.find(cat => cat.name === eventKey);
     if (selectedCategory){                     // 선택한 카테고리와 같은 카테고리를 찾아서
       setCategory(selectedCategory.name); 
