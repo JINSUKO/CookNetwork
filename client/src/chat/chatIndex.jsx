@@ -31,6 +31,7 @@ function chatIndex({ userData }) {
   const [messageHistory, setMessageHistory] = useState([]);
   // 최근 10개의 채팅내역
   const [oldMessageLog, setOldMessageLog] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // 변동 사항을 적용하기 위한 REF지정
   const uid = useRef(null);
@@ -67,11 +68,10 @@ function chatIndex({ userData }) {
     const onUserLeave = (user) =>{
       console.log(`${user.name}(${user.id}) 접속 해제`);
     };
-    // 서버에서 data를 받아 oldMessageLog에 저장
     const onChatLog = (data) =>{
       setOldMessageLog(data);
+      setIsLoading(false);
     }
-    
     // 서버에서 각각 emit 받을경우 실행
     socket.on('Message', onMessage);
     socket.on('USER_ENTER', onUserEnter);
@@ -86,6 +86,7 @@ function chatIndex({ userData }) {
       socket.off('CHAT_LOG', onChatLog);
     };
   }, [user_code, user_id, username]); 
+
 
   useEffect(() => {
     // messageHistory,oldMessageLog에 변동값이 있을때 실행
@@ -127,8 +128,7 @@ function chatIndex({ userData }) {
   return (
     <Container>
       <HistoryWrapper ref={historyElement}>
-        {/* TODO 첫 로딩은 상관없으나 이후에 새로고침시 새로운 정보가 들어올때까지 Loading...이 뜸 해결방안 생각해보기  */}
-      {oldMessageLog.length === 0 && messageHistory.length === 0 ? (
+      {isLoading  ? (
           <NoHistory>Loading...</NoHistory>
         ) : (
           <>

@@ -191,7 +191,7 @@ const handleConnection = async (socket) => {
         console.log(chatlog)
         // 동기로 실행
         // 클라이언트 소켓에 'CHAT_LOG' 이름으로 'chatlog' 전달
-        await socket.broadcast.emit('CHAT_LOG', chatlog)
+        socket.emit('CHAT_LOG', chatlog)
         // Promise로 실행하는 이유는 
         // 비동기로 실행할 경우 db 접속 -> 데이터 획득 하는 속도보다
         // 클라이언트 소켓에 'CHAT_LOG'을 보내는 속도가 빨라
