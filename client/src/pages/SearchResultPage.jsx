@@ -20,19 +20,23 @@ function SearchResultPage() {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const query = searchParams.get('q');
+    const category = searchParams.get('category') || 'all'
+
+    console.log(query)
+    console.log(category)
     if (query) {
-      fetchSearchResults(query);
+      fetchSearchResults(query,category);
     }
   }, [location]);
 
 
   // fetch 함수
-  const fetchSearchResults = async (query) => {
+  const fetchSearchResults = async (query,category) => {
     setIsLoading(true);   
     setError(null)
 
     try {
-      const response = await fetch(`${API_URL}/api/search/query=${encodeURIComponent(query)}`, {    // 검색어 내 공백이나 특수문자 인코딩하여 가져옴
+      const response = await fetch(`${API_URL}/api/search?q=${encodeURIComponent(query)}&category=${encodeURIComponent(category)}`, {    // 검색어 내 공백이나 특수문자 인코딩하여 가져옴
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -69,24 +73,6 @@ function SearchResultPage() {
     return <p>검색 결과가 없습니다.</p>;
   }
 
-  /*
-  검색어를 필터링할 handleFilter.
-  -검색어와 같은 값들을 걸러내줄 filter 함수
-  -배열의 특정 요소가 포함되는지 판별해주는 include 함수
-  -toLocaleLowerCase 함수로 입력값과 제목을 소문자로 통일시킴. includes 함수는 대소문자를 인식(구분)하기 때문에 필요
-  -공백 유무 상관없이 검색 가능하게 해줄 replace 함수
-  */
-
-  useEffect(() => {
-    handleFilter();
-  }, [search, recipeData]);
-
-  const handleFilter = () => {
-    if (!recipeData) return;    // 데이터가 없을 때에는 함수 실행안함
-    const results = recipeData.filter((recipeData) => recipeData.title.replace(" ","").toLcaleLowerCase().includes(search.toLocaleLowerCase().replace(" ",""))
-    )
-    setResults(results)
-  };
 
 
   return (
