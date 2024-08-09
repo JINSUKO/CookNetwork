@@ -28,17 +28,6 @@ app.use(cors({
 // Body parser
 app.use(express.json());
 
-// 유저 정보 불러오는 요청시 사용. 임시로 만들어 놓음.
-// const exGetUser = require('./exGetUser');
-// API 라우트
-// app.use('/hello', exGetUser, (req, res) => {
-//     res.json({ message: 'Hello from server!', user: res.locals.user, profilePic: res.locals.profilePic});
-// });
-app.get('/hello', (req, res) => {
-    res.json({ message: 'Hello from server!'});
-});
-
-
 // 유저 관련 요청은 /user/*로 미들웨어 하나로 모아 놓을 예정.
 // 유저 프로필 이미지 불러오는 요청시 사용
 const uploadUserImg = require('./router/uploadUserImg');
