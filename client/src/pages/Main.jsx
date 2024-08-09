@@ -5,6 +5,7 @@
 import { React, useState } from 'react';
 import RecipeListPage from './RecipeListPage';
 import '../assets/styles/Main.css'
+import FetchRecipeList from '../components/FetchRecipeList';
 
 
 
@@ -14,7 +15,7 @@ function Main() {
   return ( 
   <div>
     <div>
-      <RecipeListPage categoryProp="all" />
+      <FetchRecipeList categoryProp="all" />
     </div>
 
   </div>
