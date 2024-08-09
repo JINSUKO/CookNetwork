@@ -19,15 +19,17 @@ router.get('/:recipe_id', async(req,res) =>{
     
     if(data.length > 0){
         try{
-            const profileBasePath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
-
-            const searchpage= await Promise.all(data.map(async (recipe) => {
-                let profilePic = fs.readFileSync(path.join(profileBasePath, recipe.recipe_img), 'base64');
+            const recipeImgPath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
+            const profileBasePath = path.join(__dirname, '../', 'uploads', 'users', 'profile_images/');
+            const recipePage = async (data) => {
+                let recipePic = fs.readFileSync(path.join(recipeImgPath, data.recipe_img), 'base64');
+                recipePic = 'data:image/jpeg;base64,' + recipePic;
+                let profilePic = fs.readFileSync(path.join(profileBasePath, data.user_img), 'base64');
                 profilePic = 'data:image/jpeg;base64,' + profilePic;
-                return { ...recipe, recipe_img: profilePic };
-            }));
-        
-            return res.json(searchpage);
+                return { ...data, recipe_img: recipePic, user_img: profilePic};
+            };
+            const result = await recipePage(data[0]);
+            return res.json(result);
         } catch(error){
             console.error(error);
         }
