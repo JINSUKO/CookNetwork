@@ -28,17 +28,6 @@ app.use(cors({
 // Body parser
 app.use(express.json());
 
-// 유저 정보 불러오는 요청시 사용. 임시로 만들어 놓음.
-// const exGetUser = require('./exGetUser');
-// API 라우트
-// app.use('/hello', exGetUser, (req, res) => {
-//     res.json({ message: 'Hello from server!', user: res.locals.user, profilePic: res.locals.profilePic});
-// });
-app.get('/hello', (req, res) => {
-    res.json({ message: 'Hello from server!'});
-});
-
-
 // 유저 관련 요청은 /user/*로 미들웨어 하나로 모아 놓을 예정.
 // 유저 프로필 이미지 불러오는 요청시 사용
 const uploadUserImg = require('./router/uploadUserImg');
@@ -85,6 +74,16 @@ app.use("/api/login", loginRouter);
 const categoryRouter = require("./router/searchCategory.js");
 // 카테고리 라우트 요청시 사용
 app.use("/api/category", categoryRouter)
+
+// 검색 라우트 연결
+const searchRouter = require("./router/searchDetails.js");
+// 검색 라우트 요청시 사용
+app.use("/api/search",searchRouter)
+
+// 상세 페이지 라우트 연결
+const detailpageRouter = require("./router/detailPage.js");
+app.use("/api/recipe",detailpageRouter)
+
 
 // 로그아웃 라우트 연결
 const logoutRouter = require("./router/logout.js");
@@ -191,7 +190,7 @@ const handleConnection = async (socket) => {
         console.log(chatlog)
         // 동기로 실행
         // 클라이언트 소켓에 'CHAT_LOG' 이름으로 'chatlog' 전달
-        await socket.broadcast.emit('CHAT_LOG', chatlog)
+        socket.emit('CHAT_LOG', chatlog)
         // Promise로 실행하는 이유는 
         // 비동기로 실행할 경우 db 접속 -> 데이터 획득 하는 속도보다
         // 클라이언트 소켓에 'CHAT_LOG'을 보내는 속도가 빨라

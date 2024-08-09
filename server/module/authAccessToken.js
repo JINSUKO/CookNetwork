@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const clearRefreshToken = require('./clearRefreshToken');
 
-require('dotenv').config();
+require('dotenv').config({ path: '.env.local' });
 
 const authAccessToken = (req, res, next) => {
     const SECRET_KEY_ACCESS = process.env.SECRET_KEY_ACCESS;

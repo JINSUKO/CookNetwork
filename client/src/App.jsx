@@ -25,28 +25,7 @@ function App() {
 
   const HOST_IP  = import.meta.env.VITE_HOST_IP
   const API_URL = HOST_IP;
-  
-  useEffect(() => {
-    // const API_URL = import.meta.env.PROD
-    //   ? ''
-    //   : 'http://localhost:3000';
 
-    // fetch(`${API_URL}/signup`, { method: "POST" })
-    //   .then(response => response.json())
-    //   .then(data => setMessage(data.message))
-    //   .catch(error => console.error('Error:', error));
-    // db에서 유저 데이터 받아오는 코드
-      // 로그인 유지 기능 없어서 임시로 작성해놓은 코드
-    fetch(`${API_URL}/hello`)
-      .then(response => response.json())
-      .then(data => {
-                setMessage(data.message)
-
-            }
-       )
-      .catch(error => console.error('Error:', error));
-
-  }, [])
   // 서버로 데이터 전송하는 함수 handleSignUp
   const handleSignUp = async (signUpData) => {
     try {

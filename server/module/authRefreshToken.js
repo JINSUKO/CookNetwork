@@ -5,7 +5,7 @@ const generateAccessToken = require('./generateAccessToken');
 const generateRefreshToken = require('./generateRefreshToken');
 const maria = require('./sql');
 
-require('dotenv').config();
+require('dotenv').config({ path: '.env.local' });
 
 const authRefreshToken = (req, res, next) => {
     const SECRET_KEY_REFRESH = process.env.SECRET_KEY_REFRESH;
