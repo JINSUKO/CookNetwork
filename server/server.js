@@ -86,6 +86,11 @@ const categoryRouter = require("./router/searchCategory.js");
 // 카테고리 라우트 요청시 사용
 app.use("/api/category", categoryRouter)
 
+// 검색 라우트 연결
+const searchRouter = require("./router/searchDetails.js");
+// 검색 라우트 요청시 사용
+app.use("/api/search",searchRouter)
+
 // 로그아웃 라우트 연결
 const logoutRouter = require("./router/logout.js");
 // 로그아웃 라우트 요청시 사용
