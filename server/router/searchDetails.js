@@ -3,12 +3,12 @@ const path = require('path')
 const fs = require('fs')
 const router = express.Router()
 
-const maria = require('../module/sql') ;
+const maria = require('../module/sql');
 
 router.get('/',async (req,res)=>{
     const searchData = req.query;
     console.log(searchData)
-    if(req.query.category == 'null'){
+    if(req.query.category === 'main'){
         const queryString = `SELECT * FROM recipe 
             WHERE recipe_name LIKE ?`;
         try{
