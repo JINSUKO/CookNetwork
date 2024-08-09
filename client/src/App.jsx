@@ -9,7 +9,7 @@ import Login from './pages/Login'
 import RecipeDetailPage from './pages/RecipeDetailPage'
 import Chat from "./chat/chatIndex";
 import UserMyPage from "./pages/UserMyPage";
-import SearchResultPage from './components/SearchResult';
+import SearchResultPage from './pages/SearchResultPage';
 import FetchRecipeList from './components/FetchRecipeList';
 import Logout from "./components/Logout";
 import ProtectedPage from "./pages/authToken/ProtectedPage";
@@ -124,7 +124,7 @@ function App() {
           <Route path = '/board' element = {<Board />}/>
           <Route path = '/login' element = {<Login />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
-          <Route path = '/search/:search' element = {<SearchResultPage/>}/>
+          <Route path = '/search' element = {<SearchResultPage/>}/>
           <Route path = '/category/:category' element = {<FetchRecipeList/>}/>
           <Route path = '/recipe/:recipe_id' element = {<RecipeDetailPage />}/>
           <Route path = '/logout' element={user && <Logout user={user}/>}/>

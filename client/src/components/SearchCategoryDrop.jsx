@@ -14,10 +14,10 @@ function SearchCategoryDrop({ onCategoryChange }) {   // SearchBar에 함수 전
   // 카테고리로 사용될 배열
   const categories = [
     { name: '전체', path: 'all' },
-    { name: '한식', path: 'korean' },
-    { name: '양식', path: 'western' },
-    { name: '중식', path: 'chinese' },
-    { name: '일식', path: 'japanese' }
+    { name: '한식', path: '한식' },
+    { name: '양식', path: '양식' },
+    { name: '중식', path: '중식' },
+    { name: '일식', path: '일식' }
   ];
 
 
