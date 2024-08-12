@@ -5,8 +5,8 @@
   width: 100%;
   max-width: 500px;
   padding: 30px;
-
   left: 30%;
+
   transform: translate(10%, 0);
 
   background-color: #ffffff;
@@ -47,12 +47,18 @@
   color: #262626
 }
 
+.infoLabelText {
+  margin-top: 0px;
+  margin-bottom: 00px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #262626
+}
+
 .userInputFrame {
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 20px;  /* 각 입력 항목 사이의 간격 */
-
   max-width: 400px;
   border-radius: 16px;
   padding: 16px;
@@ -75,7 +81,7 @@
   color: #333;
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 
 .userInput::placeholder {
@@ -85,7 +91,7 @@
 
 .errorMessageWrap {
   margin-top: 1px;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
   color: red;
   font-weight: 700;
   font-size: 12px;
@@ -119,7 +125,7 @@
 
 .userSexRadio {
   color: var(#333);
-  font-size: 16px;
+  font-size: 14px;
   margin-right: 10px;
 }
 
@@ -138,26 +144,18 @@
   margin: 0 auto;
 }
 
-.userInputFrame {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-
-}
-
-
-
-
 /* hover 이벤트? */
 .userButton:hover {
   background: #333333;
 }
 
 /* 체크박스 */
-.checkbox-container {
+.checkboxContainer {
   display: flex;
   align-items: center;
   gap: 10px;
+  font-weight: 700;
+  font-size: 12px;
 }
 
 p {
