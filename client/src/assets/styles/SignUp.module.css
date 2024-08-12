@@ -4,16 +4,19 @@
   bottom: 0;
   width: 100%;
   max-width: 500px;
-  padding: 0 20px;
+  padding: 30px;
 
   left: 30%;
   transform: translate(10%, 0);
 
-  background-color: #ffeee4;
+  background-color: #ffffff;
 
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
 }
 
 .titleWrap {
@@ -22,13 +25,16 @@
   font-weight: 700;
   text-align: center;
   color: #262626;
+  margin-bottom: 20px;
 
 }
 
 .contentWrap {
-  margin-top: 26px;
-  border-radius: 8px;
-  border: 1px solid --color-black;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   flex: 1;
 }
 
@@ -43,13 +49,15 @@
 
 .userInputFrame {
   display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;  /* 각 입력 항목 사이의 간격 */
+
+  max-width: 400px;
   border-radius: 16px;
   padding: 16px;
-  margin-top: 8px;
-  background-color: var(--color-whiteBlue);
+  background-color: var(--color-white);
   border: 1px solid #cac5c5;
-  text-align: left;
-
 }
 
 /* input 클릭시 border */
@@ -58,15 +66,16 @@
 }
 
 .userInput {
-  background: rgba(255, 255, 255, 0.2);
+  width: 100%;
+
+  background: rgba(255, 255, 255, 0.4);
   border-radius: 12px;
   padding: 10px;
   border: none;
   color: #333;
   font-size: 14px;
   font-weight: 500;
-  text-align: left;
-
+  margin-bottom: 10px;
 }
 
 .userInput::placeholder {
@@ -84,21 +93,34 @@
 }
 
 .userButton {
-  width: 50%;
+  width: 100%;
   height: 48px;
-  border: 1px solid #000000;
-  font-weight: 700;
-  background-color: #0d335d;
+  border: none;
+  font-weight: 500;
+  background-color: #000000;
   border-radius: 64px;
-  color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+  margin-top: 16px;
   margin-bottom: 16px;
   cursor: pointer;
+}
+
+/* 성별 라디오 버튼 */
+.userSexRadioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.userSexRadioOption {
+  display: flex;
+  align-items: center;
 }
 
 .userSexRadio {
   color: var(#333);
   font-size: 16px;
-  text-align: left;
+  margin-right: 10px;
 }
 
 .signup-container {
@@ -120,25 +142,15 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+
 }
 
-
-
-.userButton {
-  background: rgba(255, 255, 255, 0.3);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  color: #000000;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
 
 
 
 /* hover 이벤트? */
 .userButton:hover {
-  background: rgba(255, 255, 255, 0.4);
+  background: #333333;
 }
 
 /* 체크박스 */
@@ -151,3 +163,5 @@
 p {
   color: #666;
 }
+
+
