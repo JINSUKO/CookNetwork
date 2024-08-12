@@ -75,7 +75,7 @@ function Login() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.titleWrap}>Login</div>
+      <div className={styles.titleWrap}>로그인</div>
       <form className={styles.userInputFrame} onSubmit={handleSubmit}>
         <label>아이디</label>
         <input 
