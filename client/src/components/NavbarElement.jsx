@@ -15,10 +15,10 @@ function NavbarElement({ user }) {
   // 카테고리 배열 정의
   const categories = [
     { name: '전체', path: '/' },
-    { name: '한식', path: 'category/korean' },
-    { name: '양식', path: 'category/western' },
-    { name: '중식', path: 'category/chinese' },
-    { name: '일식', path: 'category/japanese' }
+    { name: '한식', path: 'category/한식' },
+    { name: '양식', path: 'category/양식' },
+    { name: '중식', path: 'category/중식' },
+    { name: '일식', path: 'category/일식' }
   ];
 
   const handleSearch = (searchInput, selectedCategory) =>{
