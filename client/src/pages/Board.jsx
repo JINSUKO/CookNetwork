@@ -1,4 +1,6 @@
 import React from 'react';
+import boardstyles from '../assets/styles/Board.module.css';
+ 
 
 function Board() {
   const posts = [
@@ -11,13 +13,13 @@ function Board() {
 
   return (
     <div>
-      <h1>공지사항</h1>
+      <h1 className={boardstyles.boardHeader}>공지사항</h1>
       
       <div>
         {posts.map((post) => (
-          <div key={post.id} style={{ border: '1px solid #ddd', margin: '10px 0', padding: '10px' }}>
-            <p>{post.title}</p>
-            <p>{post.content}</p>
+          <div key={post.id} className={boardstyles.postContainer}>
+            <p className={boardstyles.postTitle}>{post.title}</p>
+            <p className={boardstyles.postContent}>{post.content}</p>
           </div>
         ))}
       </div>

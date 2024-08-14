@@ -1,0 +1,61 @@
+.boardContainer {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.boardHeader {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.postContainer {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.postTitle {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.postContent {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #666;
+}
+
+/* 호버 효과 추가 */
+.postContainer:hover {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+/* 반응형 디자인을 위한 미디어 쿼리 */
+@media (max-width: 600px) {
+  .board-container {
+    padding: 10px;
+  }
+  
+  .boardHeader {
+    font-size: 20px;
+  }
+  
+  .postTitle {
+    font-size: 16px;
+  }
+  
+  .postContent {
+    font-size: 12px;
+  }
+}
