@@ -8,7 +8,7 @@ const maria = require('../module/sql');
 router.get('/',async (req,res)=>{
     const searchData = req.query;
     console.log(searchData)
-    if(req.query.category === 'main'){
+    if(req.query.category === 'all'){
         const queryString = `SELECT * FROM recipe 
             WHERE recipe_name LIKE ?`;
         try{
