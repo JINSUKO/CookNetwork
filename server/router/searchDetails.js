@@ -33,10 +33,11 @@ router.get('/',async (req,res)=>{
             ON r.recipe_id = rc.recipe_id 
             JOIN categories c 
             ON rc.category_id = c.category_id 
-            WHERE recipe_name LIKE ?`;
+            WHERE r.recipe_name LIKE ?
+            AND c.category_name= ?`;
             try{
                 const searchWord = '%' + searchData.q + '%'
-                const [recipes] = await maria.execute(queryString,[searchWord]);
+                const [recipes] = await maria.execute(queryString,[searchWord,searchData.category]);
                 console.log(searchWord)
                 const profileBasePath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
     
