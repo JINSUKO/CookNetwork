@@ -21,7 +21,7 @@ app.use(cookieParser())
 
 // CORS 설정
 app.use(cors({
-    origin: ['https://cooknetwork.shop', 'http://localhost:5000', 'http://192.168.0.103:5000', 'http://192.168.0.139:5000', 'http://192.168.0.14:5000', 'http://192.168.220.1:5000'],
+    origin: ['http://nginx:80', 'http://node-app:3000', 'https://cooknetwork.shop', 'http://localhost:5000', 'http://192.168.0.103:5000', 'http://192.168.0.13:5000', 'http://192.168.0.14:5000', 'http://192.168.220.1:5000'],
     credentials: true
 }));
 
@@ -129,15 +129,14 @@ if (process.env.NODE_ENV === 'production') {
 
 // 메인 서버
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
+const server = app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // 채팅(socket) 서버
-const chat_PORT = 3001;
-const server= app.listen(chat_PORT, () => console.log(`Chat Server is running at ${chat_PORT}`))
+// const server = app.listen(chat_PORT, () => console.log(`Chat Server is running at ${chat_PORT}`))
 
 
 // 소켓 서버 생성(모든 ip 접근 가능)
