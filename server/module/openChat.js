@@ -1,14 +1,15 @@
-async function chatDataLog(data){
+async function insertOpenChatLog(data){
     const maria = require('./sql');
-    const queryString = `INSERT INTO user_open_chat(user_code, user_name, chat_data) VALUES(?, ?, ?)`
-    // const queryString = `INSERT INTO user_open_chat(chat_data) VALUES(?)`
+    const queryString = `INSERT INTO user_open_chat ( user_code, user_id, user_name, chat_data )
+                            VALUES ((SELECT user_code FROM users WHERE user_id = ?), ?, ?, ?);`
 
-    await maria.execute(queryString,[data.id,data.name,data.message]);
+
+    await maria.execute(queryString,[data.id, data.id, data.name, data.message]);
 }
 
-async function getChatLog(){
+async function getOpenChatLog(){
     const maria = require('./sql');
-    const queryString = `SELECT user_code, user_name, chat_data
+    const queryString = `SELECT user_id, user_name, chat_data
                         FROM (
                             SELECT *
                             FROM user_open_chat
@@ -22,4 +23,4 @@ async function getChatLog(){
     return chatlog;
 }
 
-module.exports = { chatDataLog , getChatLog };
+module.exports = { insertOpenChatLog, getOpenChatLog };

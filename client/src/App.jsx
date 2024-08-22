@@ -7,7 +7,7 @@ import Header from './components/Layout/Header'
 import Footer from './components/Layout/Footer'
 import Login from './pages/Login'
 import RecipeDetailPage from './pages/RecipeDetailPage'
-import Chat from "./chat/chatIndex";
+import OpenChat from "./chat/OpenChat";
 import UserMyPage from "./pages/UserMyPage";
 import SearchResultPage from './pages/SearchResultPage';
 import FetchRecipeList from './components/FetchRecipeList';
@@ -119,7 +119,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
-      {user && <Chat userData = {user}/>}
+      {user && <OpenChat userData = {user}/>}
       <Footer/>
     </div>
   )
