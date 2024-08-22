@@ -31,7 +31,6 @@ function openChat({ userData }) {
     const [messageHistory, setMessageHistory] = useState([]);
     // 최근 10개의 채팅내역
     const [oldMessageLog, setOldMessageLog] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
 
     // 변동 사항을 적용하기 위한 Ref지정
     const historyElement = useRef(null);
@@ -68,7 +67,6 @@ function openChat({ userData }) {
         };
         const onChatLog = (data) =>{
             setOldMessageLog(data);
-            setIsLoading(false);
         }
         // 서버에서 각각 emit 받을경우 실행
         socket.on('All_Message', onAllMessage);
@@ -126,11 +124,9 @@ function openChat({ userData }) {
     return (
         <Container>
             <HistoryWrapper ref={historyElement}>
-                {isLoading  ? (
-                    <NoHistory>채팅 내역이 없습니다..</NoHistory>
-                ) : (
+                { oldMessageLog.length ? (
                     <>
-                        {/*  oldMessageLog,  messageHistory 내용을 반복해서 출력  */}
+                        {/*oldMessageLog,  messageHistory 내용을 반복해서 출력*/}
                         {oldMessageLog.map(({ user_code, user_name, chat_data }, index) => (
                             <ChatItem key={index} me={user_code === userData.user_code}>
                                 <ChatName>{user_name}</ChatName>
@@ -138,12 +134,14 @@ function openChat({ userData }) {
                             </ChatItem>
                         ))}
                         {messageHistory.map(({ id, name, message }, index) => (
-                            <ChatItem key={index} me={id === user_code}>
+                            <ChatItem key={index} me={id === user_id}>
                                 <ChatName>{name}</ChatName>
                                 <ChatMessage>{message}</ChatMessage>
                             </ChatItem>
                         ))}
                     </>
+                ) : (
+                    <NoHistory>채팅 내역이 없습니다.</NoHistory>
                 )}
             </HistoryWrapper>
             <Form onSubmit={handleSubmit}>

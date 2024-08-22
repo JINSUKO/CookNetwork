@@ -169,7 +169,7 @@ const handleSocketUserEnter = async (socket, user) => {
         console.log('유저 접속: ',user.id);
         console.log('현재 접속 유저: ', [...userList.values()]);
         // 클라이언트 소켓에 'USER_ENTER'으로 'user' 전달
-        socket.broadcast.emit('USER_ENTER', user);
+        io.emit('USER_ENTER', user);
 
         // db에 접속해 최근 10개의 채팅 데이터를 불러오는 모듈
         const chatlog = await chatLog.getOpenChatLog()
@@ -191,7 +191,7 @@ const handleSocketUserLeave = (socket) => {
 
     if(userid){
         // 접속된 모든 socket에 'USER_LEAVE'이름으로 전달
-        socket.broadcast.emit('USER_LEAVE',userid);
+        io.emit('USER_LEAVE',userid);
         // 유저리스트 Map에서 해당하는 유저 제거
         userList.delete(socket.id)
         console.log('현재 접속 유저: ', [...userList.values()]);
