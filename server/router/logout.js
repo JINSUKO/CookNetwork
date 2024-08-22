@@ -38,7 +38,7 @@ router.delete('/', (req, res)=>{
             return res.status(403).json({ error: '유효하지 않은 토큰입니다.' });
         }
 
-        const query = `UPDATE users SET session_id = NULL WHERE user_id = ?;`;
+        const query = `UPDATE users SET session_id = NULL, lastlogin_date = NULL WHERE user_id = ?;`;
 
         const result = await maria.execute(query, [decoded.userId]);
 

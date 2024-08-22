@@ -21,7 +21,7 @@ app.use(cookieParser())
 
 // CORS 설정
 app.use(cors({
-    origin: ['http://localhost:5000', 'http://192.168.0.103:5000', 'http://192.168.0.139:5000', 'http://192.168.0.14:5000', 'http://192.168.220.1:5000'],
+    origin: ['https://cooknetwork.shop', 'http://localhost:5000', 'http://192.168.0.103:5000', 'http://192.168.0.139:5000', 'http://192.168.0.14:5000', 'http://192.168.220.1:5000'],
     credentials: true
 }));
 
