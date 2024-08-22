@@ -5,8 +5,9 @@ const router = express.Router()
 
 const maria = require('../module/sql') ;
 
-
+// get 요청을 동적 라우팅으로 받음
 router.get('/:category',async(req,res)=>{
+    //
     const pageName = req.params.category;
     console.log(pageName)
     // const selectCategory = `SELECT *
@@ -22,20 +23,26 @@ router.get('/:category',async(req,res)=>{
             const queryString = `SELECT * FROM recipe ORDER BY RAND() LIMIT 10`;
             try{
                 const [recipes] = await maria.execute(queryString);
-                const recipeImgPath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
 
+                // ../uploads/recipes/thumbnail/ 경로 지정
+                const recipeImgPath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
+                // 여러개의 Promise를 비동기로 실행
                 const updatedRecipes = await Promise.all(recipes.map(async (recipe) => {
+                    // ../uploads/recipes/thumbnail/에서 recipe_img에 해당하는 이미지를 불러옴
                     let recipePic = fs.readFileSync(path.join(recipeImgPath, recipe.recipe_img), 'base64');
                     recipePic = 'data:image/jpeg;base64,' + recipePic;
+
+                    // json형태로 리턴
                     return { ...recipe, recipe_img: recipePic };
                 }));
-            
+                // 위에서 받은 json을 리턴
                 return res.json(updatedRecipes);
             } catch(error){
                 console.error(error);
             }
         }
         else{
+            // request에서 받은 카테고리와 동일한 카테고리를 가진 recipe를 찾는 쿼리
             const queryString = `SELECT * FROM recipe r 
             JOIN recipe_category rc 
             ON r.recipe_id = rc.recipe_id 
@@ -45,8 +52,9 @@ router.get('/:category',async(req,res)=>{
             ORDER BY RAND() LIMIT 10`;
             try{
                 const [recipes] = await maria.execute(queryString,[pageName]);
-                const profileBasePath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
 
+                // recipe를 각각의 이미지와 매칭시켜 리턴하는 작업 (위와 동일)
+                const profileBasePath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
                 const updatedRecipes = await Promise.all(recipes.map(async (recipe) => {
                     let profilePic = fs.readFileSync(path.join(profileBasePath, recipe.recipe_img), 'base64');
                     profilePic = 'data:image/jpeg;base64,' + profilePic;
