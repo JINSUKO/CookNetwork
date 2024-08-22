@@ -1,6 +1,7 @@
 const mysql = require('mysql2')
 require('dotenv').config({ path: '.env.local' })
 
+// db에 접속 createPool : db에 벙렬접속(다중접속) 가능
 const{SQL_HOST,SQL_PORT,SQL_USER,SQL_PW,SQL_DB} = process.env;
 const conn = mysql.createPool({
     host : SQL_HOST,
