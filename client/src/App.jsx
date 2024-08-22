@@ -7,7 +7,7 @@ import Header from './components/Layout/Header'
 import Footer from './components/Layout/Footer'
 import Login from './pages/Login'
 import RecipeDetailPage from './pages/RecipeDetailPage'
-import Chat from "./chat/chatIndex";
+import OpenChat from "./chat/OpenChat";
 import UserMyPage from "./pages/UserMyPage";
 import SearchResultPage from './pages/SearchResultPage';
 import FetchRecipeList from './components/FetchRecipeList';
@@ -58,41 +58,6 @@ function App() {
   };
 
 
-  //   fetch(`${API_URL}/signup`, {
-  //     method: "POST",
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify(userData)
-  //   })
-  //     .then((response) => {response.json()})
-  //     // .then((data) => {setMessage(data.message)})
-  //     .catch((error) => {console.error('Error:', error)});
-  // }, [])
-
-  // try {
-  //   const response = await fetch('/signup', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify(userData)
-  //   });
-
-  //   const data = await response.json();
-
-  //   if (response.ok) {
-  //     console.log('회원가입 성공:', data.user);
-  //     // 여기서 로그인 성공 후 토큰 저장, 리다이렉트 등 로직을 구현합니다.
-  //     return response.json();
-  //   } else {
-  //     setErrors(data.message || '회원가입에 실패했습니다. 입력한 정보들을 확인해주세요.');
-  //   }
-  // } catch (error) {
-  //   console.error('회원가입 에러:', error);
-  //   setErrors('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-  // }
-
   return (
     <div className="App">
       <p>{message}</p>
@@ -101,7 +66,7 @@ function App() {
         <Routes>
           <Route path = '/' element = {<Main />}/>
           <Route path = '/board' element = {<Board />}/>
-          <Route path = '/login' element = {<Login />}/>
+          <Route path = '/login' element = {<Login setUser={setUser} setProfilePic={setProfilePic} />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/search' element = {<SearchResultPage/>}/>
           <Route path = '/category/:category' element = {<FetchRecipeList/>}/>
@@ -119,7 +84,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
-      {user && <Chat userData = {user}/>}
+      {user && <OpenChat userData = {user}/>}
       <Footer/>
     </div>
   )
