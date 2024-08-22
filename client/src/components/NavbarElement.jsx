@@ -31,7 +31,7 @@ function NavbarElement({ user }) {
       {/* 상단오른쪽 공지사항, 회원가입, 로그인 링크도 네비바로 작성 */}
       <Nav className="justify-content-end" defaultActiveKey="/" as="ul">
         <Nav.Item as="li">
-          <Nav.Link href="/board">공지사항</Nav.Link>
+          <Link to="/board" class='nav-link'>공지사항</Link>
         </Nav.Item>
          {
           <>
@@ -39,19 +39,19 @@ function NavbarElement({ user }) {
             user ? (
                 <>
                   <Nav.Item as="li">
-                    <Nav.Link href="/mypage">마이페이지</Nav.Link>
+                    <Link to="/mypage" class='nav-link'>마이페이지</Link>
                   </Nav.Item>
                   <Nav.Item as="li">
-                    <Nav.Link href="/logout">로그아웃</Nav.Link>
+                    <Link to="/logout" class='nav-link'>로그아웃</Link>
                   </Nav.Item>
                 </>
             ) : (
                 <>
                   <Nav.Item as="li">
-                    <Nav.Link href="/signup">회원가입</Nav.Link>
+                    <Link to="/signup" class='nav-link'>회원가입</Link>
                   </Nav.Item>
                   <Nav.Item as="li">
-                    <Nav.Link href="/login">로그인</Nav.Link>
+                    <Link to="/login" class='nav-link'>로그인</Link>
                   </Nav.Item>
                 </>
             )
