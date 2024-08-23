@@ -32,6 +32,10 @@ function openChat({ userData }) {
     // 최근 10개의 채팅내역
     const [oldMessageLog, setOldMessageLog] = useState([]);
 
+    // 클라이언트를 구별할 ID 저장. <- 회원만 채팅 기능 가능하면 user_id로 구분할 수 있어서 필요가 없을듯?
+    // FAQ 기능 추가 시 유저만 쓰게 하는게 맞나 싶긴하네요.
+    // const uid = useRef(null);
+
     // 변동 사항을 적용하기 위한 Ref지정
     const historyElement = useRef(null);
 
