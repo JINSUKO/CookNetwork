@@ -11,15 +11,12 @@ import authFetch from '../fetchInterceptorAuthToken'
 import UserSelectedCategories from "../components/UserSelectedCategories.jsx";
 
 
-// localStorage 에서 받아온 loginUser로 user, profilePic 를 대체하는 코드로 수정해야함.
-const UserMyPage = ({user, profilePic, loginUser}) => {
-
-    loginUser = JSON.parse(loginUser)
+const UserMyPage = ({user, setUser, profilePic, setProfilePic}) => {
 
     const API_URL = import.meta.env.VITE_HOST_IP;
-
+    console.log('user', user)
     const [activeTab, setActiveTab] = useState('userInfo');
-    const [profileImgDBbase64, setProfileImgDBbase64] = useState(profilePic);
+    const [profileImgDBbase64, setProfileImgDBbase64] = useState(user.user_img);
     const [profileImg, setProfileImg] = useState(null);
     const [categories, setCategories] = useState(null);
     const [userCategoryRecipes, setUserCategoryRecipes] = useState(null);
@@ -27,12 +24,13 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
     console.log('categories', categories)
     const fileInputRef = useRef(null);
 
+    // user_code를 이용해서 운영자 계정인지 아닌지 판단하는 건 따로 만들어야함.
 
     const handleFileInputChange = (event) => {
         // 파일이 선택되었을 때의 로직
         const file = event.target.files[0];
 
-        if (!file) return setProfileImgDBbase64(profilePic);
+        if (!file) return setUser((preUser) => ({...preUser, user_img: profileImgDBbase64})); //setProfileImgDBbase64(profilePic);
 
         if (!file.type.startsWith('image/')) return alert('이미지 파일만 선택해주세요.');
 
@@ -78,10 +76,11 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
             const result = await response.json();
 
 
+            // userInfo 변경 시와 똑같이 이거 안해도 잘 변경됨... 왜?
 
-            loginUser.user_img = profileImgDBbase64;
-
-            localStorage.setItem('loginUser', JSON.stringify(loginUser));
+            // user.user_img = profileImgDBbase64;
+            // setUser((preUser) => ({...preUser, user_img: profileImgDBbase64}));
+            // localStorage.setItem('loginUser', JSON.stringify(loginUser));
             // console.log('profile img upload result:', result.result);
 
             console.log('프로필 이미지 업로드 성공!');
@@ -93,8 +92,12 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
 
     const uploadProfileCancel = () => {
         console.log('프로필 사진 업로드 취소');
+        setProfileImg(null);
+        setProfileImgDBbase64((preImgBase64) => (user.user_img));
+        // input type='file'의 값을 바꿔주지않으면
+        // 이미지를 선택 후 취소하고, 동일한 이미지를 다시 선택했을 때, onChange 이벤트가 트리거 되지 않는다.
+        fileInputRef.current.value = null;
         setShowImgConfirmModal(false);
-        setProfileImgDBbase64(profilePic);
     };
 
     const ImgConfirmModal = ({ show, message, onConfirm, onCancel }) => {
@@ -127,7 +130,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({user_id: loginUser.user_id})
+                body: JSON.stringify({user_id: user.user_id})
             });
             if (!response.ok) throw new Error((await response.json()).error);
 
@@ -171,14 +174,14 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
 
     // 닉네임 수정 기능 시작
     const [showUserNameModal, setShowUserNameModal] = useState(false);
-    const [username, setUsername] = useState(loginUser.username);
+    const [username, setUsername] = useState(user.username);
     // 닉네임 수정 기능 끝
 
 
     // 일반 정보 수정 기능 시작
     const [showUserInfoModal, setShowUserInfoModal] = useState(false);
-    const [email, setEmail] = useState(loginUser.email);
-    const [sex, setSex] = useState(loginUser.sex);
+    const [email, setEmail] = useState(user.email);
+    const [sex, setSex] = useState(user.sex);
     const [password, setPassword] = useState('');
     // 일반 정보 수정 기능 끝
 
@@ -237,7 +240,8 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                                 show={showUserNameModal}
                                 setUsername={setUsername}
                                 setShowUserNameModal={setShowUserNameModal}
-                                loginUser={loginUser}
+                                user={user}
+                                setUser={setUser}
                             />
                         </div>
                         <Row className="justify-content-center g-2 mb-3">
@@ -290,11 +294,11 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                         <Card.Body>
                             {activeTab === 'userInfo' && (
                                 <>
-                                    <Card.Title className="mb-3">닉네임: {loginUser.username}</Card.Title>
+                                    <Card.Title className="mb-3">닉네임: {user.username}</Card.Title>
                                     <Card.Text>
                                         성별: {sex ? "여" : "남"}<br />
                                         이메일: {email}<br />
-                                        유저 등급: {loginUser.user_code <= 10 ? "운영자 계정" : (loginUser.chef_code ? "셰프 계정" : "일반 계정")}
+                                        유저 등급: {user.user_code <= 10 ? "운영자 계정" : (user.chef_code ? "셰프 계정" : "일반 계정")}
                                     </Card.Text>
                                     <Button variant="dark" size="sm" className="mb-2" onClick={() => {setShowUserInfoModal(true)}}>회원 정보 수정하기</Button>
                                     <UserInfoModal
@@ -302,7 +306,8 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                                         setEmail={setEmail}
                                         setSex={setSex}
                                         setShowUserInfoModal={setShowUserInfoModal}
-                                        loginUser={loginUser}
+                                        user={user}
+                                        setUser={setUser}
                                     />
                                     <div style={{marginTop:"30px"}}></div>
                                     <h6 className="mb-3">카테고리 찜 목록</h6>
@@ -313,7 +318,7 @@ const UserMyPage = ({user, profilePic, loginUser}) => {
                                         userCategories={categories}
                                         setUserCategories={setCategories}
                                         setShowUserCategories={setShowUserCategories}
-                                        loginUser={loginUser}
+                                        user={user}
                                     />}
 
                                     <div className="mb-3" style={{marginTop:"10px"}}>

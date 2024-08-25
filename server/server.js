@@ -57,6 +57,10 @@ app.use('/api/allCategoryName', allCategoryNamesRouter);
 const userCateoryRecipesRouter = require('./router/getUserCateoryRecipes');
 app.use('/api/userCategoryRecipes', userCateoryRecipesRouter);
 
+// 유저 정보를 불러오는 요청시 사용
+const userInfoRouter = require('./router/getUserInfo');
+app.use('/api/userInfo', authAccessToken, authRefreshToken, userInfoRouter);
+
 
 // 여기에 다른 API 라우트들을 추가합니다...
 
@@ -92,7 +96,7 @@ app.use("/api/logout", logoutRouter);
 
 // 로그인 승인 페이지 라우트 요청시 사용
 app.get("/api/authPage", authAccessToken, authRefreshToken, (req, res) => {
-    console.log(res.locals.accessExpired)
+    console.log('authPage', res.locals.accessExpired)
     if (res.locals.accessExpired) {
         return res.json({ accessToken: res.locals.accessToken, message: '회원 전용 페이지에 접근 승인 되었습니다.' });
     } else {

@@ -29,7 +29,7 @@ const socket = new io(socket_IP);
 
 function openChat({ userData }) {
     // 유저 데이터를 받아와서 변수에 딕셔너리 형터로 저장
-    const { user_code, user_id, username } = userData || {}
+    const { user_id, username } = userData || {}
     // 새로운 채팅 내역
     const [messageHistory, setMessageHistory] = useState([]);
     // 최근 10개의 채팅내역
@@ -54,10 +54,9 @@ function openChat({ userData }) {
 
     useEffect(() => {
         //[user_code, user_id, username] 변동시 (처음 접속시) 실행
-        if(user_code && user_id && username){
+        if(user_id && username){
             // 서버에 'USER_ENTER'이름으로 유저정보를 emit
             socket.emit('NEW_USER_ENTER',{ id: user_id, name: username});
-            console.log('user_code', user_code)
             console.log('user_id',user_id)
             console.log('username',username)
 
@@ -87,7 +86,7 @@ function openChat({ userData }) {
             socket.off('USER_LEAVE', onUserLeave);
             socket.off('CHAT_LOG', onChatLog);
         };
-    }, [user_code, user_id, username]);
+    }, [user_id, username]);
 
     useEffect(() => {
         // 서버에서 data를 받아 messageHistory에 저장

@@ -33,8 +33,7 @@ const authRefreshToken = (req, res, next) => {
             return res.status(403).json({ error: '유효하지 않은 refresh 토큰입니다.' });
         }
 
-         let { userId, jti } = decoded;
-
+        let { userId, jti } = decoded;
 
         const query = `SELECT session_id FROM users WHERE user_id = ?;`
 
@@ -45,6 +44,8 @@ const authRefreshToken = (req, res, next) => {
             return res.status(403).json({ error: '사용자 정보를 찾을 수 없습니다.' });
         }
 
+        console.log('users[0].session_id', users[0].session_id)
+        console.log('jti',jti)
         if (jti !== users[0].session_id) {
             clearRefreshToken(res);
             return res.status(403).json({ error: '유효하지 않은 refresh 토큰입니다.' });
@@ -55,6 +56,9 @@ const authRefreshToken = (req, res, next) => {
         const newRefreshTokenWithJti = generateRefreshToken(userId);
         refreshToken = newRefreshTokenWithJti.refreshToken;
         jti = newRefreshTokenWithJti.jti;
+
+        // userInfo api 에서 user_id 검증이 필요해서 추가했음. 24-08-24
+        res.locals.userId = userId;
 
         // 이전 Refresh Token 제거 및 새 Refresh Token 추가
         const updateJtiQuery = `UPDATE users SET session_id = ?, lastlogin_date = CURRENT_TIMESTAMP WHERE user_id = ?;`;

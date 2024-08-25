@@ -22,8 +22,8 @@ const Logout = ({ user }) => {
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('loginUser');
 
+                window.location.href = '/';
 
-                // window.location.href = '/login';
             } catch (error) {
                 console.error('로그아웃 중 오류 발생:', error);
             }
