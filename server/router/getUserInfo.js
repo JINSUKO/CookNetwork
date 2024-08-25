@@ -11,8 +11,6 @@ const getUserInfo = async (req, res) => {
     const tokenUserId = res.locals.userId;
     const userId = req.params.userId;
 
-    try {
-
         if (tokenUserId === userId ) {
             const queryString = `SELECT username, user_img, sex, email, chef_code FROM users WHERE user_id = ? `;
             const [userdata] = await maria.execute(queryString, [userId]);
@@ -45,17 +43,24 @@ const getUserInfo = async (req, res) => {
         } else {
             throw new Error("No such user");
         }
-    } catch (e) {
-        console.log('?')
-        return res.status(400).json({error: e});
-    }
 }
 
 router.post('/:userId', async (req, res) => {
     console.log('getUserInfo',res.locals.accessExpired);
 
     if (res.locals.accessExpired) {
-        const user = await getUserInfo(req, res);
+
+        let user = null;
+
+        try {   // 브라우저에서 loginUser의 값의 변경 시 user가 없기 때문에 발생하는 에러를 예외처리해주었다. 웹에서 예외 발생시 로그인 시도하도록 유도하는 코드는 이미 있음.
+            user = await getUserInfo(req, res);
+
+        } catch (e) {
+            console.error('Error:', e.message);
+            return res.status(400).json({error: e});
+        }
+
+        console.log(user);
         return res.status(200).json({ user, accessToken: res.locals.accessToken, message: '유저 정보 요청이 승인 되었습니다.' });
     } else {
         const user = await getUserInfo(req, res);
