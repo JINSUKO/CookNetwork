@@ -64,6 +64,11 @@ app.use('/api/userInfo', authAccessToken, authRefreshToken, userInfoRouter);
 
 // 여기에 다른 API 라우트들을 추가합니다...
 
+// 회원가입 중복확인 라우트 연결
+const checkRouter = require("./router/checkSignUp.js");
+// 중복확인 엔드포인트 요청시 호출
+app.use("/api/check", checkRouter)
+
 // 회원가입 라우트 연결
 const signupRouter = require("./router/signUp.js");
 // 회원가입 라우트 요청시 사용
