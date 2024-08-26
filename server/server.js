@@ -209,7 +209,7 @@ const handleSocketConnection = async (socket) => {
     socket.on('NEW_USER_ENTER', async (user) => handleSocketUserEnter(socket, user));
 
     // 클라이언트 소켓에서 "Message"를 emit할때 실행
-    socket.on("Message",(data) => handleSocketMessage(socket, data));
+    socket.on("Message_open",(data) => handleSocketMessage(socket, data));
 
     // 클라이언트 소켓이 서버를 떠날때 실행 ( socket 내장 함수 )
     socket.on('disconnect', () => handleSocketUserLeave(socket));
