@@ -37,6 +37,7 @@ function openChat({ userData }) {
 
     // 클라이언트를 구별할 ID 저장. <- 회원만 채팅 기능 가능하면 user_id로 구분 중이라서 필요가 없을듯?
     // FAQ 기능 추가 시 유저만 쓰게 하는게 맞나 싶긴하네요.
+    // TODO 로그인 시에만 1:1 오픈채팅 입력 가능하게 하기 / FAQ는 누구나 이용가능
     // const uid = useRef(null);
 
     // 변동 사항을 적용하기 위한 Ref지정
@@ -45,7 +46,7 @@ function openChat({ userData }) {
 
     // 유저가 전송하는 메세지 저장
     // 처음 유저 데이터를 불러오는것에 실패해 undefind가 나오면 ''로 지정
-    // TODO 메세지는 빈 값일경우 경고창이 뜨도록 나중에 수정할것
+    // [08/26 완] 메세지는 빈 값일경우 경고창이 뜨도록 나중에 수정할것
     const [userMessage, setUserMessage] = useState({
         id: user_id || '',
         name: username || '',
@@ -106,8 +107,9 @@ function openChat({ userData }) {
 
     useEffect(() => {
         // messageHistory,oldMessageLog에 변동값이 있을때 실행
+        console.log(openChatRoom.current)
         if(openChatRoom.current) {
-            //scrollTop과 scrollHeight를 일치시켜 채팅이 늘어도 가려지는 부분 없이 전부 나오도록 함
+            //scrollTop과 scrollHeight를 일치시켜 새로운 채팅이 올라와도 스크롤을 계속 밑에 위치시킴
             openChatRoom.current.scrollTop = openChatRoom.current.scrollHeight;
         }
     }, [messageHistory, oldMessageLog]);
@@ -115,34 +117,64 @@ function openChat({ userData }) {
     const handleChange = (event) =>{
         // 메세지 입력창에서 실행
         // 메세지를 입력할때마다 입력하는 내용이 바로 적용되도록 실행
-        setUserMessage((prevState) => ({
-            ...prevState,
-            [event.target.id]: event.target.value,
-        }));
+
+        // 입력값이 띄어쓰기 밖에 없을경우 쓸수 없도록 수정
+        if(event.target.value.trim() == ''){
+            setUserMessage((prevState) =>({
+                ...prevState,
+             message: '',
+            }))
+        } else{
+            setUserMessage((prevState) => ({
+                ...prevState,
+                [event.target.id]: event.target.value,
+            }));
+        }
+        
     };
 
-    const handleSubmit = (e) =>{
-        // 전송 방지
-        // 없을경우 Submit버튼 누를때 페이지 새로고침함
-        e.preventDefault();
-        // 입력받은 메세지를 딕셔너리 형태로 저장
-        const messageToSend = { id: user_id, name: userMessage.name, message: userMessage.message };
-        // 서버에 'Message'이름으로 messageToSend를 emit
-        socket.emit('Message', messageToSend);
-
-        // messageHistory에 저장
-        setMessageHistory((prevHistory) => [...prevHistory, messageToSend]);
-
-        // 보낸후 userMessage의 message 내용을 초기화
-        setUserMessage((prevUser) => ({
-            ...prevUser,
-            message: '',
-        }));
-    };
 
     // 채팅 창을 버튼 클릭으로 show, close 한다.
+    // handleSubmit에서 사용하기위해 위치 조정
     const [chatShow, setChatShow] = useState(false);
     const [activeTab, setActiveTab] = useState('personalTalk');
+
+    const handleSubmit = (e) =>{
+        // 입력 값이 없을경우 submit 못하도록 수정
+        if(userMessage.message == ' ' || userMessage.message.trim() == ''){
+            e.preventDefault()
+            setUserMessage((prevUser)=> ({
+                ...prevUser,
+                message: '',}));
+            return;
+        }
+
+        // event별 submit 구분
+        if(activeTab ==='personalTalk'){
+
+        } else if (activeTab === 'openTalk'){
+            // 전송 방지
+            // 없을경우 Submit버튼 누를때 페이지 새로고침함
+            e.preventDefault();
+            // 입력받은 메세지를 딕셔너리 형태로 저장
+            const messageToSend = { id: user_id, name: userMessage.name, message: userMessage.message };
+            // 서버에 'Message'이름으로 messageToSend를 emit
+            socket.emit('Message_open', messageToSend);
+
+            // messageHistory에 저장
+            setMessageHistory((prevHistory) => [...prevHistory, messageToSend]);
+
+            // 보낸후 userMessage의 message 내용을 초기화
+            setUserMessage((prevUser) => ({
+                ...prevUser,
+                message: '',
+            }));
+        } else if (activeTab === 'FAQ'){
+
+        }
+        
+    };
+
 
 
     const handleChatShow = (e) => {

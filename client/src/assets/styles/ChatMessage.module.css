@@ -39,7 +39,7 @@
 
 .openChatRoom {
     /*border: 1px solid black;*/
-    display: none;
+    display: flex;
     position: relative;
     height: 90%;
     flex-direction: column;
