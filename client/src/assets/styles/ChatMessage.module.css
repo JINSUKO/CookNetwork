@@ -1,0 +1,80 @@
+.chatIcon {
+    color: #f17f42;
+    font-size: 32px;
+
+    position: fixed;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    right: 1.3rem;
+    bottom: 1.3rem;
+}
+
+.chatIcon:hover{
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.chatNav {
+    display: flex;
+    border-style: solid;
+    /*width: 100%;*/
+    height: 10%;
+    position: relative;
+    bottom: 0;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+
+}
+
+.chatTab {
+    color: #000;
+
+}
+
+.noHistory {
+
+}
+
+.openChatRoom {
+    /*border: 1px solid black;*/
+    display: none;
+    position: relative;
+    height: 90%;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+.openChatRoom::-webkit-scrollbar {
+    display: none;
+}
+
+.me {
+    text-align: right;
+
+}
+
+.other {
+
+}
+
+.chatName {
+
+}
+
+.chatMessage {
+
+}
+
+.nameInput {
+
+}
+
+.messageInput {
+
+}
+
+.submitButton {
+
+}

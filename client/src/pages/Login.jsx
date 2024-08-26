@@ -5,15 +5,15 @@
 import React, { useState } from 'react';
 import styles from '../assets/styles/Login.module.css';
 
-function Login() {
+function Login({setUser, setProfilePic}) {
 
   const API_URL = import.meta.env.VITE_HOST_IP; // 브라우저의 url과 hostname이 같아야 cookie가 넘어감.
-  const [user, setUser] = useState({
+  const [loginUser, setLoginUser] = useState({
     userId: '',
     password: '',
   });
 
-  const { userId, password } = user;
+  const { userId, password } = loginUser;
 
   const [errors, setErrors] = useState({
     userId: '',
@@ -23,8 +23,8 @@ function Login() {
   // onChange 함수
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setUser ({
-      ...user,
+    setLoginUser ({
+      ...loginUser,
       [name]: value
     });
   };
@@ -32,7 +32,7 @@ function Login() {
   // onSubmit 함수
   const handleSubmit = async (event) => {
     event.preventDefault();  // submit을 할 때 제출 방지
-    console.log(user);
+    console.log(loginUser);
 
     try {
       const response = await fetch(`${API_URL}/api/login`, {
@@ -41,7 +41,7 @@ function Login() {
           'Content-Type': 'application/json',
         },
         credentials: 'include', // 로그인 인증 요청에서도 이거 설정해야지 쿠키가 넘어감..
-        body: JSON.stringify(user)
+        body: JSON.stringify(loginUser)
       });
 
       console.log('응답 상태:', response.status)
@@ -56,7 +56,9 @@ function Login() {
 
         // 로그인 성공 시 로그인 상태 유지를 위한 토큰을 받아온다.
         localStorage.setItem('accessToken', data.accessToken)
-        localStorage.setItem('loginUser', JSON.stringify(data.user))
+        localStorage.setItem('loginUser', data.user_id)
+
+        setUser(data.user_id);
 
         alert(data.message); // 사용자 인식 시킬려고 추가해봄.
         // location.href = '/';

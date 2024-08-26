@@ -18,6 +18,8 @@ const fetchInterceptorAuthToken = async (url, options = {}) => {
         options.credentials = 'include';
     }
 
+    console.log('options', options);
+
     try {
         const response = await fetch(url, options);
 
