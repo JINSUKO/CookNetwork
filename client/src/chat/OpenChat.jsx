@@ -1,8 +1,11 @@
 import {useEffect, useRef, useState} from 'react';
 import {io} from 'socket.io-client';
+import {Nav, Offcanvas} from 'react-bootstrap';
 
 //작성해둔 컴포넌트 불러옴
 import {StyledApp} from './styled.jsx';
+
+import ChatDesign from '../assets/styles/ChatMessage.module.css';
 
 
 const{
@@ -26,14 +29,19 @@ const socket = new io(socket_IP);
 
 function openChat({ userData }) {
     // 유저 데이터를 받아와서 변수에 딕셔너리 형터로 저장
-    const { user_code, user_id, username } = userData || {}
+    const { user_id, username } = userData || {}
     // 새로운 채팅 내역
     const [messageHistory, setMessageHistory] = useState([]);
     // 최근 10개의 채팅내역
     const [oldMessageLog, setOldMessageLog] = useState([]);
 
+    // 클라이언트를 구별할 ID 저장. <- 회원만 채팅 기능 가능하면 user_id로 구분 중이라서 필요가 없을듯?
+    // FAQ 기능 추가 시 유저만 쓰게 하는게 맞나 싶긴하네요.
+    // const uid = useRef(null);
+
     // 변동 사항을 적용하기 위한 Ref지정
-    const historyElement = useRef(null);
+    // const historyElement = useRef(null);
+    const openChatRoom = useRef(null);
 
     // 유저가 전송하는 메세지 저장
     // 처음 유저 데이터를 불러오는것에 실패해 undefind가 나오면 ''로 지정
@@ -46,10 +54,9 @@ function openChat({ userData }) {
 
     useEffect(() => {
         //[user_code, user_id, username] 변동시 (처음 접속시) 실행
-        if(user_code && user_id && username){
+        if(user_id && username){
             // 서버에 'USER_ENTER'이름으로 유저정보를 emit
             socket.emit('NEW_USER_ENTER',{ id: user_id, name: username});
-            console.log('user_code', user_code)
             console.log('user_id',user_id)
             console.log('username',username)
 
@@ -79,7 +86,7 @@ function openChat({ userData }) {
             socket.off('USER_LEAVE', onUserLeave);
             socket.off('CHAT_LOG', onChatLog);
         };
-    }, [user_code, user_id, username]);
+    }, [user_id, username]);
 
     useEffect(() => {
         // 서버에서 data를 받아 messageHistory에 저장
@@ -99,11 +106,10 @@ function openChat({ userData }) {
 
     useEffect(() => {
         // messageHistory,oldMessageLog에 변동값이 있을때 실행
-        if(historyElement.current){
+        if(openChatRoom.current) {
             //scrollTop과 scrollHeight를 일치시켜 채팅이 늘어도 가려지는 부분 없이 전부 나오도록 함
-            historyElement.current.scrollTop = historyElement.current.scrollHeight;
+            openChatRoom.current.scrollTop = openChatRoom.current.scrollHeight;
         }
-        console.log(messageHistory)
     }, [messageHistory, oldMessageLog]);
 
     const handleChange = (event) =>{
@@ -134,39 +140,90 @@ function openChat({ userData }) {
         }));
     };
 
+    // 채팅 창을 버튼 클릭으로 show, close 한다.
+    const [chatShow, setChatShow] = useState(false);
+    const [activeTab, setActiveTab] = useState('personalTalk');
+
+
+    const handleChatShow = (e) => {
+        setChatShow(true)
+    };
+    const handleChatClose = () => setChatShow(false);
+
+    const handleToggleTabs = (k) => {
+        if(k === 'personalTalk'){
+            openChatRoom.current.style.display = 'none';
+        } else if (k === 'openTalk') {
+            openChatRoom.current.style.display = 'flex';
+            openChatRoom.current.scrollTop = openChatRoom.current.scrollHeight;
+
+        } else if (k === 'FAQ') {
+            openChatRoom.current.style.display = 'none';
+
+        }
+
+        setActiveTab(k)
+    }
+
+
     return (
         <Container>
-            <HistoryWrapper ref={historyElement}>
-                { oldMessageLog.length || messageHistory.length ? (
-                    <>
-                        {/*oldMessageLog,  messageHistory 내용을 반복해서 출력*/}
-                        {oldMessageLog.map(({ user_id, user_name, chat_data }, index) => (
-                            <ChatItem key={index} me={user_id === userData.user_id}>
-                                <ChatName>{user_name}</ChatName>
-                                <ChatMessage>{chat_data}</ChatMessage>
-                            </ChatItem>
-                        ))}
-                        {messageHistory.map(({ id, name, message }, index) => (
-                            <ChatItem key={index} me={id === user_id}>
-                                <ChatName>{name}</ChatName>
-                                <ChatMessage>{message}</ChatMessage>
-                            </ChatItem>
-                        ))}
-                    </>
-                ) : (
-                    <NoHistory>채팅 내역이 없습니다.</NoHistory>
-                )}
-            </HistoryWrapper>
-            <Form onSubmit={handleSubmit}>
-                {/* <NameInput>{userMessage.name}</NameInput> */}
-                <MessageInput
-                    id="message"
-                    value={userMessage.message}
-                    onChange={handleChange}
-                    placeholder="메시지를 입력하세요..."
-                />
-                <SubmitButton>보내기</SubmitButton>
-            </Form>
+            <div className={ChatDesign.chatIcon}>
+                <i className={"fa-sharp fa-solid fa-comment-dots fa-2xl"} onClick={handleChatShow}></i>
+            </div>
+            <Offcanvas show={chatShow} onHide={handleChatClose} placement='end' scroll='true'>
+                <div className={ChatDesign.openChatRoom} ref={openChatRoom}>
+                    {/*<HistoryWrapper ref={historyElement}>*/}
+                    <HistoryWrapper>
+                        {oldMessageLog.length || messageHistory.length ? (
+                            <>
+                                {/*oldMessageLog,  messageHistory 내용을 반복해서 출력*/}
+                                {oldMessageLog.map(({user_id, user_name, chat_data}, index) => (
+                                    <ChatItem key={index} me={user_id === userData.user_id}>
+                                        <ChatName>{user_name}</ChatName>
+                                        <ChatMessage>{chat_data}</ChatMessage>
+                                    </ChatItem>
+                                ))}
+                                {messageHistory.map(({id, name, message}, index) => (
+                                    <ChatItem key={index} me={id === userData.user_id}>
+                                        <ChatName>{name}</ChatName>
+                                        <ChatMessage>{message}</ChatMessage>
+                                    </ChatItem>
+                                )) }
+                            </>
+                        ) : (
+                            <NoHistory>채팅 내역이 없습니다.</NoHistory>
+                        )}
+                    </HistoryWrapper>
+                    <Form onSubmit={handleSubmit}>
+                        {/* <NameInput>{userMessage.name}</NameInput> */}
+                        <MessageInput
+                            id="message"
+                            value={userMessage.message}
+                            onChange={handleChange}
+                            placeholder="메시지를 입력하세요..."
+                        />
+                        <SubmitButton>보내기</SubmitButton>
+                    </Form>
+                </div>
+                <Nav activeKey={activeTab} onSelect={handleToggleTabs} className={ChatDesign.chatNav} >
+                    <Nav.Item>
+                        <Nav.Link eventKey='personalTalk' className={ChatDesign.chatTab}>
+                            1대1 톡방
+                        </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link eventKey='openTalk' className={ChatDesign.chatTab}>
+                            오픈채팅방
+                        </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link eventKey='FAQ' className={ChatDesign.chatTab}>
+                            FAQ
+                        </Nav.Link>
+                    </Nav.Item>
+                </Nav>
+            </Offcanvas>
         </Container>
     );
 }

@@ -56,10 +56,9 @@ function Login({setUser, setProfilePic}) {
 
         // 로그인 성공 시 로그인 상태 유지를 위한 토큰을 받아온다.
         localStorage.setItem('accessToken', data.accessToken)
-        localStorage.setItem('loginUser', JSON.stringify(data.user))
+        localStorage.setItem('loginUser', data.user_id)
 
-        setUser(data.user);
-        setProfilePic(data.user.user_img);
+        setUser(data.user_id);
 
         alert(data.message); // 사용자 인식 시킬려고 추가해봄.
         // location.href = '/';

@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {Button, Modal} from "react-bootstrap";
 
-const UserNameModal = ({ show, setUsername, setShowUserNameModal, loginUser}) => {
+const UserNameModal = ({ show, setUsername, setShowUserNameModal, user, setUser}) => {
     const API_URL = import.meta.env.VITE_HOST_IP;
 
     const [usernameError, setUsernameError] = useState('');
@@ -22,7 +22,7 @@ const UserNameModal = ({ show, setUsername, setShowUserNameModal, loginUser}) =>
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({username: postUsername, user_code: loginUser.user_code})
+                body: JSON.stringify({username: postUsername, user_id: user.user_id})
             });
 
             if (!response.ok) throw new Error((await response.json()).error);
@@ -30,9 +30,9 @@ const UserNameModal = ({ show, setUsername, setShowUserNameModal, loginUser}) =>
             const result = await response.json();
             setUsername(postUsername)
 
-            loginUser.username = postUsername;
+            // userInfo, userProfile 과 같이 이거 안해도 잘 변경됨...
 
-            localStorage.setItem('loginUser', JSON.stringify(loginUser));
+            // setUser((preUser) =>({...preUser, username: postUsername}));
 
             console.log('username 업데이트 성공!');
 
@@ -68,7 +68,7 @@ const UserNameModal = ({ show, setUsername, setShowUserNameModal, loginUser}) =>
                 <Modal.Title>Confirm Action</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                변경 전: {loginUser.username}
+                변경 전: {user.username}
                 <br/>
                 변경 후: <input type='text' defaultValue={''} onChange={getUsernameEventListener} />
                 <p>{usernameError}</p>

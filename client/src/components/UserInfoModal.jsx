@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Button, Modal} from "react-bootstrap";
 import SignUpStyles from "../assets/styles/SignUp.module.css";
 
-const UserInfoModal = ({ show, setEmail, setSex, setShowUserInfoModal, loginUser}) => {
+const UserInfoModal = ({ show, setEmail, setSex, setShowUserInfoModal, user, setUser}) => {
     const API_URL = import.meta.env.VITE_HOST_IP;
 
     const [emailError, setEmailError] = useState('');
@@ -11,7 +11,7 @@ const UserInfoModal = ({ show, setEmail, setSex, setShowUserInfoModal, loginUser
     const [postSex, setPostSex] = useState('');
     const [postPassword, setPostPassword] = useState('');
     const [checkConfirm, setCheckConfirm] = useState(true);
-        console.log(typeof loginUser.sex)
+        console.log(typeof user.sex)
 
     const userInfoConfirm = async () => {
 
@@ -28,7 +28,7 @@ const UserInfoModal = ({ show, setEmail, setSex, setShowUserInfoModal, loginUser
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({email: postEmail, sex: postSex, user_id: loginUser.user_id})
+                body: JSON.stringify({email: postEmail, sex: postSex, user_id: user.user_id})
             }); // 비밀번호 변경은 나중으로 미룸.
 
             if (!response.ok) throw new Error((await response.json()).error);
@@ -37,10 +37,11 @@ const UserInfoModal = ({ show, setEmail, setSex, setShowUserInfoModal, loginUser
             setEmail(postEmail)
             setSex(parseInt(postSex))
 
-            loginUser.email = postEmail;
-            loginUser.sex = parseInt(postSex);
+            // 이거 안해도 반영 되는디..?
+            // user.email = postEmail;
+            // user.sex = parseInt(postSex);
 
-            localStorage.setItem('loginUser', JSON.stringify(loginUser));
+            // setUser((preUser) => ({...preUser, email: postEmail, sex: postSex}));
 
             console.log('유저 일반 정보 업데이트 성공!');
 
@@ -97,7 +98,7 @@ const UserInfoModal = ({ show, setEmail, setSex, setShowUserInfoModal, loginUser
                 <Modal.Title>Confirm Action</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                변경 전: {loginUser.email}
+                변경 전: {user.email}
                 <br/>
                 변경 후: <input type='text' defaultValue={''} onChange={getUserEmailEventListener}/>
                 <p>{emailError}</p>
@@ -108,14 +109,14 @@ const UserInfoModal = ({ show, setEmail, setSex, setShowUserInfoModal, loginUser
                     type="radio"
                     value="0"
                     name="userSex"
-                    onChange={getUserSexEventListener} defaultChecked={loginUser.sex === 0}/>
+                    onChange={getUserSexEventListener} defaultChecked={user.sex === 0}/>
                 </label> <label>
                     여성<input
                     className={SignUpStyles.userSexRadio}
                     type="radio"
                     value="1"
                     name="userSex"
-                    onChange={getUserSexEventListener} defaultChecked={loginUser.sex === 1}/>
+                    onChange={getUserSexEventListener} defaultChecked={user.sex === 1}/>
                 </label>
                 <br/>
                 {/*비밀번호: <input type='password' defaultValue={''} onChange={getUserPwEventListener}/>*/}

@@ -2,6 +2,7 @@ import {Navigate, Outlet} from "react-router-dom";
 import {memo, useEffect} from "react";
 
 import authFetch from '../../fetchInterceptorAuthToken'
+import authManager from "../../authManager";
 
 const ProtectedPage = () => {
 
@@ -10,7 +11,7 @@ const ProtectedPage = () => {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const data = await authFetch(`${API_URL}/api/authPage`);
+                const data = await authManager.addRequest(() => authFetch(`${API_URL}/api/authPage`));
                 console.log(data.message);
             } catch (e) {
                 console.error(e);

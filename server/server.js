@@ -57,6 +57,10 @@ app.use('/api/allCategoryName', allCategoryNamesRouter);
 const userCateoryRecipesRouter = require('./router/getUserCateoryRecipes');
 app.use('/api/userCategoryRecipes', userCateoryRecipesRouter);
 
+// 유저 정보를 불러오는 요청시 사용
+const userInfoRouter = require('./router/getUserInfo');
+app.use('/api/userInfo', authAccessToken, authRefreshToken, userInfoRouter);
+
 
 // 여기에 다른 API 라우트들을 추가합니다...
 
@@ -92,7 +96,7 @@ app.use("/api/logout", logoutRouter);
 
 // 로그인 승인 페이지 라우트 요청시 사용
 app.get("/api/authPage", authAccessToken, authRefreshToken, (req, res) => {
-    console.log(res.locals.accessExpired)
+    console.log('authPage', res.locals.accessExpired)
     if (res.locals.accessExpired) {
         return res.json({ accessToken: res.locals.accessToken, message: '회원 전용 페이지에 접근 승인 되었습니다.' });
     } else {
@@ -144,7 +148,7 @@ const server= app.listen(chat_PORT, () => console.log(`Chat Server is running at
 const io = new socketIO.Server(server, {
     cors: {
         origin: '*',
-    },
+    }
 });
 
 // 접속 유저를 저장하기 위한 Map 생성
@@ -161,6 +165,7 @@ const handleSocketMessage = (socket, data) => {
 };
 
 const handleSocketUserEnter = async (socket, user) => {
+    // 유저가 소켓에 연결을 성공했을 때 유저내역을 변수로 저장하고 기존 채팅내역을 보여주기 위한 코드
     // 유저 리스트에 없을 경우에만 실행(중복 실행 방지)
     if(!userList.has(socket.id)){
         // 유저리스트 Map에 socket.id: user정보 형태로 저장

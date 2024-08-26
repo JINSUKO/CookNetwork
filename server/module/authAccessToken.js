@@ -41,6 +41,8 @@ const authAccessToken = (req, res, next) => {
 
             // access token 만료 외 다른 에러는 전부 유효하지 않은 토큰으로 인식하여
             // 사용자에게 재로그인을 유도합니다.
+
+            console.log('err.name', err.name);
             clearRefreshToken(res);
             return res.status(403).json({ error: '유효하지 않은 access 토큰입니다.' });
         }
@@ -49,6 +51,8 @@ const authAccessToken = (req, res, next) => {
         // 서비스 로직을 수행하게 합니다.
         res.locals.userId = decoded.userId;
         res.locals.accessExpired = false;
+
+        console.log('res.locals.userId in authA',res.locals.userId)
         next();
 
         // 이 미들웨어에서는 토큰 검증까진만 수행하고 나머지 서비스 로직은 다음 미들웨어에서 수행합니다.
