@@ -55,8 +55,8 @@ function openChat({ userData }) {
 
     // 채팅 창을 버튼 클릭으로 show, close 한다.
     const [chatShow, setChatShow] = useState(false);
-    const [activeTab, setActiveTab] = useState('personalTalk');
-    const [isFormVisible, setIsFormVisible] = useState(false)
+    const [activeTab, setActiveTab] = useState('FAQ');
+    const [isFormVisible, setIsFormVisible] = useState(true)
 
     useEffect(() => {
         if(activeTab === 'openTalk'){
@@ -149,8 +149,8 @@ function openChat({ userData }) {
         }
 
         // event별 submit 구분
-        if(activeTab ==='personalTalk'){
-
+        if(activeTab ==='FAQ'){
+            e.preventDefault();
         } else if (activeTab === 'openTalk'){
             // 전송 방지
             // 없을경우 Submit버튼 누를때 페이지 새로고침함
@@ -168,8 +168,8 @@ function openChat({ userData }) {
                 ...prevUser,
                 message: '',
             }));
-        } else if (activeTab === 'FAQ'){
-            e.preventDefault();
+        } else if (activeTab === 'personalTalk'){
+
         }
         
     };
@@ -182,17 +182,17 @@ function openChat({ userData }) {
     const handleChatClose = () => setChatShow(false);
 
     const handleToggleTabs = (k) => {
-        if(k === 'personalTalk'){
+        if(k === 'FAQ'){
             openChatRoom.current.style.display = 'none';
-            setIsFormVisible(false);
+            setIsFormVisible(true);
         } else if (k === 'openTalk') {
             openChatRoom.current.style.display = 'flex';
             openChatRoom.current.scrollTop = openChatRoom.current.scrollHeight;
             setIsFormVisible(true);
 
-        } else if (k === 'FAQ') {
+        } else if (k === 'personalTalk') {
             openChatRoom.current.style.display = 'none';
-            setIsFormVisible(true);
+            setIsFormVisible(false);
         }
 
         setActiveTab(k)
@@ -243,8 +243,8 @@ function openChat({ userData }) {
                     </div>
                 <Nav activeKey={activeTab} onSelect={handleToggleTabs} className={ChatDesign.chatNav} >
                     <Nav.Item>
-                        <Nav.Link eventKey='personalTalk' className={ChatDesign.chatTab}>
-                            1대1 톡방
+                        <Nav.Link eventKey='FAQ' className={ChatDesign.chatTab}>
+                            FAQ
                         </Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
@@ -253,8 +253,8 @@ function openChat({ userData }) {
                         </Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link eventKey='FAQ' className={ChatDesign.chatTab}>
-                            FAQ
+                        <Nav.Link eventKey='personalTalk' className={ChatDesign.chatTab}>
+                            1대1 톡방
                         </Nav.Link>
                     </Nav.Item>
                 </Nav>
