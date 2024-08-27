@@ -12,6 +12,8 @@ async function getOpenChatLog(){
     //db 접속
     const maria = require('./sql');
     // 최근 채팅내역 10개를 가져오는 쿼리
+
+    // 최근 채팅내역 10개를 가져오는 쿼리
     const queryString = `SELECT user_id, user_name, chat_data
                         FROM (
                             SELECT *

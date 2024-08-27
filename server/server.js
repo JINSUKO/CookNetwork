@@ -64,6 +64,11 @@ app.use('/api/userInfo', authAccessToken, authRefreshToken, userInfoRouter);
 
 // 여기에 다른 API 라우트들을 추가합니다...
 
+// 회원가입 중복확인 라우트 연결
+const checkRouter = require("./router/checkSignUp.js");
+// 중복확인 엔드포인트 요청시 호출
+app.use("/api/check", checkRouter)
+
 // 회원가입 라우트 연결
 const signupRouter = require("./router/signUp.js");
 // 회원가입 라우트 요청시 사용
@@ -209,7 +214,7 @@ const handleSocketConnection = async (socket) => {
     socket.on('NEW_USER_ENTER', async (user) => handleSocketUserEnter(socket, user));
 
     // 클라이언트 소켓에서 "Message"를 emit할때 실행
-    socket.on("Message",(data) => handleSocketMessage(socket, data));
+    socket.on("Message_open",(data) => handleSocketMessage(socket, data));
 
     // 클라이언트 소켓이 서버를 떠날때 실행 ( socket 내장 함수 )
     socket.on('disconnect', () => handleSocketUserLeave(socket));
