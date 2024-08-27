@@ -53,7 +53,7 @@ function FetchRecipeList() {
 
 
   return (
-    <Container className="text-start">
+    <Container>
       <RecipeListPage recipes={recipes} currentCategory={currentCategory}/>
     </Container>
   )
