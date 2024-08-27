@@ -53,62 +53,67 @@ function openChat({ userData }) {
         message: '',
     });
 
-    useEffect(() => {
-        //[user_code, user_id, username] 변동시 (처음 접속시) 실행
-        if(user_id && username){
-            // 서버에 'USER_ENTER'이름으로 유저정보를 emit
-            socket.emit('NEW_USER_ENTER',{ id: user_id, name: username});
-            console.log('user_id',user_id)
-            console.log('username',username)
-
-        }
-
-
-        // 서버에서 접속 유저 정보를 받아 출력
-        const onUserEnter = (user) =>{
-            console.log(`${user.name}(${user.id}) 접속`);
-        };
-        // 서버에서 종료 유저 정보를 받아 출력
-        const onUserLeave = (user) =>{
-            console.log(`${user.name}(${user.id}) 접속 해제`);
-        };
-        const onChatLog = (data) =>{
-            setOldMessageLog(data);
-        }
-        // 서버에서 각각 emit 받을경우 실행
-
-        socket.on('USER_ENTER', onUserEnter);
-        socket.on('USER_LEAVE', onUserLeave);
-        socket.on('CHAT_LOG',onChatLog);
-
-        return () => {
-            // 메모리 누수 방지용으로 종료시 서버와 연결 끊음
-            socket.off('USER_ENTER', onUserEnter);
-            socket.off('USER_LEAVE', onUserLeave);
-            socket.off('CHAT_LOG', onChatLog);
-        };
-    }, [user_id, username]);
+    // 채팅 창을 버튼 클릭으로 show, close 한다.
+    const [chatShow, setChatShow] = useState(false);
+    const [activeTab, setActiveTab] = useState('personalTalk');
+    const [isFormVisible, setIsFormVisible] = useState(false)
 
     useEffect(() => {
-        // 서버에서 data를 받아 messageHistory에 저장
-        const onAllMessage = (data) =>{
-            console.log(`${data.id}: `,data);
-            setMessageHistory((prevHistory) => [...prevHistory, data]);
+        if(activeTab === 'openTalk'){
+            if(user_id && username){
+                // 서버에 'USER_ENTER'이름으로 유저정보를 emit
+                socket.emit('NEW_USER_ENTER',{ id: user_id, name: username});
+                console.log('user_id',user_id)
+                console.log('username',username)
+
+            }
+
+            // 서버에서 접속 유저 정보를 받아 출력
+            const onUserEnter = (user) =>{
+                console.log(`${user.name}(${user.id}) 접속`);
+            };
+            // 서버에서 종료 유저 정보를 받아 출력
+            const onUserLeave = (user) =>{
+                console.log(`${user.name}(${user.id}) 접속 해제`);
+            };
+            const onChatLog = (data) =>{
+                setOldMessageLog(data);
+            }
+            // 서버에서 각각 emit 받을경우 실행
+
+            socket.on('USER_ENTER', onUserEnter);
+            socket.on('USER_LEAVE', onUserLeave);
+            socket.on('CHAT_LOG',onChatLog);
+
+            return () => {
+                // 메모리 누수 방지용으로 종료시 서버와 연결 끊음
+                socket.off('USER_ENTER', onUserEnter);
+                socket.off('USER_LEAVE', onUserLeave);
+                socket.off('CHAT_LOG', onChatLog);
+            };
         };
+    }, [activeTab]);
 
-        socket.on('All_Message', onAllMessage);
-
-        return () => {
-            socket.off('All_Message', onAllMessage);
-        };
-
+    useEffect(() => {
+        if(activeTab === 'openTalk'){
+            // 서버에서 data를 받아 messageHistory에 저장
+            const onAllMessage = (data) =>{
+                console.log(`${data.id}: `,data);
+                setMessageHistory((prevHistory) => [...prevHistory, data]);
+            };
+    
+            socket.on('All_Message', onAllMessage);
+    
+            return () => {
+                socket.off('All_Message', onAllMessage);
+            };
+        }
     }, [messageHistory.length]);
 
 
     useEffect(() => {
         // messageHistory,oldMessageLog에 변동값이 있을때 실행
-        console.log(openChatRoom.current)
-        if(openChatRoom.current) {
+        if(activeTab === 'openTalk' && openChatRoom.current) {
             //scrollTop과 scrollHeight를 일치시켜 새로운 채팅이 올라와도 스크롤을 계속 밑에 위치시킴
             openChatRoom.current.scrollTop = openChatRoom.current.scrollHeight;
         }
@@ -132,12 +137,6 @@ function openChat({ userData }) {
         }
         
     };
-
-
-    // 채팅 창을 버튼 클릭으로 show, close 한다.
-    // handleSubmit에서 사용하기위해 위치 조정
-    const [chatShow, setChatShow] = useState(false);
-    const [activeTab, setActiveTab] = useState('personalTalk');
 
     const handleSubmit = (e) =>{
         // 입력 값이 없을경우 submit 못하도록 수정
@@ -170,7 +169,7 @@ function openChat({ userData }) {
                 message: '',
             }));
         } else if (activeTab === 'FAQ'){
-
+            e.preventDefault();
         }
         
     };
@@ -185,13 +184,15 @@ function openChat({ userData }) {
     const handleToggleTabs = (k) => {
         if(k === 'personalTalk'){
             openChatRoom.current.style.display = 'none';
+            setIsFormVisible(false);
         } else if (k === 'openTalk') {
             openChatRoom.current.style.display = 'flex';
             openChatRoom.current.scrollTop = openChatRoom.current.scrollHeight;
+            setIsFormVisible(true);
 
         } else if (k === 'FAQ') {
             openChatRoom.current.style.display = 'none';
-
+            setIsFormVisible(true);
         }
 
         setActiveTab(k)
@@ -227,17 +228,19 @@ function openChat({ userData }) {
                             <NoHistory>채팅 내역이 없습니다.</NoHistory>
                         )}
                     </HistoryWrapper>
-                    <Form onSubmit={handleSubmit}>
-                        {/* <NameInput>{userMessage.name}</NameInput> */}
-                        <MessageInput
-                            id="message"
-                            value={userMessage.message}
-                            onChange={handleChange}
-                            placeholder="메시지를 입력하세요..."
-                        />
-                        <SubmitButton>보내기</SubmitButton>
-                    </Form>
                 </div>
+                <div className={`${isFormVisible? ChatDesign.openChatInput : ChatDesign.hidden}`}>
+                        <Form onSubmit={handleSubmit}>
+                            {/* <NameInput>{userMessage.name}</NameInput> */}
+                            <MessageInput
+                                id="message"
+                                value={userMessage.message}
+                                onChange={handleChange}
+                                placeholder="메시지를 입력하세요..."
+                            />
+                            <SubmitButton>보내기</SubmitButton>
+                        </Form>
+                    </div>
                 <Nav activeKey={activeTab} onSelect={handleToggleTabs} className={ChatDesign.chatNav} >
                     <Nav.Item>
                         <Nav.Link eventKey='personalTalk' className={ChatDesign.chatTab}>

@@ -39,7 +39,7 @@
 
 .openChatRoom {
     /*border: 1px solid black;*/
-    display: flex;
+    display: none;
     position: relative;
     height: 90%;
     flex-direction: column;
@@ -47,6 +47,16 @@
 }
 
 .openChatRoom::-webkit-scrollbar {
+    display: none;
+}
+
+.openChatInput {
+    display: flex;
+    max-height: 10%;
+    width: 100%;
+}
+
+.hidden{
     display: none;
 }
 
