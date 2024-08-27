@@ -21,7 +21,7 @@ const{
     SubmitButton
 } = StyledApp;
 
-const socket_IP  = import.meta.env.VITE_SOCKET_IP
+const socket_IP  = import.meta.env.VITE_HOST_IP
 // const socket = new io('http://192.168.0.103:3001/'); // 관용님 학원 pc ip
 // 클라이언트 소켓 서버와 연결
 const socket = new io(socket_IP);
