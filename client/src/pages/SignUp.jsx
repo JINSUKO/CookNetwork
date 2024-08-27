@@ -1,4 +1,6 @@
 /* 회원가입 페이지
+[ ] 유효성 검사 에러메시지 보완 
+[ ] 이메일 틀린 형식으로 중복확인시 사용가능하다고 뜨는 문제 
 */
 
 import React, { useState } from 'react';
@@ -48,8 +50,7 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
     // console.log(event.target.name)
     // console.log(event.target.value)
     // 아이디
-    setUser(Newuser)
-    setUser(preUser => ({...preUser, ...Newuser}))
+    // setUser(preUser => ({...preUser, ...Newuser}))
 
     console.log(user) // preUser
     if (event.target.name === "userId"&& !regId.test(event.target.value)) {
@@ -170,12 +171,12 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
         body: JSON.stringify({userEmail: user.userEmail})
       });
 
-      setIsIdChecked(true);
+      setIsEmailChecked(true);
 
-      if (response.status === 200){     // 200: 아이디 사용가능
+      if (response.status === 201){     // 200: 아이디 사용가능
         alert("사용 가능한 이메일입니다.");
         setIsEmailAvailable(true);
-      } else if(response.status === 409){ // 409: 아이디 중복
+      } else if(response.status === 410){ // 409: 아이디 중복
         alert("이미 사용중인 이메일입니다.")
         setIsEmailAvailable(false);
       } else{
@@ -185,6 +186,48 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
     } catch (error) {
       console.error('이메일 중복확인 오류:', error)
       setIsEmailAvailable(false);
+    }
+  };
+
+  // 닉네임 중복확인
+  const [isNicknamehecked, setIsNicknameChecked] = useState(false);
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
+
+  const nicknameCheck = async (e) => {
+    // e.preventdefault();
+
+    if (!user.nickname) {
+      alert('이메일을 입력해주세요.');
+      setIsNicknameChecked(false);
+      setIsNicknameAvailable(false);
+      return;
+    }
+
+    // POST 요청
+    try {
+      const response = await fetch(`${API_URL}/api/check/nicknamecheck`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({nickname: user.nickname})
+      });
+
+      setIsNicknameChecked(true);
+
+      if (response.status === 202){     // 200: 아이디 사용가능
+        alert("사용 가능한 닉네임입니다.");
+        setIsNicknameAvailable(true);
+      } else if(response.status === 411){ // 409: 아이디 중복
+        alert("이미 사용중인 닉네임입니다.")
+        setIsNicknameAvailable(false);
+      } else{
+        console.log("닉네임 중복확인 오류")
+        setIsNicknameAvailable(false);
+      }
+    } catch (error) {
+      console.error('닉네임 중복확인 오류:', error)
+      setIsNicknameAvailable(false);
     }
   };
 
@@ -288,6 +331,8 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
           </label>
           <div className={SignUpStyles.errorMessageWrap}>{errors.passwordVerify}</div>
           <label className={SignUpStyles.infoLabelText}>닉네임
+          <button onClick={nicknameCheck}>중복확인</button>
+
             <input
             className={SignUpStyles.userInput}
             type="text"
