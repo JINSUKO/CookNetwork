@@ -34,6 +34,9 @@ function openChat({ userData }) {
     const [messageHistory, setMessageHistory] = useState([]);
     // 최근 10개의 채팅내역
     const [oldMessageLog, setOldMessageLog] = useState([]);
+    // FAQ 채팅 내역
+    const [messageFAQHistory, setMessageFAQHistory] = useState([]);
+
 
     // 클라이언트를 구별할 ID 저장. <- 회원만 채팅 기능 가능하면 user_id로 구분 중이라서 필요가 없을듯?
     // FAQ 기능 추가 시 유저만 쓰게 하는게 맞나 싶긴하네요.
@@ -43,6 +46,7 @@ function openChat({ userData }) {
     // 변동 사항을 적용하기 위한 Ref지정
     // const historyElement = useRef(null);
     const openChatRoom = useRef(null);
+    const FAQChatRoom = useRef(null);
 
     // 유저가 전송하는 메세지 저장
     // 처음 유저 데이터를 불러오는것에 실패해 undefind가 나오면 ''로 지정
@@ -59,6 +63,13 @@ function openChat({ userData }) {
     const [isFormVisible, setIsFormVisible] = useState(true)
 
     useEffect(() => {
+        if(activeTab === 'FAQ'){
+            const joinFAQ = () =>{
+                console.log(socket.id)
+                socket.emit('Room_FAQ',socket.id)
+            }
+            socket.on('connect',joinFAQ)
+        }
         if(activeTab === 'openTalk'){
             if(user_id && username){
                 // 서버에 'USER_ENTER'이름으로 유저정보를 emit
@@ -119,6 +130,12 @@ function openChat({ userData }) {
         }
     }, [messageHistory, oldMessageLog]);
 
+    useEffect(() =>{
+        if(activeTab === 'FAQ' && FAQChatRoom.current){
+            FAQChatRoom.current.scrollTop = FAQChatRoom.current.scrollHeight;
+        }
+    }, [messageFAQHistory]);
+
     const handleChange = (event) =>{
         // 메세지 입력창에서 실행
         // 메세지를 입력할때마다 입력하는 내용이 바로 적용되도록 실행
@@ -151,6 +168,16 @@ function openChat({ userData }) {
         // event별 submit 구분
         if(activeTab ==='FAQ'){
             e.preventDefault();
+            const FAQToSend = {id: user_id, name: userMessage.name, message: userMessage.message};
+            console.log(socket.id)
+            socket.emit('Message_FAQ',socket.id,FAQToSend);
+
+            setMessageFAQHistory((prevHistory) => [...prevHistory, FAQToSend]);
+            setUserMessage((prevUser) => ({
+                ...prevUser,
+                message: '',
+            }));
+
         } else if (activeTab === 'openTalk'){
             // 전송 방지
             // 없을경우 Submit버튼 누를때 페이지 새로고침함
@@ -183,14 +210,17 @@ function openChat({ userData }) {
 
     const handleToggleTabs = (k) => {
         if(k === 'FAQ'){
+            FAQChatRoom.current.style.display = 'flex';
             openChatRoom.current.style.display = 'none';
             setIsFormVisible(true);
         } else if (k === 'openTalk') {
+            FAQChatRoom.current.style.display = 'none';
             openChatRoom.current.style.display = 'flex';
             openChatRoom.current.scrollTop = openChatRoom.current.scrollHeight;
             setIsFormVisible(true);
 
         } else if (k === 'personalTalk') {
+            FAQChatRoom.current.style.display = 'none';
             openChatRoom.current.style.display = 'none';
             setIsFormVisible(false);
         }
@@ -205,6 +235,24 @@ function openChat({ userData }) {
                 <i className={"fa-sharp fa-solid fa-comment-dots fa-2xl"} onClick={handleChatShow}></i>
             </div>
             <Offcanvas show={chatShow} onHide={handleChatClose} placement='end' scroll='true'>
+                <div className={ChatDesign.FAQChatRoom} ref={FAQChatRoom}>
+                    {/*<HistoryWrapper ref={historyElement}>*/}
+                    <HistoryWrapper>
+                        {messageFAQHistory.length ? (
+                            <>
+                                {messageFAQHistory.map(({id, name, message}, index) => (
+                                    <ChatItem key={index} me={id === userData.user_id}>
+                                        <ChatName>{name}</ChatName>
+                                        <ChatMessage>{message}</ChatMessage>
+                                    </ChatItem>
+                                ))}
+                            </>
+                        ) : (
+                            
+                            <NoHistory>채팅 내역이 없습니다.</NoHistory>
+                        )}
+                    </HistoryWrapper>
+                </div>
                 <div className={ChatDesign.openChatRoom} ref={openChatRoom}>
                     {/*<HistoryWrapper ref={historyElement}>*/}
                     <HistoryWrapper>
@@ -229,7 +277,7 @@ function openChat({ userData }) {
                         )}
                     </HistoryWrapper>
                 </div>
-                <div className={`${isFormVisible? ChatDesign.openChatInput : ChatDesign.hidden}`}>
+                <div className={`${isFormVisible? ChatDesign.ChatInput : ChatDesign.hidden}`}>
                         <Form onSubmit={handleSubmit}>
                             {/* <NameInput>{userMessage.name}</NameInput> */}
                             <MessageInput

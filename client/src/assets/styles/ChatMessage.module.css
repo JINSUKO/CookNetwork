@@ -37,6 +37,19 @@
 
 }
 
+.FAQChatRoom {
+    /*border: 1px solid black;*/
+    display: flex;
+    position: relative;
+    height: 90%;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+.FAQChatRoom::-webkit-scrollbar {
+    display: none;
+}
+
+
 .openChatRoom {
     /*border: 1px solid black;*/
     display: none;
@@ -50,7 +63,7 @@
     display: none;
 }
 
-.openChatInput {
+.ChatInput {
     display: flex;
     max-height: 10%;
     width: 100%;
