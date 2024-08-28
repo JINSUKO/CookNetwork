@@ -2,8 +2,7 @@
 // [ ] loadingStyle 등 css 분리
 
 import React from "react";
-import { Link, useParams } from "react-router-dom";
-import FilterBox from "../components/FilterBox";
+import { Link } from "react-router-dom";
 import { Container, Row, Col, Card} from 'react-bootstrap';
 
 
@@ -57,7 +56,6 @@ function RecipeListPage({ recipes, currentCategory }) {
   
   return (
     <div>
-      <FilterBox />
       <Container className="text-start">
         <h5>
         {displayCategory()}<br/> 다양한 레시피를 확인해보세요!</h5>
