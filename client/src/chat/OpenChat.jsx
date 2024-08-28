@@ -101,7 +101,6 @@ function openChat({ userData }) {
                 socket.emit('NEW_USER_ENTER',{ id: user_id, name: username});
                 console.log('user_id',user_id)
                 console.log('username',username)
-
             } 
 
             // 서버에서 접속 유저 정보를 받아 출력
@@ -262,6 +261,7 @@ function openChat({ userData }) {
             FAQChatRoom.current.style.display = 'flex';
             openChatRoom.current.style.display = 'none';
             personalRoom.current.style.display = 'none';
+
             setIsFormVisible(true);
         } else if (k === 'openTalk') {
             FAQChatRoom.current.style.display = 'none';
