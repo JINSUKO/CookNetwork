@@ -29,10 +29,28 @@ router.post('/emailcheck',async(req,res)=>{
     try{
         const [emailCheck] = await maria.execute(queryString, [checkEmail])
         if(emailCheck.length > 0){
-            res.status(409).json({message: "이미 존재하는 email입니다"});
+            res.status(410).json({message: "이미 존재하는 email입니다"});
         }
         else{
-            res.status(200).json({message: "생성 가능한 email입니다"});
+            res.status(201).json({message: "생성 가능한 email입니다"});
+        }
+    } catch(error) {
+        console.log(error)
+    }
+})
+
+router.post('/nicknamecheck',async(req,res)=>{
+    let checkname = req.body.nickname;
+
+    const queryString = `SELECT username FROM users WHERE username = ?`;
+
+    try{
+        const [emailCheck] = await maria.execute(queryString, [checkname])
+        if(emailCheck.length > 0){
+            res.status(411).json({message: "이미 존재하는 닉네임입니다"});
+        }
+        else{
+            res.status(202).json({message: "생성 가능한 닉네임입니다"});
         }
     } catch(error) {
         console.log(error)
