@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import {io} from 'socket.io-client';
-import {Nav, Offcanvas} from 'react-bootstrap';
+import {ListGroup, Nav, Offcanvas} from 'react-bootstrap';
 
 //작성해둔 컴포넌트 불러옴
 import {StyledApp} from './styled.jsx';
@@ -12,11 +12,12 @@ const{
     Container,
     Form,
     HistoryWrapper,
+    RoomWrapper,
     NoHistory,
     ChatItem,
     ChatName,
     ChatMessage,
-    NameInput,
+    IDInput,
     MessageInput,
     SubmitButton
 } = StyledApp;
@@ -47,6 +48,8 @@ function openChat({ userData }) {
     // const historyElement = useRef(null);
     const openChatRoom = useRef(null);
     const FAQChatRoom = useRef(null);
+    const personalChatRoom = useRef(null);
+    const personalRoom = useRef(null)
 
     // 유저가 전송하는 메세지 저장
     // 처음 유저 데이터를 불러오는것에 실패해 undefind가 나오면 ''로 지정
@@ -57,27 +60,49 @@ function openChat({ userData }) {
         message: '',
     });
 
+    const [toId, setToId] = useState({
+        name: ''
+    })
+
+    const [chatRoomArr, setChatRoomArr] = useState([]);
+
     // 채팅 창을 버튼 클릭으로 show, close 한다.
     const [chatShow, setChatShow] = useState(false);
     const [activeTab, setActiveTab] = useState('FAQ');
     const [isFormVisible, setIsFormVisible] = useState(true)
 
     useEffect(() => {
+        async function fetchPersonalRoom() {
+            try{
+                const response = await fetch(`${socket_IP}/api/personal/room`,{
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({id: user_id})
+                });
+
+                const data = await response.json();
+                setChatRoomArr(data)
+            }catch(error){
+                console.log(error);
+            }
+        }
+
         if(activeTab === 'FAQ'){
             const joinFAQ = () =>{
                 console.log(socket.id)
                 socket.emit('Room_FAQ',socket.id)
             }
             socket.on('connect',joinFAQ)
-        }
-        if(activeTab === 'openTalk'){
+        } else if(activeTab === 'openTalk'){
             if(user_id && username){
                 // 서버에 'USER_ENTER'이름으로 유저정보를 emit
                 socket.emit('NEW_USER_ENTER',{ id: user_id, name: username});
                 console.log('user_id',user_id)
                 console.log('username',username)
 
-            }
+            } 
 
             // 서버에서 접속 유저 정보를 받아 출력
             const onUserEnter = (user) =>{
@@ -102,6 +127,9 @@ function openChat({ userData }) {
                 socket.off('USER_LEAVE', onUserLeave);
                 socket.off('CHAT_LOG', onChatLog);
             };
+        } else if (activeTab === 'personalTalk'){
+            console.log("1")
+            fetchPersonalRoom();
         };
     }, [activeTab]);
 
@@ -141,35 +169,53 @@ function openChat({ userData }) {
         // 메세지를 입력할때마다 입력하는 내용이 바로 적용되도록 실행
 
         // 입력값이 띄어쓰기 밖에 없을경우 쓸수 없도록 수정
-        if(event.target.value.trim() == ''){
-            setUserMessage((prevState) =>({
-                ...prevState,
-             message: '',
-            }))
-        } else{
-            setUserMessage((prevState) => ({
-                ...prevState,
-                [event.target.id]: event.target.value,
-            }));
+        if(event.target.value.trim() === ''){
+            if(event.target.id === 'message'){
+                setUserMessage((prevState) =>({
+                    ...prevState,
+                 message: '',}));
+            } else if(event.target.id === 'name'){
+                setToId((prevState) =>({
+                    ...prevState,
+                 name: '',}));
+            }
+        }else{
+            if(event.target.id === 'message'){
+                setUserMessage((prevState) => ({
+                    ...prevState,
+                    [event.target.id]: event.target.value,
+                }));
+            } else if (event.target.id === 'name') {
+                setToId((prevState)=>({
+                    ...prevState,
+                    [event.target.id]: event.target.value,
+                }));
+            }
         }
-        
     };
 
     const handleSubmit = (e) =>{
         // 입력 값이 없을경우 submit 못하도록 수정
-        if(userMessage.message == ' ' || userMessage.message.trim() == ''){
+        if(userMessage.message.trim() === '' && !(activeTab === 'personalTalk')){
             e.preventDefault()
             setUserMessage((prevUser)=> ({
                 ...prevUser,
                 message: '',}));
             return;
+        } else if(toId.name.trim() === '' && activeTab === 'personalTalk'){
+            e.preventDefault()
+            setToId((prevName) =>({
+                ...prevName,
+                name: '',
+            }));
+            return;
         }
-
+        
         // event별 submit 구분
         if(activeTab ==='FAQ'){
             e.preventDefault();
             const FAQToSend = {id: user_id, name: userMessage.name, message: userMessage.message};
-            console.log(socket.id)
+            // console.log(socket.id)
             socket.emit('Message_FAQ',socket.id,FAQToSend);
 
             setMessageFAQHistory((prevHistory) => [...prevHistory, FAQToSend]);
@@ -196,12 +242,15 @@ function openChat({ userData }) {
                 message: '',
             }));
         } else if (activeTab === 'personalTalk'){
-
+            //TODO 검색한 이름을 확인하여 동일한 이름이 없으면 채팅방 생성 있으면 경고창 띄우기
+            e.preventDefault();
+            console.log(chatRoomArr.find(key => key.username === toId.name));
+            setToId((prevName) =>({
+                ...prevName,
+                name: '',
+            }));
         }
-        
     };
-
-
 
     const handleChatShow = (e) => {
         setChatShow(true)
@@ -212,23 +261,31 @@ function openChat({ userData }) {
         if(k === 'FAQ'){
             FAQChatRoom.current.style.display = 'flex';
             openChatRoom.current.style.display = 'none';
+            personalRoom.current.style.display = 'none';
             setIsFormVisible(true);
         } else if (k === 'openTalk') {
             FAQChatRoom.current.style.display = 'none';
             openChatRoom.current.style.display = 'flex';
+            personalRoom.current.style.display = 'none';
             openChatRoom.current.scrollTop = openChatRoom.current.scrollHeight;
             setIsFormVisible(true);
 
         } else if (k === 'personalTalk') {
             FAQChatRoom.current.style.display = 'none';
             openChatRoom.current.style.display = 'none';
+            personalRoom.current.style.display = 'flex';
             setIsFormVisible(false);
+            // TODO 채팅리스트 서버에 요청하는 fetch와 없을 경우 작성
         }
 
         setActiveTab(k)
     }
 
+    const handleClick = (e) =>
+        console.log(e.target.textContent)
 
+
+    // TODO personalTalk 수정사항 : 채팅리스트 불러오기, 눌렀을때 채팅내역 불러오기 등등등
     return (
         <Container>
             <div className={ChatDesign.chatIcon}>
@@ -254,7 +311,57 @@ function openChat({ userData }) {
                     </HistoryWrapper>
                 </div>
                 <div className={ChatDesign.openChatRoom} ref={openChatRoom}>
-                    {/*<HistoryWrapper ref={historyElement}>*/}
+                    <HistoryWrapper>
+                        {oldMessageLog.length || messageHistory.length ? (
+                            <>
+                                {/*oldMessageLog,  messageHistory 내용을 반복해서 출력*/}
+                                {oldMessageLog.map(({user_id, user_name, chat_data}, index) => (
+                                    <ChatItem key={index} me={user_id === userData.user_id}>
+                                        <ChatName>{user_name}</ChatName>
+                                        <ChatMessage>{chat_data}</ChatMessage>
+                                    </ChatItem>
+                                ))}
+                                {messageHistory.map(({id, name, message}, index) => (
+                                    <ChatItem key={index} me={id === userData.user_id}>
+                                        <ChatName>{name}</ChatName>
+                                        <ChatMessage>{message}</ChatMessage>
+                                    </ChatItem>
+                                )) }
+                            </>
+                        ) : (
+                            <NoHistory>채팅 내역이 없습니다.</NoHistory>
+                        )}
+                    </HistoryWrapper>
+                </div>
+                <div className={ChatDesign.personalChatRoom} ref={personalRoom}>
+                    <RoomWrapper>
+                        {chatRoomArr.length ? (
+                            <ListGroup variant="flush">
+                                {chatRoomArr.map(({user_id,username,chat_data}, index) =>(
+                                    <ListGroup.Item key={index} className='chat-arr' onClick={handleClick}>
+                                        <ChatName>{username}</ChatName>
+                                        {/* <ChatMessage>{chat_data}</ChatMessage> */}
+                                    </ListGroup.Item>
+                                ))}
+                            </ListGroup>
+                        ) : (
+                            <NoHistory> 채팅 내역이 없습니다.</NoHistory>
+                        )
+                    }
+                    </RoomWrapper>
+                </div>
+                <div className={`${!isFormVisible? ChatDesign.ChatInput : ChatDesign.hidden}`}>
+                    <Form onSubmit={handleSubmit}>
+                        <IDInput
+                            id="name"
+                            value={toId.name}
+                            onChange={handleChange}
+                            placeholder="닉네임을 입력하세요"
+                        />
+                        <SubmitButton>보내기</SubmitButton>
+                    </Form>
+                </div>
+                <div className={ChatDesign.personalChatRoom} ref={personalChatRoom}>
                     <HistoryWrapper>
                         {oldMessageLog.length || messageHistory.length ? (
                             <>
@@ -278,17 +385,16 @@ function openChat({ userData }) {
                     </HistoryWrapper>
                 </div>
                 <div className={`${isFormVisible? ChatDesign.ChatInput : ChatDesign.hidden}`}>
-                        <Form onSubmit={handleSubmit}>
-                            {/* <NameInput>{userMessage.name}</NameInput> */}
-                            <MessageInput
-                                id="message"
-                                value={userMessage.message}
-                                onChange={handleChange}
-                                placeholder="메시지를 입력하세요..."
-                            />
-                            <SubmitButton>보내기</SubmitButton>
-                        </Form>
-                    </div>
+                    <Form onSubmit={handleSubmit}>
+                        <MessageInput
+                            id="message"
+                            value={userMessage.message}
+                            onChange={handleChange}
+                            placeholder="메시지를 입력하세요..."
+                        />
+                        <SubmitButton>보내기</SubmitButton>
+                    </Form>
+                </div>
                 <Nav activeKey={activeTab} onSelect={handleToggleTabs} className={ChatDesign.chatNav} >
                     <Nav.Item>
                         <Nav.Link eventKey='FAQ' className={ChatDesign.chatTab}>

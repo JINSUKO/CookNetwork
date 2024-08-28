@@ -63,6 +63,15 @@
     display: none;
 }
 
+.personalChatRoom {
+    /*border: 1px solid black;*/
+    display: none;
+    position: relative;
+    height: 90%;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
 .ChatInput {
     display: flex;
     max-height: 10%;

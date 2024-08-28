@@ -110,6 +110,9 @@ app.get("/api/authPage", authAccessToken, authRefreshToken, (req, res) => {
 
 });
 
+const personalRouter = require("./router/personalData.js");
+app.use("/api/personal",personalRouter)
+
 // 정적 파일 서빙 (프로덕션 모드)
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/dist')));
