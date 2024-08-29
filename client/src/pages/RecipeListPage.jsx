@@ -46,19 +46,10 @@ function RecipeListPage({ recipes, currentCategory }) {
     );
   }
 
-  // 리스트 상단 소개에 카테고리 표시
-    const displayCategory = () => {
-    if (currentCategory === 'main' || currentCategory === '전체' || !currentCategory) {
-      return '모든 레시피';
-    }
-    return `${currentCategory} 카테고리`;
-  };
-  
   return (
     <div>
       <Container className="text-start">
-        <h5>
-        {displayCategory()}<br/> 다양한 레시피를 확인해보세요!</h5>
+        
         <Row lg={5} className="g-4">
           {recipes && 
             recipes.map((recipe) => (
