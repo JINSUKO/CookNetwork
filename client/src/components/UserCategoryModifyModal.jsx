@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {Button, Modal} from "react-bootstrap";
 
-const UserCategoryModifyModal = ({ show, userCategories, setUserCategories, setShowUserCategories, loginUser}) => {
+const UserCategoryModifyModal = ({ show, userCategories, setUserCategories, setShowUserCategories, user}) => {
     const API_URL = import.meta.env.VITE_HOST_IP;
 
     const [categories, setCategories] = useState([]);
@@ -59,7 +59,7 @@ const UserCategoryModifyModal = ({ show, userCategories, setUserCategories, setS
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({user_id: loginUser.user_id})
+                body: JSON.stringify({user_id: user.user_id})
             });
 
             if (!response.ok) throw new Error((await response.json()).error);
@@ -79,7 +79,7 @@ const UserCategoryModifyModal = ({ show, userCategories, setUserCategories, setS
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({categories: selectedCategoriesList, user_id: loginUser.user_id})
+                body: JSON.stringify({categories: selectedCategoriesList, user_id: user.user_id})
             });
 
             if (!response.ok) throw new Error((await response.json()).error);
