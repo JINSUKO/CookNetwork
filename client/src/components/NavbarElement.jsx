@@ -1,12 +1,12 @@
 /* NavbarElement.jsx 
 -react-router-dom 라이브러리 사용 (npm install react-router-dom)
 -useNavigate 훅을 사용하여 검색어를 파라미터로 전달
+[ ] 
 */
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SearchBar from './SearchBar';
-import FetchRecipeList from './FetchRecipeList';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import '../assets/styles/Navbar.css'
 
