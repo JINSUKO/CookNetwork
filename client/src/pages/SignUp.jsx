@@ -1,6 +1,4 @@
 /* 회원가입 페이지
-[ ] 유효성 검사 에러메시지 보완 
-[ ] 이메일 틀린 형식으로 중복확인시 사용가능하다고 뜨는 문제 
 */
 
 import React, { useState } from 'react';
@@ -9,7 +7,6 @@ import SignUpStyles from '../assets/styles/SignUp.module.css';
 
 
 function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 전달
-  const API_URL = import.meta.env.VITE_HOST_IP;
   const [user, setUser] = useState({
     userId: '',
     password: '',
@@ -19,6 +16,7 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
     userEmail: ''
   });
 
+  console.log(user)
   const { userId, password, passwordVerify, nickname, userSex, userEmail } = user;
   console.log(user)
 
@@ -36,7 +34,7 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
 
   // 유효성검사 
   const [errors, setErrors] = useState({});
-  let isId = false;
+
   const validateForm = (event) => {   // 유효성 검사 함수 validateForm
     let inputError = {};    // inputError 객체
     event.preventDefault();   // 제출 방지
@@ -47,189 +45,48 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
     const regNickname = /^[a-zA-Z가-힣]{2,16}$/;
     const regEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // console.log(event.target.name)
-    // console.log(event.target.value)
     // 아이디
-    // setUser(preUser => ({...preUser, ...Newuser}))
-
-    console.log(user) // preUser
-    if (event.target.name === "userId"&& !regId.test(event.target.value)) {
+    if (!regId.test(user.userId)) {
+      // setUser(prevState => ({ ...prevState, userId: '' }));
       inputError.userId = "8-16자 영어 소문자+숫자로 작성하세요.";
-      isId = false;
-    } else {
-      isId = true;
     }
-    console.log(isId);
     // 비밀번호
-    // console.log(user.password)
     if (!regPw.test(user.password)) {
+      // setUser(prevState => ({ ...prevState, pw: '' }));
       inputError.password = "8-16자 영어+숫자로 작성하세요.";
-    } else {
-      inputError.pasword = "";
     }
     // 비밀번호 확인
-    // console.log(event.target.value)
     if (user.password !== user.passwordVerify) {
+      // setUser(prevState => ({ ...prevState, pw: '', checkpw: '' }));
       inputError.passwordVerify = "비밀번호가 일치하지 않습니다.";
-    } else {
-      inputError.pasword = "";
     }
     // 이메일
     if (!regEmail.test(user.userEmail)) {
+      // setUser(prevState => ({ ...prevState, userEmail: '' }));
       inputError.userEmail = "올바른 이메일 주소를 입력하세요.";
-    } else {
-      inputError.pasword = "";
     }
     // 닉네임 
     if (!regNickname.test(user.nickname)) {
+      // setUser(prevState => ({ ...prevState, nickname: '' }));
       inputError.nickname = "닉네임은 한글 또는 영문 2~16자로 작성하세요.";
-    } else {
-      inputError.pasword = "";
     }
     // 성별
     if (!user.userSex) {
       inputError.userSex = "성별을 선택해주세요.";
-    } else {
-      inputError.pasword = "";
     }
     // 입력 누락 검사
     if (!userId || !password || !passwordVerify || !nickname || !userSex || !userEmail) {
       inputError.general = "모든 필드는 필수입니다.";   // general: 입력 누락 등 오류메시지 저장하는 키
     }
 
-
-    console.log(inputError)
     setErrors(inputError);
 
     // 유효성검사 함수 Boolean 값 반환
     return Object.keys(inputError).length === 0;
   }
 
-  // 아이디 중복확인
-  const [isIdChecked, setIsIdChecked] = useState(false);
-  const [isIdAvailable, setIsIdAvailable] = useState(false);
 
-  const idCheck = async (e) => {
-    // e.preventdefault();
 
-    if (!user.userId) {
-      alert('아이디를 입력해주세요.');
-      setIsIdChecked(false);
-      setIsIdAvailable(false);
-      return;
-    }
-
-    // POST 요청
-    try {
-      const response = await fetch(`${API_URL}/api/check/idcheck`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({userId: user.userId})
-      });
-
-      setIsIdChecked(true);
-
-      if (response.status === 200){     // 200: 아이디 사용가능
-        alert("사용 가능한 아이디입니다.");
-        setIsIdAvailable(true);
-      } else if(response.status === 409){ // 409: 아이디 중복
-        alert("이미 사용중인 아이디입니다.")
-        setIsIdAvailable(false);
-      } else{
-        console.log("아이디 중복확인 오류")
-        setIsIdAvailable(false);
-      }
-    } catch (error) {
-      console.error('아이디 중복확인 오류:', error)
-      setIsIdAvailable(false);
-    }
-  };
-
-  // 이메일 중복확인
-  const [isEmailChecked, setIsEmailChecked] = useState(false);
-  const [isEmailAvailable, setIsEmailAvailable] = useState(false);
-
-  const emailCheck = async (e) => {
-    // e.preventdefault();
-
-    if (!user.userEmail) {
-      alert('이메일을 입력해주세요.');
-      setIsEmailChecked(false);
-      setIsEmailAvailable(false);
-      return;
-    }
-
-    // POST 요청
-    try {
-      const response = await fetch(`${API_URL}/api/check/emailcheck`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({userEmail: user.userEmail})
-      });
-
-      setIsEmailChecked(true);
-
-      if (response.status === 201){     // 200: 아이디 사용가능
-        alert("사용 가능한 이메일입니다.");
-        setIsEmailAvailable(true);
-      } else if(response.status === 410){ // 409: 아이디 중복
-        alert("이미 사용중인 이메일입니다.")
-        setIsEmailAvailable(false);
-      } else{
-        console.log("이메일 중복확인 오류")
-        setIsEmailAvailable(false);
-      }
-    } catch (error) {
-      console.error('이메일 중복확인 오류:', error)
-      setIsEmailAvailable(false);
-    }
-  };
-
-  // 닉네임 중복확인
-  const [isNicknamehecked, setIsNicknameChecked] = useState(false);
-  const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
-
-  const nicknameCheck = async (e) => {
-    // e.preventdefault();
-
-    if (!user.nickname) {
-      alert('이메일을 입력해주세요.');
-      setIsNicknameChecked(false);
-      setIsNicknameAvailable(false);
-      return;
-    }
-
-    // POST 요청
-    try {
-      const response = await fetch(`${API_URL}/api/check/nicknamecheck`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({nickname: user.nickname})
-      });
-
-      setIsNicknameChecked(true);
-
-      if (response.status === 202){     // 200: 아이디 사용가능
-        alert("사용 가능한 닉네임입니다.");
-        setIsNicknameAvailable(true);
-      } else if(response.status === 411){ // 409: 아이디 중복
-        alert("이미 사용중인 닉네임입니다.")
-        setIsNicknameAvailable(false);
-      } else{
-        console.log("닉네임 중복확인 오류")
-        setIsNicknameAvailable(false);
-      }
-    } catch (error) {
-      console.error('닉네임 중복확인 오류:', error)
-      setIsNicknameAvailable(false);
-    }
-  };
 
   // 이용약관 동의 체크박스 
   const [checked, setChecked] = useState(false);
@@ -243,23 +100,6 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
     event.preventDefault(); // 제출 방지
     console.log(user);
     
-    // 아이디 중복확인 누락시
-    if (!isIdChecked || !isIdAvailable) {
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        general: "아이디 중복 확인을 해주세요."
-      }));
-      return;
-    }
-
-    // 이메일 중복확인 누락시
-    if (!isEmailChecked || !isEmailAvailable) {
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        general: "이메일 중복 확인을 해주세요."
-      }));
-      return;
-}
     // 유효성 검사 후 제출하기
     if (validateForm(event) && checked){
       const input={
@@ -290,7 +130,7 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
         general: "모든 필드를 입력하고 이용약관에 동의해주세요."
       }));
     }
-  }
+    }
     
   return (
     <div className={SignUpStyles.page}>
@@ -299,7 +139,6 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
         <div className={SignUpStyles.userInputFrame}>
           <p className={SignUpStyles.infoOptionalText}>아래에 정보를 입력해주세요.</p>
           <label className={SignUpStyles.infoLabelText}>아이디
-            <button onClick={idCheck}>중복확인</button>
             <input
             className={SignUpStyles.userInput}
             type="text"
@@ -307,7 +146,6 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
             value={user.userId}
             name="userId"
             onChange={handleChange} />
-            
           </label>
           <div className={SignUpStyles.errorMessageWrap}>{errors.userId}</div>
           <label className={SignUpStyles.infoLabelText}>비밀번호<input
@@ -331,8 +169,6 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
           </label>
           <div className={SignUpStyles.errorMessageWrap}>{errors.passwordVerify}</div>
           <label className={SignUpStyles.infoLabelText}>닉네임
-          <button onClick={nicknameCheck}>중복확인</button>
-
             <input
             className={SignUpStyles.userInput}
             type="text"
@@ -344,7 +180,6 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
           <div className={SignUpStyles.errorMessageWrap}>{errors.nickname}</div>          
           </label>
           <label className={SignUpStyles.infoLabelText}>이메일
-            <button onClick={emailCheck}>중복확인</button>
             <input
             className={SignUpStyles.userInput}
             type="text"
@@ -397,7 +232,6 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
           <button
             className={SignUpStyles.userButton}
             type="submit"
-            disabled={!isIdAvailable || !isIdChecked || !validateForm || !checked}
           >회원가입
           </button>
         </div>
