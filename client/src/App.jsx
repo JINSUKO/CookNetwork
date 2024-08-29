@@ -71,7 +71,7 @@ function App() {
     try {
       // setUserData(signUpData);
 
-      const response = await fetch(`${API_URL}/api/signup`, {
+      const response = await fetch(`${API_URL}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
