@@ -110,6 +110,9 @@ app.get("/api/authPage", authAccessToken, authRefreshToken, (req, res) => {
 
 });
 
+const personalRouter = require("./router/personalData.js");
+app.use("/api/personal",personalRouter)
+
 // 정적 파일 서빙 (프로덕션 모드)
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/dist')));
@@ -138,16 +141,16 @@ if (process.env.NODE_ENV === 'production') {
 
 // 메인 서버
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
+const server = app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+// 노드 서버에서 동일한 포트로 소켓 서버를 열 수 있어 수정 08/27
 // 채팅(socket) 서버
-const chat_PORT = 3001;
-const server= app.listen(chat_PORT, () => console.log(`Chat Server is running at ${chat_PORT}`))
-
+// const chat_PORT = 3001;
+// const server= app.listen(chat_PORT, () => console.log(`Chat Server is running at ${chat_PORT}`))
 
 // 소켓 서버 생성(모든 ip 접근 가능)
 const io = new socketIO.Server(server, {
@@ -219,6 +222,14 @@ const handleSocketConnection = async (socket) => {
     // 클라이언트 소켓이 서버를 떠날때 실행 ( socket 내장 함수 )
     socket.on('disconnect', () => handleSocketUserLeave(socket));
     
+    socket.on('Room_FAQ',(roomNumber) => {
+        socket.join(roomNumber)
+        console.log(roomNumber)
+    })
+    socket.on('Message_FAQ', (roomNumber, data) =>{
+        console.log(roomNumber,':',data)
+        // io.to(roomNumber).emit('Answer',data)
+    })
 };
 // 서버가 작동할시 실행 ( socket 내장 함수 )
 io.on('connection',handleSocketConnection);
