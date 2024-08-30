@@ -40,39 +40,19 @@ function RecipeDetailPage() {
       console.error("레시피 호출 실패:", error);
     }
   }, [recipe_id]);
+
+  const fetchRecipeRate = useCallback(async () => {  
+  }, [recipe_id]);
+
+  const fetchRecipeIngredients = useCallback(async () => {
+    
+  }, [recipe_id]);
   
   useEffect(() => {   // 컴포넌트가 마운트될 때 fetch 함수 호출
     fetchRecipeDetails();
-  }, [fetchRecipeDetails]);
-  
-
-
-  // function RecipeDetailPage(  ) {
-  //   const { recipe_id } = useParams();
-  //   // const location = useLocation();
-  //   const navigate = useNavigate();
-  //   const [recipe, setRecipe] = useState(null)
-    
-  //   useEffect(() => {
-  //     const fetchRecipeDetail = async () => {
-  //       try {
-  //         // const response = await fetch(`/api/recipes/${recipe_id}`);
-  //         // const data = await response.json();
-  //         // setRecipe(data);
-  //         setRecipe({
-  //           recipe_id,
-  //           recipe_name: "비빔밥",
-  //           recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2015/12/08/0d2249438aac593752292c6380dbb5c41.jpg",
-  //           user_img: "https://recipe1.ezmember.co.kr/cache/rpf/2015/11/17/f06cd20689f5e1a6a2abcfe44abab09b1.jpg",
-  //           description: "우리나라의 전통음식 비빔밥 레시피입니다!",
-  //         });
-  //     } catch (error) {
-  //       console.error("레시피 호출 실패:", error);
-  //       }
-  //     };
-  //     fetchRecipeDetail();
-  //   }, [recipe_id, navigate]);
-  
+    fetchRecipeRate();
+    fetchRecipeIngredients();
+  }, [fetchRecipeDetails, fetchRecipeRate, fetchRecipeIngredients]);
 
   if (!recipe) {
     return <div>로딩 중...</div>;
@@ -85,8 +65,13 @@ function RecipeDetailPage() {
             <div className='recipe-title-wrap'>
               <h2>{recipe.recipe_name}</h2>
               <p>{recipe.recipe_desc}</p>
-
             </div>
+          </Col>
+        </Row>
+        <Row className="align-items-center">
+          <Col  xs="auto">
+            <p>평점 등록</p>
+            <p></p>
           </Col>
         </Row>
         <Row className="text-center my-3">
@@ -98,6 +83,38 @@ function RecipeDetailPage() {
           <Col  xs="auto">
             <Image src={recipe.user_img} alt="셰프 프로필" roundedCircle  width={50} height={50} />
             <span>{recipe.username}</span>
+          </Col>
+        </Row>
+        <Row className="align-items-center">
+          <Col  xs="auto">
+            <p>재료</p>
+            <span>ingredient.ingredient_name</span>
+            <span>ingredient.count</span>
+            <span>ingredient.ingredient_unit</span>
+          </Col>
+        </Row>
+        <Row className="align-items-center">
+          <Col  xs="auto">
+            <p>조리법</p>
+            <p>Step.1<br/>Step.2<br/>Step.3</p>
+          </Col>
+        </Row>
+        <Row className="align-items-center">
+          <Col  xs="auto">
+            <p>조리팁!</p>
+            <p>recipe.tips</p>
+          </Col>
+        </Row>
+        <Row className="align-items-center">
+          <Col  xs="auto">
+            <p>#태그</p>
+            <p>recipe_category.category_id.category_name</p>
+          </Col>
+        </Row>
+        <Row className="align-items-center">
+          <Col  xs="auto">
+            <p>평점 등록</p>
+            <p></p>
           </Col>
         </Row>
       </Container>

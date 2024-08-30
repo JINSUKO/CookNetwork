@@ -20,6 +20,12 @@ import authManager from "./authManager";
 
 import './App.css'
 
+import BookmarkPage from './pages/BookmarkPage';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+
+const queryClient = new QueryClient()
+
 function App() {
   let loginUser = localStorage.getItem('loginUser');
 
@@ -101,6 +107,7 @@ function App() {
   return (
     <div className="App">
       <p>{message}</p>
+      <QueryClientProvider client={queryClient}>
       <Router>
         <Header user={user}/>
         <Routes>
@@ -108,6 +115,7 @@ function App() {
           <Route path = '/board' element = {<Board />}/>
           <Route path = '/login' element = {<Login setUser={setUser} setProfilePic={setProfilePic} />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
+          <Route path = '/bookmark' element = {<BookmarkPage />} />
           <Route path = '/search' element = {<SearchResultPage/>}/>
           <Route path = '/category/:category' element = {<FetchRecipeList/>}/>
           <Route path = '/recipe/:recipe_id' element = {<RecipeDetailPage />}/>
@@ -121,11 +129,13 @@ function App() {
                                                       setProfilePic={setProfilePic}/>
                                                 : <Login />}
             />
+            
           </Route>
         </Routes>
       </Router>
       {user && <OpenChat userData = {user}/>}
       <Footer/>
+      </QueryClientProvider>
     </div>
   )
 }

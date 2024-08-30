@@ -31,6 +31,7 @@ function NavbarElement({ user }) {
       {/* 상단오른쪽 공지사항, 회원가입, 로그인 링크도 네비바로 작성 */}
       <Nav className="justify-content-end" defaultActiveKey="/" as="ul">
         <Nav.Item as="li">
+          <Link to="/bookmark" className='nav-link'>북마크</Link>
           <Link to="/board" className='nav-link'>공지사항</Link>
         </Nav.Item>
          {
