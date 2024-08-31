@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body # pip install fastapi
 from starlette.middleware.cors import CORSMiddleware
 import FAQ_RAG
 
