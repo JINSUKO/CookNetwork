@@ -10,7 +10,7 @@ const UserCategoryModifyModal = ({ show, userCategories, setUserCategories, setS
 
     // 모든 카테고리 내용 가져오는 코드 시작
     const getCategories = async () => {
-
+d
         try {
             const response = await fetch(`${API_URL}/api/allCategoryName`);
             if (!response.ok) throw new Error((await response.json()).error);
