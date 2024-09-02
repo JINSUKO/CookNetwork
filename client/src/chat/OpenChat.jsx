@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {io} from 'socket.io-client';
 import {ListGroup, Nav, Offcanvas} from 'react-bootstrap';
 
@@ -54,6 +54,7 @@ function openChat({ userData }) {
     // 유저가 전송하는 메세지 저장
     // 처음 유저 데이터를 불러오는것에 실패해 undefind가 나오면 ''로 지정
     // [08/26 완] 메세지는 빈 값일경우 경고창이 뜨도록 나중에 수정할것
+    // [08/30] FAQ 는 로그인 하지 않는 사용자도 이용할 수 있게 할 예정이므로 같이 적용될 수 있을 것 같음.
     const [userMessage, setUserMessage] = useState({
         id: user_id || '',
         name: username || '',
@@ -71,6 +72,7 @@ function openChat({ userData }) {
     const [activeTab, setActiveTab] = useState('FAQ');
     const [isFormVisible, setIsFormVisible] = useState(true)
 
+    // 채팅 컴포넌트 랜더링 될 때, Nav 탭 클릭 시 (activeTab 값 변경 시) 재랜더링 될 때 실행된다.
     useEffect(() => {
         async function fetchPersonalRoom() {
             try{
@@ -90,11 +92,12 @@ function openChat({ userData }) {
         }
 
         if(activeTab === 'FAQ'){
-            const joinFAQ = () =>{
-                console.log(socket.id)
-                socket.emit('Room_FAQ',socket.id)
-            }
-            socket.on('connect',joinFAQ)
+            // const joinFAQ = () =>{
+            //     console.log(socket.id)
+            //     socket.emit('Room_FAQ', socket.id)
+            // }
+            // socket.on('connect',joinFAQ)
+
         } else if(activeTab === 'openTalk'){
             if(user_id && username){
                 // 서버에 'USER_ENTER'이름으로 유저정보를 emit
@@ -193,6 +196,34 @@ function openChat({ userData }) {
         }
     };
 
+    const fetchFAQAnswer = useCallback( async (FAQToSend) => {
+        try {
+
+            console.log('FAQToSend.message', FAQToSend.message)
+            const AI_HOST_IP = import.meta.env.VITE_AI_HOST_IP;
+            const response = await fetch(`${AI_HOST_IP}/ai/FAQAnswer`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({query: FAQToSend.message})
+            });
+
+            const { answer } = await response.json();
+
+            const FAQAnswer = {...FAQToSend,id:'faq', name: 'FAQ', message: answer};
+
+            console.log('FAQAnswer', FAQAnswer)
+
+            setMessageFAQHistory((prevFAQHistory) => [...prevFAQHistory, FAQAnswer]);
+
+
+        } catch (e) {
+            console.error(e);
+        }
+
+    });
+
     const handleSubmit = (e) =>{
         // 입력 값이 없을경우 submit 못하도록 수정
         if(userMessage.message.trim() === '' && !(activeTab === 'personalTalk')){
@@ -213,15 +244,25 @@ function openChat({ userData }) {
         // event별 submit 구분
         if(activeTab ==='FAQ'){
             e.preventDefault();
-            const FAQToSend = {id: user_id, name: userMessage.name, message: userMessage.message};
+            const FAQToSend = {id: socket.id, name: userMessage.name, message: userMessage.message};
             // console.log(socket.id)
-            socket.emit('Message_FAQ',socket.id,FAQToSend);
+
+            console.log('FAQToSend', FAQToSend)
 
             setMessageFAQHistory((prevHistory) => [...prevHistory, FAQToSend]);
             setUserMessage((prevUser) => ({
                 ...prevUser,
                 message: '',
             }));
+
+
+            // python 으로 실행한 http 서버로 요청을 보내서 답을 얻어 올 예정이므로,
+            // express.js 로 요청을 보내지 않는다.
+            // socket.emit('Message_FAQ',socket.id, FAQToSend);
+
+            fetchFAQAnswer(FAQToSend);
+
+
 
         } else if (activeTab === 'openTalk'){
             // 전송 방지
@@ -294,11 +335,13 @@ function openChat({ userData }) {
             <Offcanvas show={chatShow} onHide={handleChatClose} placement='end' scroll='true'>
                 <div className={ChatDesign.FAQChatRoom} ref={FAQChatRoom}>
                     {/*<HistoryWrapper ref={historyElement}>*/}
+                    {/* FAQ */}
                     <HistoryWrapper>
                         {messageFAQHistory.length ? (
                             <>
                                 {messageFAQHistory.map(({id, name, message}, index) => (
-                                    <ChatItem key={index} me={id === userData.user_id}>
+                                    // <ChatItem key={index} me={id === userData.user_id}>
+                                    <ChatItem key={index} me={id === socket.id}>
                                         <ChatName>{name}</ChatName>
                                         <ChatMessage>{message}</ChatMessage>
                                     </ChatItem>
@@ -310,6 +353,7 @@ function openChat({ userData }) {
                         )}
                     </HistoryWrapper>
                 </div>
+                {/* 오픈 채팅 방 */}
                 <div className={ChatDesign.openChatRoom} ref={openChatRoom}>
                     <HistoryWrapper>
                         {oldMessageLog.length || messageHistory.length ? (
@@ -333,6 +377,7 @@ function openChat({ userData }) {
                         )}
                     </HistoryWrapper>
                 </div>
+                {/* 1대1 톡 */}
                 <div className={ChatDesign.personalChatRoom} ref={personalRoom}>
                     <RoomWrapper>
                         {chatRoomArr.length ? (
@@ -395,6 +440,7 @@ function openChat({ userData }) {
                         <SubmitButton>보내기</SubmitButton>
                     </Form>
                 </div>
+                {/* 톡 채널 탭 */}
                 <Nav activeKey={activeTab} onSelect={handleToggleTabs} className={ChatDesign.chatNav} >
                     <Nav.Item>
                         <Nav.Link eventKey='FAQ' className={ChatDesign.chatTab}>

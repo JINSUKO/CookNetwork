@@ -221,15 +221,16 @@ const handleSocketConnection = async (socket) => {
 
     // 클라이언트 소켓이 서버를 떠날때 실행 ( socket 내장 함수 )
     socket.on('disconnect', () => handleSocketUserLeave(socket));
-    
-    socket.on('Room_FAQ',(roomNumber) => {
-        socket.join(roomNumber)
-        console.log(roomNumber)
-    })
-    socket.on('Message_FAQ', (roomNumber, data) =>{
-        console.log(roomNumber,':',data)
-        // io.to(roomNumber).emit('Answer',data)
-    })
+
+    // 아직 모르지만 클라이언트에서 바로 python 서버로 요청을 보낼 거라서 없어도 될거 같음.
+    // socket.on('Room_FAQ',(roomNumber) => {
+    //     socket.join(roomNumber)
+    //     console.log(roomNumber)
+    // })
+    // socket.on('Message_FAQ', (roomNumber, data) =>{
+    //     console.log(roomNumber,':',data)
+    //     // io.to(roomNumber).emit('Answer',data)
+    // })
 };
 // 서버가 작동할시 실행 ( socket 내장 함수 )
 io.on('connection',handleSocketConnection);
