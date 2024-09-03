@@ -16,15 +16,15 @@ import ProtectedPage from "./pages/authToken/ProtectedPage";
 
 import authFetch from './fetchInterceptorAuthToken';
 import authManager from "./authManager";
+import NotFound from './pages/NotFound';
 
 
 import './App.css'
 
 import BookmarkPage from './pages/BookmarkPage';
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-
-const queryClient = new QueryClient()
 
 function App() {
   let loginUser = localStorage.getItem('loginUser');
@@ -103,11 +103,13 @@ function App() {
     }
   };
 
+  // 북마크 추가 알림 toastify 라이브러리 사용
+  const notify = () => toast("Wow so easy !");
 
   return (
     <div className="App">
+      <ToastContainer />
       <p>{message}</p>
-      <QueryClientProvider client={queryClient}>
       <Router>
         <Header user={user}/>
         <Routes>
@@ -115,7 +117,6 @@ function App() {
           <Route path = '/board' element = {<Board />}/>
           <Route path = '/login' element = {<Login setUser={setUser} setProfilePic={setProfilePic} />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
-          <Route path = '/bookmark' element = {<BookmarkPage />} />
           <Route path = '/search' element = {<SearchResultPage/>}/>
           <Route path = '/category/:category' element = {<FetchRecipeList/>}/>
           <Route path = '/recipe/:recipe_id' element = {<RecipeDetailPage />}/>
@@ -129,13 +130,14 @@ function App() {
                                                       setProfilePic={setProfilePic}/>
                                                 : <Login />}
             />
-            
+          {/* 상단 일치하는 라우트가 없는 경우 NotFound처리 */}
+					<Route path="*" element={<NotFound />}></Route>
+출처: https://goddaehee.tistory.com/305 [갓대희의 작은공간:티스토리]  
           </Route>
         </Routes>
       </Router>
       {user && <OpenChat userData = {user}/>}
       <Footer/>
-      </QueryClientProvider>
     </div>
   )
 }
