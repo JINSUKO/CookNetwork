@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
 
     try {
-        const query = `SELECT category_name FROM categories;`
+        const query = `SELECT category_name FROM categories WHERE category_id < 10;`
 
         const [allCategories] = await maria.execute(query);
 
