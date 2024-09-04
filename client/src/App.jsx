@@ -22,8 +22,7 @@ import NotFound from './pages/NotFound';
 import './App.css'
 
 import BookmarkPage from './pages/BookmarkPage';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 
 
 function App() {
@@ -103,12 +102,8 @@ function App() {
     }
   };
 
-  // 북마크 추가 알림 toastify 라이브러리 사용
-  const notify = () => toast("Wow so easy !");
-
   return (
     <div className="App">
-      <ToastContainer />
       <p>{message}</p>
       <Router>
         <Header user={user}/>
@@ -130,9 +125,7 @@ function App() {
                                                       setProfilePic={setProfilePic}/>
                                                 : <Login />}
             />
-          {/* 상단 일치하는 라우트가 없는 경우 NotFound처리 */}
 					<Route path="*" element={<NotFound />}></Route>
-출처: https://goddaehee.tistory.com/305 [갓대희의 작은공간:티스토리]  
           </Route>
         </Routes>
       </Router>

@@ -2,14 +2,15 @@
 -레시피 상세페이지 컴포넌트입니다.
 -상세페이지가 로딩됐을 때 한번만 실행되어야 하므로 useEffect 훅 사용
 -새로고침 없이 컴포넌트만 다시 렌더링하기 위해 react router link, useNavigate 사용
--동적라우팅 매개변수 recipe 
+[ ] BookmarkButton.jsx 임포트
 */
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Row, Col, Image } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
+import BookmarkButton from '../components/Bookmark/BookmarkButton';
 
-function RecipeDetailPage() {
+function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
   const { recipe_id } = useParams();
   // const location = useLocation();
   const navigate = useNavigate();
@@ -63,6 +64,7 @@ function RecipeDetailPage() {
           <Col md={8} lg={8} xl={6}>
             <img src={recipe.recipe_img} alt="레시피 사진" className="img-fluid"/>
             <div className='recipe-title-wrap'>
+              {/* <BookmarkButton recipeId={recipe.id} initialIsBookmarked={recipe.isBookmarked} /> */}
               <h2>{recipe.recipe_name}</h2>
               <p>{recipe.recipe_desc}</p>
             </div>
@@ -117,6 +119,7 @@ function RecipeDetailPage() {
             <p></p>
           </Col>
         </Row>
+
       </Container>
     );
   }

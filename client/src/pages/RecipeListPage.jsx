@@ -1,9 +1,13 @@
-// [ ] 레시피 카드 레시피이름 외 난이도, 소요시간 추가
+/**RecipeList
+ * [ ] 레시피 카드 레시피이름 외 난이도, 소요시간 추가
 // [ ] loadingStyle 등 css 분리
+// [ ]  
+*/ 
 
 import React from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Card} from 'react-bootstrap';
+import BookmarkButton from "../components/Bookmark/BookmarkButton";
 
 
 function RecipeListPage({ recipes, currentCategory }) {
@@ -51,7 +55,7 @@ function RecipeListPage({ recipes, currentCategory }) {
                 <Card.Title  style={{ textAlign: 'center', fontSize: '16px' }}>
                   {recipe.recipe_desc}
                 </Card.Title>
-                {/* <Button variant="dark">보러가기</Button> */}
+                <BookmarkButton />
               </Card.Body>
             </Card>
           </Link>
