@@ -13,7 +13,9 @@ const storage = multer.diskStorage({
         cb(null, uploadPath); // 콜백함수, 업로드된 파일일 저장될 디렉터리 지정.
     },
     filename: (req, file, cb) => {
-        cb(null, file.originalname.replace(path.extname(file.originalname), `-${Date.now()}${path.extname(file.originalname)}`));
+        const originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+        const extension = path.extname(file.originalname);
+        cb(null, originalName.replace(extension, `-${Date.now()}${extension}`));
     }
 });
 
