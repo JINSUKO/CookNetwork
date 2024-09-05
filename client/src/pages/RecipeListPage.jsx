@@ -29,6 +29,8 @@ function RecipeListPage({ recipes, currentCategory }) {
     return (
       <Container style={loadingStyle}>
         <h5>레시피를 불러오는 중입니다...</h5>
+        <BookmarkButton />
+
       </Container>
     );
   }

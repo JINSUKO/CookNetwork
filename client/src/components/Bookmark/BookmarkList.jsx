@@ -4,27 +4,62 @@
  */
 
 
-import React from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { Row, Col, Card } from 'react-bootstrap';
+// import { useBookmarkContext } from './BookmarkContext';
 
 const BookmarkList = () => {
-  const dispatch = useDispatch();
-  const { items } = useSelector((state))
+  const [bookmarkedRecipes, setBookmarkedRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchBookmarks = async () => {
+      try {
+        const response = await fetch('/api/bookmarks', {
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch bookmarks');
+        }
+        const data = await response.json();
+        setBookmarkedRecipes(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchBookmarks();
+  }, []);
+  
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <div>
-      <OuterWrapper>
-      <List items={items} />
-      <ActionWrapper>
-        <button onClick={handleAddOneItem}>Add one item</button>
-        <button onClick={handleRemoveOneItem}>Remove one item</button>
-        <button onClick={handleToggleOrder}>Toggle order</button>
-      </ActionWrapper>
-      <ActionWrapper>
-        <button className="editBtn" onClick={handleOpenEditModal}>
-          Edit list content
-        </button>
-      </ActionWrapper>
-    </OuterWrapper>
+      <h2>최근 북마크 리스트</h2>
+      <Row xs={2} md={3} lg={4} className="g-2 mb-4">
+        {bookmarkedRecipes.map((recipe) => (
+          <Col key={recipe.id}>
+            <Card>
+              <Card.Img 
+                variant="top" 
+                src={recipe.image_url || '/placeholder-image.jpg'} 
+                style={{
+                  width: '100%',
+                  height: '200px',
+                  objectFit: 'cover'
+                }}
+              />
+              <Card.Body>
+                <Card.Title>{recipe.title}</Card.Title>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
     </div>
   );
 };
