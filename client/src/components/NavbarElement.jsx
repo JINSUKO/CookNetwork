@@ -6,11 +6,16 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import LeftSidebar from './Layout/SideBar.jsx';
 import SearchBar from './SearchBar';
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import { Container, Nav, Navbar, Button } from 'react-bootstrap';
 import '../assets/styles/Navbar.css'
 
 function NavbarElement({ user }) {
+  const [showSidebar, setShowSidebar] = useState(false)
+
+  const handleSidebarShow = () => setShowSidebar(true);
+  const handleSidebarClose = () => setShowSidebar(false);
 
   // 카테고리 배열 정의
   const categories = [
@@ -63,6 +68,10 @@ function NavbarElement({ user }) {
       {/* 헤더 아래 네비바 */}
       <Navbar expand="lg" className="bg-body-tertiary">
         <Container className="d-flex justify-content-center align-items-center flex-nowrap ">
+          <Button variant="link" onClick={handleSidebarShow} className="me-2 border-0" >
+            <i className="fas fa-bars text-secondary" ></i>
+          </Button>
+
           <Nav className="mx-auto d-flex justify-content-evenly flex-grow-1 flex-shrink-0" style={{ overflow: 'visible' }}>
 
             {categories.map((category) => (
@@ -83,6 +92,7 @@ function NavbarElement({ user }) {
         </Container>
       </Navbar>
 
+      <LeftSidebar show={showSidebar} handleClose={handleSidebarClose} user={user} />
     </div>
   )
 }

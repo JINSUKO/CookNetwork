@@ -19,8 +19,12 @@
     "concurrently": "^6.5.1"
   },
   "dependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
     "express-session": "^1.18.0",
     "morgan": "^1.10.0",
-    "react-bootstrap": "^2.10.4"
+    "react-bootstrap": "^2.10.4",
+    "react-redux": "^9.1.2",
+    "react-toastify": "^10.0.5",
+    "vite": "^5.4.3"
   }
 }

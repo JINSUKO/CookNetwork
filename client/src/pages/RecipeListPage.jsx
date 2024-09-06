@@ -1,30 +1,28 @@
-// [ ] 레시피 카드 레시피이름 외 난이도, 소요시간 추가
+/**RecipeList
+ * [ ] 레시피 카드 레시피이름 외 난이도, 소요시간 추가
 // [ ] loadingStyle 등 css 분리
+// [ ]  
+*/ 
 
-import React from "react";
+import React, { useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Container, Row, Col, Card} from 'react-bootstrap';
+import { Container, Row, Col, Card, Spinner} from 'react-bootstrap';
+import BookmarkButton from "../components/Bookmark/BookmarkButton";
 
 
-function RecipeListPage({ recipes, currentCategory }) {
-
-  // const recipes = [
-  //   { recipe_id: 1, recipe_name: "김치찌개", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2015/10/06/298e976b277b6d58b92c476d4d2dae7d1_m.jpg", category: "korean" },
-  //   { recipe_id: 2, recipe_name: "된장찌개", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2017/03/16/67129b3efb169110d80744b30d219b141_m.jpg", category: "korean" },
-  //   { recipe_id: 3, recipe_name: "비빔밥", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2015/12/08/0d2249438aac593752292c6380dbb5c41_m.jpg", category: "korean" },
-  //   { recipe_id: 4, recipe_name: "불고기", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2017/03/31/afb63a7af63fe1971cf92d7ccd7776ab1_m.jpg", category: "korean" },
-  //   { recipe_id: 5, recipe_name: "잡채", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2019/02/03/b967403fe8c42c5814ea0042207a2c931_m.jpg", category: "korean" },
-  //   { recipe_id: 6, recipe_name: "김치볶음밥", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2018/12/29/c66e0346fb6fb086abbb6e1caa29d4cb1_m.jpg", category: "korean" },
-  //   { recipe_id: 7, recipe_name: "파전", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2017/11/04/66fdacb7533c367a4171c2ffb7de9fba1_m.jpg", category: "korean" },
-  //   { recipe_id: 8, recipe_name: "떡볶이", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2017/09/09/ac104c6e8ac4744a602cd35cd6fe1f5e1_m.jpg", category: "korean" },
-  //   { recipe_id: 9, recipe_name: "삼겹살", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2015/08/17/5d7a3652d81fb3c5ff7d387499bfd4bf1_m.jpg", category: "korean" },
-  //   { recipe_id: 10, recipe_name: "냉면", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2019/07/10/d743fcb7c103610c9fa11f42e0959d371_m.jpg", category: "korean" },
-  //   { recipe_id: 11, recipe_name: "김밥", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2016/02/21/f34c2f0fcd67513941d683d90050f3c01_m.jpg", category: "korean" },
-  //   { recipe_id: 12, recipe_name: "감자탕", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2017/08/02/85d454a30f1eed0592d7684d9bd4e1c91_m.jpg", category: "korean" },
-  //   { recipe_id: 13, recipe_name: "계란말이", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2015/11/12/006d3080be97cb3328a20931e7eafddc1_m.jpg", category: "korean" },
-  //   { recipe_id: 14, recipe_name: "닭갈비", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2015/09/03/df854c6c4d5cdede3d1905b78908e7901_m.jpg", category: "korean" },
-  //   { recipe_id: 15, recipe_name: "오이무침", recipe_img: "https://recipe1.ezmember.co.kr/cache/recipe/2017/05/24/9fe380db166eeeaa796997ba21595a981_m.jpg", category: "korean" }
-  // ];
+function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading  }) {
+  const observer = useRef();
+  const lastRecipeElementRef = useCallback(node => {
+    if (observer.current) observer.current.disconnect();
+    console.log('observer current')
+    observer.current = new IntersectionObserver(entries => {
+      console.log('RecipeListPage')
+      if (entries[0].isIntersecting && hasMore) {
+        loadMore();
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [hasMore, loadMore]);
 
   console.log("RecipeListPage - currentCategory:", currentCategory);  // 디버깅용 로그
   
@@ -41,7 +39,9 @@ function RecipeListPage({ recipes, currentCategory }) {
   if (!recipes || recipes.length === 0) {
     return (
       <Container style={loadingStyle}>
-        <h5>레시피를 불러오는 중입니다...</h5>
+        <Spinner animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+        </Spinner>
       </Container>
     );
   }
@@ -52,8 +52,9 @@ function RecipeListPage({ recipes, currentCategory }) {
         
         <Row lg={5} className="g-4">
           {recipes && 
-            recipes.map((recipe) => (
-          <Col key={recipe.recipe_id}>  
+            recipes.map((recipe, index) => (
+          // <Col key={recipe.recipe_id} ref={index === recipes.length - 1 ? lastRecipeElementRef : null}>  
+          <Col ref={index === recipes.length - 1 ? lastRecipeElementRef : null}>  
             <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
               <Card style={{ border: 'none', borderRadius:0, cursor: 'pointer' }}>
                 {recipe.recipe_img ? (
@@ -65,13 +66,26 @@ function RecipeListPage({ recipes, currentCategory }) {
                 <Card.Title  style={{ textAlign: 'center', fontSize: '16px', fontWeight: 'bold' }}>
                   {recipe.recipe_name}
                 </Card.Title>
-                {/* <Button variant="dark">보러가기</Button> */}
+                <Card.Title  style={{ textAlign: 'center', fontSize: '16px' }}>
+                  {recipe.recipe_desc}
+                </Card.Title>
+                {/* <BookmarkButton /> */}
               </Card.Body>
             </Card>
           </Link>
         </Col>
         ))}
         </Row>
+
+          {hasMore && (
+            <div style={loadingStyle}>
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading more...</span>
+              </Spinner>
+            </div>
+          )}
+
+
       </Container>
     </div>
   )

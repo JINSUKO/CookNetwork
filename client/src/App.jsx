@@ -16,9 +16,14 @@ import ProtectedPage from "./pages/authToken/ProtectedPage";
 
 import authFetch from './fetchInterceptorAuthToken';
 import authManager from "./authManager";
+import NotFound from './pages/NotFound';
 
 
 import './App.css'
+
+import BookmarkPage from './pages/BookmarkPage';
+
+
 
 function App() {
   let loginUser = localStorage.getItem('loginUser');
@@ -97,7 +102,6 @@ function App() {
     }
   };
 
-
   return (
     <div className="App">
       <p>{message}</p>
@@ -121,6 +125,7 @@ function App() {
                                                       setProfilePic={setProfilePic}/>
                                                 : <Login />}
             />
+					<Route path="*" element={<NotFound />}></Route>
           </Route>
         </Routes>
       </Router>
