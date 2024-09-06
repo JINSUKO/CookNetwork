@@ -4,14 +4,25 @@
 // [ ]  
 */ 
 
-import React from "react";
+import React, { useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Container, Row, Col, Card} from 'react-bootstrap';
+import { Container, Row, Col, Card, Spinner} from 'react-bootstrap';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
 
 
-function RecipeListPage({ recipes, currentCategory }) {
-
+function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading  }) {
+  const observer = useRef();
+  const lastRecipeElementRef = useCallback(node => {
+    if (observer.current) observer.current.disconnect();
+    console.log('observer current')
+    observer.current = new IntersectionObserver(entries => {
+      console.log('RecipeListPage')
+      if (entries[0].isIntersecting && hasMore) {
+        loadMore();
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [hasMore, loadMore]);
 
   console.log("RecipeListPage - currentCategory:", currentCategory);  // 디버깅용 로그
   
@@ -28,9 +39,9 @@ function RecipeListPage({ recipes, currentCategory }) {
   if (!recipes || recipes.length === 0) {
     return (
       <Container style={loadingStyle}>
-        <h5>레시피를 불러오는 중입니다...</h5>
-        <BookmarkButton />
-
+        <Spinner animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+        </Spinner>
       </Container>
     );
   }
@@ -41,8 +52,9 @@ function RecipeListPage({ recipes, currentCategory }) {
         
         <Row lg={5} className="g-4">
           {recipes && 
-            recipes.map((recipe) => (
-          <Col key={recipe.recipe_id}>  
+            recipes.map((recipe, index) => (
+          // <Col key={recipe.recipe_id} ref={index === recipes.length - 1 ? lastRecipeElementRef : null}>  
+          <Col ref={index === recipes.length - 1 ? lastRecipeElementRef : null}>  
             <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
               <Card style={{ border: 'none', borderRadius:0, cursor: 'pointer' }}>
                 {recipe.recipe_img ? (
@@ -57,13 +69,23 @@ function RecipeListPage({ recipes, currentCategory }) {
                 <Card.Title  style={{ textAlign: 'center', fontSize: '16px' }}>
                   {recipe.recipe_desc}
                 </Card.Title>
-                <BookmarkButton />
+                {/* <BookmarkButton /> */}
               </Card.Body>
             </Card>
           </Link>
         </Col>
         ))}
         </Row>
+
+          {hasMore && (
+            <div style={loadingStyle}>
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading more...</span>
+              </Spinner>
+            </div>
+          )}
+
+
       </Container>
     </div>
   )

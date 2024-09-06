@@ -1,8 +1,11 @@
-/* FetchRecipeList.jsx
+/** FetchRecipeList.jsx
 -Fetch 함수를 사용해 레시피 데이터 호출하는 컴포넌트입니다.
--동적 라우팅을 위해 useParams, useCallback 사용
--카테고리 내 필터 댜중 선택 
-*/
+-카테고리 내 필터 선택
+[ ] 무한스크롤
+[ ] 로그인, 비로그인 북마크 여부 구분
+[ ] 북마크- 낙관적 업데이트 적용
+*/  
+
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useSearchParams, useNavigate  } from 'react-router-dom';
@@ -22,6 +25,10 @@ function FetchRecipeList() {
     return filters ? filters.split(',') : [];
   });
   const API_URL = import.meta.env.VITE_HOST_IP;
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
 
   const filterOptions = [
     "모두보기", "메인요리", "반찬", "국/탕", "디저트", "면", 
@@ -32,7 +39,7 @@ function FetchRecipeList() {
   console.log("path:", location.pathname);
   console.log("filter:", selectedFilters)
 
-  const fetchRecipes = useCallback(async () => {
+  const fetchRecipes = useCallback(async (pageNum = 1) => {
     try {
       // 삼항연산자를 사용하여 API 엔드포인트 요청 url 결정
       let url = currentCategory === 'main'
@@ -46,11 +53,13 @@ function FetchRecipeList() {
           params.delete('filters');
         }
         
-        if (params.toString()) {
-          url += `?${params.toString()}`;
-        }
+        params.set('page', pageNum);
+        params.set('limit', 3); // 한 번에 가져올 레시피 수
 
-      const response = await fetch(url, {
+        url += `?${params.toString()}`;
+        
+
+        const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -66,20 +75,34 @@ function FetchRecipeList() {
 
       if (result) {
         console.log(`${currentCategory} 레시피 목록 호출 성공`);
-        setRecipes(result || []);
-        setFilteredRecipes(result || []);
+        if (pageNum === 1) {
+          setRecipes(result);
+          setFilteredRecipes(result);
+          setTotalCount(result.totalCount);
+
+        } else {
+          setRecipes(prevRecipes => [...prevRecipes, ...result]);
+          setFilteredRecipes(prevRecipes => [...prevRecipes, ...result]);
+        }
+        setHasMore(result.length === 3); // 20개 미만이면 더 이상 데이터가 없다고 판단
+
       }
     } catch (e) {
       console.error("실패:", e);
+    } finally {
+      setIsLoading(false)
     }
-  }, [currentCategory, selectedFilters, searchParams]);   // 카테고리 값이 변경될 때 함수 재생성
+  }, [currentCategory, selectedFilters, searchParams]);
+   // 카테고리 값이 변경될 때 함수 재생성
   
   useEffect(() => {   // 컴포넌트가 마운트될 때 fetch 함수 호출
+    setPage(1);
     fetchRecipes();
-  }, [fetchRecipes,currentCategory]);   // currentCategory가 바뀔때마다 다시 실행
+  }, [fetchRecipes, currentCategory, selectedFilters]);   // currentCategory가 바뀔때마다 다시 실행
 
   useEffect(() => {
     setSelectedFilters([]);
+    setPage(1);
   }, [currentCategory])   // currentCategory가 바뀔때마다 필터 새로고침
 
   const handleFilterChange = (filters) => {
@@ -95,8 +118,20 @@ function FetchRecipeList() {
     }
     setSearchParams(newSearchParams);
     navigate(`/category/${currentCategory}?${newSearchParams.toString()}`);
+    setPage(1);
+    fetchRecipes(1);
   };
   
+  const loadMore = useCallback(() => {
+    console.log('loadMore', page)
+    if (hasMore) {
+      console.log('남은 데이터', hasMore)
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchRecipes(nextPage);
+    }
+  }, [hasMore, page, fetchRecipes]);
+
   // 리스트 상단 소개에 카테고리 표시
   const displayCategory = () => {
     if (currentCategory === 'main' || currentCategory === '전체' || !currentCategory) {
@@ -115,7 +150,13 @@ function FetchRecipeList() {
         onFilterChange={handleFilterChange}/>
       <RecipeListPage 
         recipes={filteredRecipes} 
-        currentCategory={currentCategory}/>
+        currentCategory={currentCategory}
+        hasMore={hasMore}
+        loadMore={loadMore}
+        // isLoading={isLoading}
+        totalCount={totalCount}
+
+      />
     </Container>
   )
 }

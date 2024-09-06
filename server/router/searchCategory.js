@@ -41,10 +41,10 @@ router.get('/:category',async(req,res)=>{
                         GROUP BY r.recipe_id
                         HAVING COUNT(DISTINCT c.category_name) = ${cateCount}
                         ORDER BY RAND()
-                        LIMIT 10
+                        LIMIT 3
                     `
                 } else{
-                    queryString = `SELECT * FROM recipe ORDER BY RAND() LIMIT 10`;
+                    queryString = `SELECT * FROM recipe ORDER BY RAND() LIMIT 3`;
                 }
                 const [recipes] = await maria.execute(queryString);
                 
@@ -86,7 +86,7 @@ router.get('/:category',async(req,res)=>{
                 GROUP BY r.recipe_id
                 HAVING COUNT(DISTINCT c.category_name) = ?
                 ORDER BY RAND()
-                LIMIT 10
+                LIMIT 3
             `;
             try{
                 console.log(categories)

@@ -2,7 +2,6 @@
 -레시피 상세페이지 컴포넌트입니다.
 -상세페이지가 로딩됐을 때 한번만 실행되어야 하므로 useEffect 훅 사용
 -새로고침 없이 컴포넌트만 다시 렌더링하기 위해 react router link, useNavigate 사용
-[ ] BookmarkButton.jsx 임포트
 */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -63,11 +62,17 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
         <Row className="justify-content-center">
           <Col md={8} lg={8} xl={6}>
             <img src={recipe.recipe_img} alt="레시피 사진" className="img-fluid"/>
+          </Col>
+        </Row>
+        <Row className="justify-content-center">
+          <Col md={8} lg={8} xl={6}>
             <div className='recipe-title-wrap'>
-              {/* <BookmarkButton recipeId={recipe.id} initialIsBookmarked={recipe.isBookmarked} /> */}
               <h2>{recipe.recipe_name}</h2>
               <p>{recipe.recipe_desc}</p>
             </div>
+          </Col>
+          <Col md={8} lg={8} xl={6}>
+            <BookmarkButton recipeId={recipe.id} initialIsBookmarked={recipe.isBookmarked} />
           </Col>
         </Row>
         <Row className="align-items-center">
