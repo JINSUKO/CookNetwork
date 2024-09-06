@@ -29,7 +29,7 @@ const socket = new io(socket_IP);
 // const socket = new io('http://192.168.0.14:3001/'); // 진수님 학원 wifi ip
 
 function openChat({ userData }) {
-    // 유저 데이터를 받아와서 변수에 딕셔너리 형터로 저장
+    // 유저 데이터를 받아와서 변수에 지정
     const { user_id, username } = userData || {}
     // 새로운 채팅 내역
     const [messageHistory, setMessageHistory] = useState([]);
@@ -60,47 +60,62 @@ function openChat({ userData }) {
         name: username || '',
         message: '',
     });
-
+    // 유저가 전송하는 닉네임 저장
     const [toId, setToId] = useState({
         name: ''
     })
 
+    // 1:1 채팅탭에 들어갔을때 서버에서 방번호를 불러와 저장
     const [chatRoomArr, setChatRoomArr] = useState([]);
 
     // 채팅 창을 버튼 클릭으로 show, close 한다.
     const [chatShow, setChatShow] = useState(false);
+
+    // 처음 들어갔을때 기본을 'FAQ'탭으로 지정
     const [activeTab, setActiveTab] = useState('FAQ');
+
+    // 입력창을 상황에 따라 보이거나 사라지도록 설정
     const [isFormVisible, setIsFormVisible] = useState(true)
 
-    // 채팅 컴포넌트 랜더링 될 때, Nav 탭 클릭 시 (activeTab 값 변경 시) 재랜더링 될 때 실행된다.
-    useEffect(() => {
-        async function fetchPersonalRoom() {
-            try{
-                const response = await fetch(`${socket_IP}/api/personal/room`,{
-                    method: 'POST',
-                    headers: {
-                    'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({id: user_id})
-                });
+    // 서버에 요청하여 접속중인 유저id를 기준으로 1:1 채팅방을 불러오는 함수
 
-                const data = await response.json();
-                setChatRoomArr(data)
-            }catch(error){
-                console.log(error);
-            }
+    // TODO 새로운 1:1 채팅이 왔을때 양방향통신이 필요하니 socket으로 바꿔야할듯?
+    // A가 새로운 방을 만들었을때 B가 요청없이 데이터를 받을수 있나?????
+    // B가 채팅요청을 어떻게 받을지 고민?
+    // TODO 새로운 채팅이 왔을때 카카오톡처럼 1표시 가능한가?
+    // 보이지않는 채팅방을 하나 만들어서 거기로 보내면???
+    // 안읽은것도 확인해야하는가????
+    async function fetchPersonalRoom(){
+        try{
+            const response =  await fetch(`${socket_IP}/api/personal/room`,{
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({id: user_id})
+            });
+
+            const data = await response.json();
+            setChatRoomArr(data)
+        }catch(error){
+            console.log(error);
         }
+    }
 
+    useEffect(() => {
+        //'FAQ'탭일 경우
         if(activeTab === 'FAQ'){
-            // const joinFAQ = () =>{
-            //     console.log(socket.id)
-            //     socket.emit('Room_FAQ', socket.id)
-            // }
-            // socket.on('connect',joinFAQ)
-
-        } else if(activeTab === 'openTalk'){
+            const joinFAQ = () =>{
+                console.log(socket.id)
+                // 서버의 'Room_FAQ'이벤트를 실행하고 socket.id 전달
+                socket.emit('Room_FAQ',socket.id)
+            }
+            //'connect' 이벤트 요청을 받을시 joinFAQ 실행
+            socket.on('connect',joinFAQ)
+        } else if(activeTab === 'openTalk'){ // 'openTalk'탭일 경우
+            // TODO 로그인한 유저만 사용 가능하도록 수정할것
             if(user_id && username){
-                // 서버에 'USER_ENTER'이름으로 유저정보를 emit
+                // 서버의 'USER_ENTER'이벤트를 실행하고 'id', 'name' 전달
                 socket.emit('NEW_USER_ENTER',{ id: user_id, name: username});
                 console.log('user_id',user_id)
                 console.log('username',username)
@@ -117,8 +132,7 @@ function openChat({ userData }) {
             const onChatLog = (data) =>{
                 setOldMessageLog(data);
             }
-            // 서버에서 각각 emit 받을경우 실행
-
+            // 서버에서 각각 이벤트 요청받을 경우 함수 실행
             socket.on('USER_ENTER', onUserEnter);
             socket.on('USER_LEAVE', onUserLeave);
             socket.on('CHAT_LOG',onChatLog);
@@ -130,47 +144,57 @@ function openChat({ userData }) {
                 socket.off('CHAT_LOG', onChatLog);
             };
         } else if (activeTab === 'personalTalk'){
+            // TODO 1:1 채팅 관련
+            // 작성완료 : 처음 접속시 서버에 채팅방 요청
             console.log("1")
             fetchPersonalRoom();
         };
-    }, [activeTab]);
+        // activeTab, user_id이 바뀌면 업데이트
+    }, [activeTab,user_id]);
 
     useEffect(() => {
+        //'openTalk'탭일 경우
         if(activeTab === 'openTalk'){
             // 서버에서 data를 받아 messageHistory에 저장
             const onAllMessage = (data) =>{
                 console.log(`${data.id}: `,data);
                 setMessageHistory((prevHistory) => [...prevHistory, data]);
             };
-    
+            
+            // 'All_Message' 이벤트 요청 받을시 함수 실행 
             socket.on('All_Message', onAllMessage);
     
             return () => {
                 socket.off('All_Message', onAllMessage);
             };
         }
+        // messageHistory의 길이가 바뀔때마다 업데이트
     }, [messageHistory.length]);
 
 
     useEffect(() => {
-        // messageHistory,oldMessageLog에 변동값이 있을때 실행
-        if(activeTab === 'openTalk' && openChatRoom.current) {
-            //scrollTop과 scrollHeight를 일치시켜 새로운 채팅이 올라와도 스크롤을 계속 밑에 위치시킴
+
+        // messageHistory,oldMessageLog,messageFAQHistory에 변동값이 있을때 실행
+        // 스크롤 위치와 스크롤 현재 높이를 일치시켜 새로운 채팅이 올라와도 스크롤을 계속 밑에 있도록 함
+        if(activeTab === 'FAQ' && FAQChatRoom.current){
+            FAQChatRoom.current.scrollTop = FAQChatRoom.current.scrollHeight;       
+        } else if(activeTab === 'openTalk' && openChatRoom.current) {
             openChatRoom.current.scrollTop = openChatRoom.current.scrollHeight;
         }
-    }, [messageHistory, oldMessageLog]);
+    }, [messageHistory, oldMessageLog, messageFAQHistory]);
 
-    useEffect(() =>{
-        if(activeTab === 'FAQ' && FAQChatRoom.current){
-            FAQChatRoom.current.scrollTop = FAQChatRoom.current.scrollHeight;
-        }
-    }, [messageFAQHistory]);
+    // useEffect(() =>{
+    //     // 
+    //     if(activeTab === 'FAQ' && FAQChatRoom.current){
+    //         FAQChatRoom.current.scrollTop = FAQChatRoom.current.scrollHeight;
+    //     }
+    // }, [messageFAQHistory]);
 
     const handleChange = (event) =>{
         // 메세지 입력창에서 실행
         // 메세지를 입력할때마다 입력하는 내용이 바로 적용되도록 실행
 
-        // 입력값이 띄어쓰기 밖에 없을경우 쓸수 없도록 수정
+        // 입력값이 띄어쓰기 밖에 없을경우 쓸수 없도록함
         if(event.target.value.trim() === ''){
             if(event.target.id === 'message'){
                 setUserMessage((prevState) =>({
@@ -225,7 +249,7 @@ function openChat({ userData }) {
     });
 
     const handleSubmit = (e) =>{
-        // 입력 값이 없을경우 submit 못하도록 수정
+        // 입력 값이 없을경우 submit 못하도록함
         if(userMessage.message.trim() === '' && !(activeTab === 'personalTalk')){
             e.preventDefault()
             setUserMessage((prevUser)=> ({
@@ -243,40 +267,35 @@ function openChat({ userData }) {
         
         // event별 submit 구분
         if(activeTab ==='FAQ'){
+            // submit누를때 페이지 새로 로딩하는것 방지
             e.preventDefault();
-            const FAQToSend = {id: socket.id, name: userMessage.name, message: userMessage.message};
+            // userMessage.user_id, userMessage.name, userMessage.message을 json형태로 저장
+            const FAQToSend = {id: userMessage.id, name: userMessage.name, message: userMessage.message};
             // console.log(socket.id)
 
-            console.log('FAQToSend', FAQToSend)
-
+            // 서버의 'Message_FAQ' 이벤트를 실행하고 socket.id,FAQToSend전달
+            socket.emit('Message_FAQ',socket.id,FAQToSend);
+            
+            // messageFAQHistory에 기존요소을 불러와 FAQToSend을 추가하고
             setMessageFAQHistory((prevHistory) => [...prevHistory, FAQToSend]);
+            // userMessage.message를 ''로 변경
             setUserMessage((prevUser) => ({
                 ...prevUser,
                 message: '',
             }));
-
-
-            // python 으로 실행한 http 서버로 요청을 보내서 답을 얻어 올 예정이므로,
-            // express.js 로 요청을 보내지 않는다.
-            // socket.emit('Message_FAQ',socket.id, FAQToSend);
-
-            fetchFAQAnswer(FAQToSend);
-
-
-
         } else if (activeTab === 'openTalk'){
             // 전송 방지
             // 없을경우 Submit버튼 누를때 페이지 새로고침함
             e.preventDefault();
-            // 입력받은 메세지를 딕셔너리 형태로 저장
-            const messageToSend = { id: user_id, name: userMessage.name, message: userMessage.message };
-            // 서버에 'Message'이름으로 messageToSend를 emit
+            // userMessage.user_id, userMessage.name, userMessage.message을 json형태로 저장
+            const messageToSend = { id: userMessage.id, name: userMessage.name, message: userMessage.message };
+            // 서버의 'Message_open' 이벤트를 실행하고 messageToSend전달
             socket.emit('Message_open', messageToSend);
 
             // messageHistory에 저장
             setMessageHistory((prevHistory) => [...prevHistory, messageToSend]);
 
-            // 보낸후 userMessage의 message 내용을 초기화
+            // submit 후 userMessage의 message 내용을 초기화
             setUserMessage((prevUser) => ({
                 ...prevUser,
                 message: '',
@@ -284,7 +303,9 @@ function openChat({ userData }) {
         } else if (activeTab === 'personalTalk'){
             //TODO 검색한 이름을 확인하여 동일한 이름이 없으면 채팅방 생성 있으면 경고창 띄우기
             e.preventDefault();
+            console.log(toId.name);
             console.log(chatRoomArr.find(key => key.username === toId.name));
+            // submit 후 toId의 name 내용을 초기화
             setToId((prevName) =>({
                 ...prevName,
                 name: '',
@@ -297,6 +318,7 @@ function openChat({ userData }) {
     };
     const handleChatClose = () => setChatShow(false);
 
+    // 각각의 탭을 눌렀을때 설정
     const handleToggleTabs = (k) => {
         if(k === 'FAQ'){
             FAQChatRoom.current.style.display = 'flex';
@@ -316,15 +338,16 @@ function openChat({ userData }) {
             openChatRoom.current.style.display = 'none';
             personalRoom.current.style.display = 'flex';
             setIsFormVisible(false);
-            // TODO 채팅리스트 서버에 요청하는 fetch와 없을 경우 작성
         }
 
         setActiveTab(k)
     }
 
-    const handleClick = (e) =>
+    const handleClick = (e) =>{
         console.log(e.target.textContent)
-
+        // 사용자명 눌렀을때 배열에서 해당 사용자의 방번호를 찾음
+        console.log(chatRoomArr.find(key => key.username === e.target.textContent).room_id);
+    }
 
     // TODO personalTalk 수정사항 : 채팅리스트 불러오기, 눌렀을때 채팅내역 불러오기 등등등
     return (
