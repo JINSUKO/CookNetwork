@@ -60,7 +60,7 @@ router.post('/:userId', async (req, res) => {
             return res.status(400).json({error: e});
         }
 
-        console.log(user);
+        // console.log(user);
         return res.status(200).json({ user, accessToken: res.locals.accessToken, message: '유저 정보 요청이 승인 되었습니다.' });
     } else {
         const user = await getUserInfo(req, res);

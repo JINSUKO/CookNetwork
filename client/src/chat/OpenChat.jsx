@@ -54,6 +54,7 @@ function openChat({ userData }) {
     // 유저가 전송하는 메세지 저장
     // 처음 유저 데이터를 불러오는것에 실패해 undefind가 나오면 ''로 지정
     // [08/26 완] 메세지는 빈 값일경우 경고창이 뜨도록 나중에 수정할것
+    // [08/30] FAQ 는 로그인 하지 않는 사용자도 이용할 수 있게 할 예정이므로 같이 적용될 수 있을 것 같음.
     const [userMessage, setUserMessage] = useState({
         id: user_id || '',
         name: username || '',
@@ -219,6 +220,34 @@ function openChat({ userData }) {
         }
     };
 
+    const fetchFAQAnswer = useCallback( async (FAQToSend) => {
+        try {
+
+            console.log('FAQToSend.message', FAQToSend.message)
+            const AI_HOST_IP = import.meta.env.VITE_AI_HOST_IP;
+            const response = await fetch(`${AI_HOST_IP}/ai/FAQAnswer`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({query: FAQToSend.message})
+            });
+
+            const { answer } = await response.json();
+
+            const FAQAnswer = {...FAQToSend,id:'faq', name: 'FAQ', message: answer};
+
+            console.log('FAQAnswer', FAQAnswer)
+
+            setMessageFAQHistory((prevFAQHistory) => [...prevFAQHistory, FAQAnswer]);
+
+
+        } catch (e) {
+            console.error(e);
+        }
+
+    });
+
     const handleSubmit = (e) =>{
         // 입력 값이 없을경우 submit 못하도록함
         if(userMessage.message.trim() === '' && !(activeTab === 'personalTalk')){
@@ -329,11 +358,13 @@ function openChat({ userData }) {
             <Offcanvas show={chatShow} onHide={handleChatClose} placement='end' scroll='true'>
                 <div className={ChatDesign.FAQChatRoom} ref={FAQChatRoom}>
                     {/*<HistoryWrapper ref={historyElement}>*/}
+                    {/* FAQ */}
                     <HistoryWrapper>
                         {messageFAQHistory.length ? (
                             <>
                                 {messageFAQHistory.map(({id, name, message}, index) => (
-                                    <ChatItem key={index} me={id === userData.user_id}>
+                                    // <ChatItem key={index} me={id === userData.user_id}>
+                                    <ChatItem key={index} me={id === socket.id}>
                                         <ChatName>{name}</ChatName>
                                         <ChatMessage>{message}</ChatMessage>
                                     </ChatItem>
@@ -345,6 +376,7 @@ function openChat({ userData }) {
                         )}
                     </HistoryWrapper>
                 </div>
+                {/* 오픈 채팅 방 */}
                 <div className={ChatDesign.openChatRoom} ref={openChatRoom}>
                     <HistoryWrapper>
                         {oldMessageLog.length || messageHistory.length ? (
@@ -368,6 +400,7 @@ function openChat({ userData }) {
                         )}
                     </HistoryWrapper>
                 </div>
+                {/* 1대1 톡 */}
                 <div className={ChatDesign.personalChatRoom} ref={personalRoom}>
                     <RoomWrapper>
                         {chatRoomArr.length ? (
@@ -430,6 +463,7 @@ function openChat({ userData }) {
                         <SubmitButton>보내기</SubmitButton>
                     </Form>
                 </div>
+                {/* 톡 채널 탭 */}
                 <Nav activeKey={activeTab} onSelect={handleToggleTabs} className={ChatDesign.chatNav} >
                     <Nav.Item>
                         <Nav.Link eventKey='FAQ' className={ChatDesign.chatTab}>
