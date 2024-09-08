@@ -74,6 +74,11 @@ const signupRouter = require("./router/signUp.js");
 // 회원가입 라우트 요청시 사용
 app.use("/api/signup", signupRouter);
 
+// 회원탈퇴 라우트 연결
+const userDeleteRouter = require("./router/deleteUser.js");
+// 회원탈퇴 라우트 요청시 사용
+app.use("/api/userDelete", userDeleteRouter);
+
 // 로그인 라우트 연결
 const loginRouter = require("./router/login.js");
 // 로그인 라우트 요청시 사용
