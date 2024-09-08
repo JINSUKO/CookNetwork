@@ -6,11 +6,11 @@
 
 import React, { useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Container, Row, Col, Card, Spinner} from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
 
 
-function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading  }) {
+function RecipeListPage({ recipes, currentCategory, hasMore, loadMore }) {
   const observer = useRef();
   const lastRecipeElementRef = useCallback(node => {
     if (observer.current) observer.current.disconnect();
@@ -25,26 +25,6 @@ function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading
   }, [hasMore, loadMore]);
 
   console.log("RecipeListPage - currentCategory:", currentCategory);  // 디버깅용 로그
-  
-
-  const loadingStyle = {
-    backgroundColor: '#ffffff',
-    padding: '4rem 0 2rem 0',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
-  };
-
-  if (!recipes || recipes.length === 0) {
-    return (
-      <Container style={loadingStyle}>
-        <Spinner animation="border" role="status">
-        <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </Container>
-    );
-  }
 
   return (
     <div>
