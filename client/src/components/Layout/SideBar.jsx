@@ -16,19 +16,30 @@ function LeftSidebar({ show, handleClose, user }) {
       </Offcanvas.Header>
       <Offcanvas.Body className={`d-flex flex-column ${styles.offcanvasBody}`}>
         <Nav className="flex-column flex-grow-1">
-          <Nav.Link as={Link} to="/mypage" onClick={handleClose}>마이페이지</Nav.Link>
-          <Nav.Link as={Link} to="/writerecipe" onClick={handleClose}>레시피 작성</Nav.Link>
-          {/* 추가 메뉴 항목들 */}
+          <Nav.Link as={Link} to="/mypage" onClick={handleClose} className={styles.navLink}>마이페이지</Nav.Link>
+          <Nav.Link as={Link} to="/mypage" onClick={handleClose} className={styles.navLink}>북마크한 레시피</Nav.Link>
+          <Nav.Link as={Link} to="/writerecipe" onClick={handleClose} className={styles.navLink}>나만의 레시피 등록</Nav.Link>
+          <Nav.Link as={Link} to="/myrecipe" onClick={handleClose} className={styles.navLink}>나만의 레시피 관리</Nav.Link>
         </Nav>
-        {user && (
-          <div className={styles.profileSection}>
+          
+          {user ? (
+            <Nav.Link to="/mypage" onClick={handleClose} className={styles.profileSection}>
+              <img 
+                src={user.user_img || "/profile.png"} 
+                alt="회원 프로필 이미지" 
+                className={styles.profileImage}
+              />
+              <span className={styles.profileName}>{user.username}</span>
+            </Nav.Link>
+        ) : (
+          <Nav.Link as={Link} to="/login" onClick={handleClose} className={styles.profileSection}>
             <img 
-              src={user.user_img || "/path/to/default/image.jpg"} 
+              src={"/profile.png"} 
               alt="회원 프로필 이미지" 
               className={styles.profileImage}
             />
-            <span className={styles.profileName}>{user.username}</span>
-          </div>
+            <span className={styles.profileName}>로그인 후 이용하실 수 있습니다.</span>
+          </Nav.Link>
         )}
       </Offcanvas.Body>
     </Offcanvas>

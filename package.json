@@ -19,6 +19,9 @@
     "concurrently": "^6.5.1"
   },
   "dependencies": {
+    "@tiptap/pm": "^2.6.6",
+    "@tiptap/react": "^2.6.6",
+    "@tiptap/starter-kit": "^2.6.6",
     "@vitejs/plugin-react": "^4.3.1",
     "express-session": "^1.18.0",
     "morgan": "^1.10.0",

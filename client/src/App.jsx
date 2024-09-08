@@ -23,6 +23,9 @@ import './App.css'
 
 import BookmarkPage from './pages/BookmarkPage';
 
+import Editor from './Editor'
+import RecipeEditor from './components/RecipeEditor';
+
 
 
 function App() {
@@ -125,8 +128,11 @@ function App() {
                                                       setProfilePic={setProfilePic}/>
                                                 : <Login />}
             />
-					<Route path="*" element={<NotFound />}></Route>
           </Route>
+
+          <Route path="*" element={<NotFound />}/>
+
+          <Route path="/writerecipe" element={<RecipeEditor />} />
         </Routes>
       </Router>
       {user && <OpenChat userData = {user}/>}
