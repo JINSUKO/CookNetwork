@@ -1,6 +1,33 @@
 /* Navbar.css */
+
+/* 상단 네비게이션 (공지사항, 회원가입, 로그인 등) */
+.navbar-top {
+  padding: 0.25rem 1rem; 
+}
+
+.navbar-top .nav-link {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+  color: black !important; 
+  text-decoration: none; 
+}
+
+/* 메인 네비게이션 바 */
+.navbar {
+  background-color: white !important;
+  border-bottom: 1px solid rgba(110, 110, 110, 0.1);
+  padding: 0.5rem 1rem; /* 상하 패딩을 줄여 높이 조정 */
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
 .search-form {
   flex-wrap: nowrap;
+  margin-right: 15px;
 }
 
 .search-input {
@@ -24,7 +51,12 @@
 }
 
 .navbar .nav-link {
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.75rem;
+}
+
+/* 네비게이션 아이템 간격 조정 */
+.navbar .nav-item {
+  margin: 0 0px;
 }
 
 /* 드롭다운 */
@@ -32,33 +64,30 @@
   margin-right: 10px;
 }
 
-
-
-/* 
-미디어쿼리 사용? ..
+/* 반응형 디자인을 위한 미디어 쿼리 */
 @media (max-width: 992px) {
   .navbar .nav-link {
-    padding: 0.5rem 0.5rem;
-  } */
+    padding: 0.5rem 0.75rem;
+  }
+}
 
-/* 
 @media (max-width: 768px) {
   .navbar .nav-link {
-    padding: 0.5rem 0.25rem;
+    padding: 0.5rem 0.5rem;
   }
   .navbar .form-control,
   .navbar .btn {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 576px) {
   .navbar .nav-link {
     padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
   .navbar .form-control,
   .navbar .btn {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
-} */
+}

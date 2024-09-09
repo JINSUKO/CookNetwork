@@ -12,6 +12,7 @@ import { useParams, useSearchParams, useNavigate  } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import RecipeListPage from "../pages/RecipeListPage";
 import FilterBox from "./FilterBox";
+import Loading from "./UI/Loading"
 
 function FetchRecipeList() { 
   const { category } = useParams();
@@ -84,7 +85,7 @@ function FetchRecipeList() {
           setRecipes(prevRecipes => [...prevRecipes, ...result]);
           setFilteredRecipes(prevRecipes => [...prevRecipes, ...result]);
         }
-        setHasMore(result.length === 3); // 20개 미만이면 더 이상 데이터가 없다고 판단
+        setHasMore(result.length === 3); // 3개 미만이면 더 이상 데이터가 없다고 판단
 
       }
     } catch (e) {
@@ -143,20 +144,30 @@ function FetchRecipeList() {
 
   return (
     <Container>
-      <h5>{displayCategory()}<br/> 다양한 레시피를 확인해보세요!</h5>
-      <FilterBox 
-        filterOptions={filterOptions}
-        selectedFilters={selectedFilters}
-        onFilterChange={handleFilterChange}/>
-      <RecipeListPage 
-        recipes={filteredRecipes} 
-        currentCategory={currentCategory}
-        hasMore={hasMore}
-        loadMore={loadMore}
-        // isLoading={isLoading}
-        totalCount={totalCount}
+      {isLoading && recipes.length === 0 ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
+      ) : (
+        <>
+          <h5>{displayCategory()}<br/> 다양한 레시피를 확인해보세요!</h5>
 
-      />
+          <FilterBox 
+            filterOptions={filterOptions}
+            selectedFilters={selectedFilters}
+            onFilterChange={handleFilterChange}/>
+          <RecipeListPage 
+            recipes={filteredRecipes} 
+            currentCategory={currentCategory}
+            hasMore={hasMore}
+            loadMore={loadMore}
+            // isLoading={isLoading}
+            totalCount={totalCount}
+          />
+        </>
+      )}
     </Container>
   )
 }

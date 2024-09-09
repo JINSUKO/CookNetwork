@@ -1,0 +1,127 @@
+/* RecipeEditor.module.css */
+
+.recipeEditor {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.recipeTitle {
+  font-size: 28px;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.recipeForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.recipeInput, .recipeSelect {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.menuBar {
+  margin-bottom: 15px;
+}
+
+.menuButton {
+  margin-right: 10px;
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.menuButton.isActive {
+  background-color: #e0e0e0;
+}
+
+.editorContent {
+  margin-bottom: 20px;
+}
+
+.submitButton {
+  padding: 10px 20px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.submitButton:hover {
+  background-color: #565657;
+}
+
+/* ProseMirror 스타일 */
+.ProseMirror {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-height: 200px;
+  font-family: Arial, sans-serif;
+}
+
+.ProseMirror:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.ProseMirror h1 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.ProseMirror h2 {
+  font-size: 20px;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.ProseMirror p {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
+}
+
+.ProseMirror ul, .ProseMirror ol {
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid #ccc;
+  padding-left: 10px;
+  color: #666;
+  font-style: italic;
+}
+
+
+/* placeholder */
+.editorContent .ProseMirror {
+  min-height: 200px;
+}
+
+.editorContent .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+  white-space: pre-wrap;
+}
