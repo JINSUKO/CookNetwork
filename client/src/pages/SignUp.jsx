@@ -3,7 +3,7 @@
 [ ] 이메일 틀린 형식으로 중복확인시 사용가능하다고 뜨는 문제 
 */
 
-import React, { useState } from 'react';
+import React, {useRef, useState} from 'react';
 import { Link } from 'react-router-dom';
 import SignUpStyles from '../assets/styles/SignUp.module.css';
 
@@ -21,6 +21,9 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
 
   const { userId, password, passwordVerify, nickname, userSex, userEmail } = user;
   console.log(user)
+
+  const emailAuthNumServer = useRef(null);
+  const emailAuthNumInput = useRef(null);
 
 
   // onChange 함수 
@@ -51,6 +54,14 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
     // console.log(event.target.value)
     // 아이디
     // setUser(preUser => ({...preUser, ...Newuser}))
+
+      // 이메일 인증 후에 작성한 이메일에 변동이 생기면 인증을 취소한다.
+      setIsEmailChecked(false);
+      setIsEmailAvailable(false);
+      setIsClickedEmailAuth(false);
+      emailAuthNumInput.current = '';
+      emailAuthNumServer.current = '';
+      setIsDisabledEmailAuthNum(false);
 
     console.log(user) // preUser
     if (event.target.name === "userId"&& !regId.test(event.target.value)) {
@@ -156,10 +167,15 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
 
     if (!user.userEmail) {
       alert('이메일을 입력해주세요.');
-      setIsEmailChecked(false);
-      setIsEmailAvailable(false);
       return;
     }
+
+    if (errors.userEmail) {
+      alert('올바른 이메일 주소를 입력하세요.')
+      return;
+    }
+
+
 
     // POST 요청
     try {
@@ -175,7 +191,10 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
 
       if (response.status === 201){     // 200: 아이디 사용가능
         alert("사용 가능한 이메일입니다.");
-        setIsEmailAvailable(true);
+        // 이메일 인증까지 완료해야 가능한 걸로 바꿈.
+        // setIsEmailAvailable(true);
+        setIsEmailAvailable(false);
+
       } else if(response.status === 410){ // 409: 아이디 중복
         alert("이미 사용중인 이메일입니다.")
         setIsEmailAvailable(false);
@@ -189,6 +208,65 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
     }
   };
 
+  // 이메일 인증
+  const [isClickedEmailAuth, setIsClickedEmailAuth] = useState(false);
+  const [isDisabledEmailAuthNum, setIsDisabledEmailAuthNum] = useState(true);
+
+  const sendEmailAuth = async () => {
+
+    // isEmailAvailable가 false일 때, display: none 속성 적용 중이라 밑의 코드는 동작하지 않음.
+    if (!isEmailAvailable) { alert('이메일 중복확인을 먼저 진행해주세요.'); return; }
+
+    alert('이메일로 인증 번호 발송하고 있습니다.')
+
+    try {
+      const response = await fetch(`${API_URL}/api/emailAuth`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userEmail: user.userEmail})
+      })
+
+      const data = await response.json();
+
+      emailAuthNumServer.current = data.authNum;
+
+      console.log('emailAuthNumServer', emailAuthNumServer);
+
+      alert('이메일로 인증 번호를 보냈습니다. \n 인증번호를 입력하고 확인 버튼을 눌러주세요.')
+      setIsClickedEmailAuth(true);
+      setIsDisabledEmailAuthNum(false);
+
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const emailNumChange = (e) => {
+    emailAuthNumInput.current = e.currentTarget.value;
+    console.log('emailAuthNumInput', emailAuthNumInput.current);
+  }
+
+  const confirmEmailAuth = () => {
+
+    // if (!emailAuthNumInput ) {
+    //   alert('값을 입력해주세요.');
+    //   return;
+    // }
+
+    console.log('emailAuthNumInput',emailAuthNumInput.current)
+    console.log('emailAuthNumServer',emailAuthNumServer.current)
+    if (emailAuthNumInput.current === emailAuthNumServer.current) {
+      setIsEmailAvailable(true);
+      setIsDisabledEmailAuthNum(true);
+
+      alert('이메일 인증 확인되었습니다.');
+    } else {
+      alert('인증 번호를 다시 입력해주세요.');
+    }
+  }
+
   // 닉네임 중복확인
   const [isNicknamehecked, setIsNicknameChecked] = useState(false);
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
@@ -197,7 +275,7 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
     // e.preventdefault();
 
     if (!user.nickname) {
-      alert('이메일을 입력해주세요.');
+      alert('닉네임을 입력해주세요.');
       setIsNicknameChecked(false);
       setIsNicknameAvailable(false);
       return;
@@ -301,59 +379,76 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
           <label className={SignUpStyles.infoLabelText}>아이디
             <button onClick={idCheck}>중복확인</button>
             <input
-            className={SignUpStyles.userInput}
-            type="text"
-            placeholder="아이디"
-            value={user.userId}
-            name="userId"
-            onChange={handleChange} />
-            
+                className={SignUpStyles.userInput}
+                type="text"
+                placeholder="아이디"
+                value={user.userId}
+                name="userId"
+                onChange={handleChange}/>
+
           </label>
           <div className={SignUpStyles.errorMessageWrap}>{errors.userId}</div>
           <label className={SignUpStyles.infoLabelText}>비밀번호<input
-            className={SignUpStyles.userInput}
-            type="password"
-            placeholder="비밀번호"
-            value={user.password}
-            name="password"
-            onChange={handleChange}
+              className={SignUpStyles.userInput}
+              type="password"
+              placeholder="비밀번호"
+              value={user.password}
+              name="password"
+              onChange={handleChange}
           />
           </label>
           <div className={SignUpStyles.errorMessageWrap}>{errors.password}</div>
           <label className={SignUpStyles.infoLabelText}>비밀번호 확인<input
-            className={SignUpStyles.userInput}
-            type="password"
-            placeholder="비밀번호 확인"
-            name="passwordVerify"
-            value={user.passwordVerify}
-            onChange={handleChange}
+              className={SignUpStyles.userInput}
+              type="password"
+              placeholder="비밀번호 확인"
+              name="passwordVerify"
+              value={user.passwordVerify}
+              onChange={handleChange}
           />
           </label>
           <div className={SignUpStyles.errorMessageWrap}>{errors.passwordVerify}</div>
           <label className={SignUpStyles.infoLabelText}>닉네임
-          <button onClick={nicknameCheck}>중복확인</button>
+            <button onClick={nicknameCheck}>중복확인</button>
 
             <input
-            className={SignUpStyles.userInput}
-            type="text"
-            placeholder="닉네임"
-            value={user.nickname}
-            name="nickname"
-            onChange={handleChange}
-          />
-          <div className={SignUpStyles.errorMessageWrap}>{errors.nickname}</div>          
+                className={SignUpStyles.userInput}
+                type="text"
+                placeholder="닉네임"
+                value={user.nickname}
+                name="nickname"
+                onChange={handleChange}
+            />
+            <div className={SignUpStyles.errorMessageWrap}>{errors.nickname}</div>
           </label>
           <label className={SignUpStyles.infoLabelText}>이메일
             <button onClick={emailCheck}>중복확인</button>
             <input
-            className={SignUpStyles.userInput}
-            type="text"
-            placeholder="이메일"
-            value={user.userEmail}
-            name="userEmail"
-            onChange={handleChange}
-          />
+                className={SignUpStyles.userInput}
+                type="text"
+                placeholder="이메일"
+                value={user.userEmail}
+                name="userEmail"
+                onChange={handleChange}
+            />
           </label>
+          <button style={{display: isEmailChecked ? 'flex' : 'none', width: 'fit-content', fontSize: '12px'}}
+                  onClick={sendEmailAuth}>인증번호 보내기
+          </button>
+          <input
+              className={SignUpStyles.userInput}
+              style={{display: isClickedEmailAuth ? 'flex' : 'none'}}
+              type="text"
+              placeholder="인증번호"
+              // value={emailAuthNumInput} // 초기 값
+              name="emailAuthNum"
+              onChange={emailNumChange}
+              disabled={isDisabledEmailAuthNum}
+          />
+          <button style={{display: isClickedEmailAuth ? 'flex' : 'none', width: 'fit-content', fontSize: '12px'}}
+                  onClick={confirmEmailAuth}
+                  disabled={isDisabledEmailAuthNum}>확인
+          </button>
           <div className={SignUpStyles.errorMessageWrap}>{errors.userEmail}</div>
 
           <div value={userSex} className={SignUpStyles.inputGroup}>
@@ -361,33 +456,33 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
             <div className={SignUpStyles.userSexRadioGroup}>
               <div className={SignUpStyles.userSexRadioOption}>
                 <input
-                  className={SignUpStyles.userSexRadio}
-                  type="radio"
-                  value= "0"
-                  name="userSex"
-                  onChange={handleChange} 
+                    className={SignUpStyles.userSexRadio}
+                    type="radio"
+                    value="0"
+                    name="userSex"
+                    onChange={handleChange}
                 />
                 <label className={SignUpStyles.userSexRadio}>남성</label>
               </div>
               <div className={SignUpStyles.userSexRadioOption}>
                 <input
-                  className={SignUpStyles.userSexRadio}
-                  type="radio"
-                  value="1"
-                  name="userSex"
-                  onChange={handleChange} 
+                    className={SignUpStyles.userSexRadio}
+                    type="radio"
+                    value="1"
+                    name="userSex"
+                    onChange={handleChange}
                 />
                 <label className={SignUpStyles.userSexRadio}>여성</label>
+              </div>
             </div>
           </div>
-          </div>
-          </div>
+        </div>
 
         <div>
           <hr></hr>
           <label className={SignUpStyles.infoOptionalText}>
-            이용약관 및 개인정보수집 및 이용에 동의합니다. 
-            <input type="checkbox" checked={checked} onChange={handleCheck} />
+            이용약관 및 개인정보수집 및 이용에 동의합니다.
+            <input type="checkbox" checked={checked} onChange={handleCheck}/>
           </label>
           <div className={SignUpStyles.checkboxContainer}>이용약관</div>
           <div className={SignUpStyles.checkboxContainer}>개인정보 수집 및 이용 동의</div>
