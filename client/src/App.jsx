@@ -22,9 +22,9 @@ import NotFound from './pages/NotFound';
 import './App.css'
 
 import BookmarkPage from './pages/BookmarkPage';
-
 import Editor from './Editor'
 import RecipeEditor from './components/RecipeEditor';
+import MyRecipe from './pages/MyRecipe';
 
 
 
@@ -130,9 +130,10 @@ function App() {
             />
           </Route>
 
-          <Route path="*" element={<NotFound />}/>
+          <Route path='*' element={<NotFound />}/>
 
-          <Route path="/writerecipe" element={<RecipeEditor />} />
+          <Route path='/writerecipe' element={<RecipeEditor />} />
+          <Route path='/myrecipe' element={<MyRecipe />}/>
         </Routes>
       </Router>
       {user && <OpenChat userData = {user}/>}

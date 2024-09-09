@@ -6,10 +6,10 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import LeftSidebar from './Layout/SideBar.jsx';
-import SearchBar from './SearchBar';
+import LeftSidebar from './SideBar.jsx';
+import SearchBar from '../../components/SearchBar.jsx';
 import { Container, Nav, Navbar, Button } from 'react-bootstrap';
-import '../assets/styles/Navbar.css'
+import '../../assets/styles/Navbar.css'
 
 function NavbarElement({ user }) {
   const [showSidebar, setShowSidebar] = useState(false)
@@ -34,7 +34,7 @@ function NavbarElement({ user }) {
   return (
     <div>
       {/* 상단오른쪽 공지사항, 회원가입, 로그인 링크도 네비바로 작성 */}
-      <Nav className="justify-content-end" defaultActiveKey="/" as="ul">
+      <Nav className="navbar-top justify-content-end" defaultActiveKey="/" as="ul">
         <Nav.Item as="li">
           <Link to="/board" className='nav-link'>공지사항</Link>
         </Nav.Item>
@@ -66,8 +66,8 @@ function NavbarElement({ user }) {
       </Nav>
 
       {/* 헤더 아래 네비바 */}
-      <Navbar expand="lg" className="bg-body-tertiary">
-        <Container className="d-flex justify-content-center align-items-center flex-nowrap ">
+      <Navbar expand="lg" className="navbar bg-body-tertiary">
+        <Container className="navbar-container d-flex justify-content-center align-items-center flex-nowrap ">
           <Button variant="link" onClick={handleSidebarShow} className="me-2 border-0" >
             <i className="fas fa-bars text-secondary" ></i>
           </Button>
@@ -87,8 +87,8 @@ function NavbarElement({ user }) {
           </Nav>
           
         </Container>
-        <Container className='d-flex justify-content-center'>
-          <SearchBar onSearch={handleSearch}/>
+        <Container className='d-flex justify-content-end'>
+          <SearchBar onSearch={handleSearch}  />
         </Container>
       </Navbar>
 

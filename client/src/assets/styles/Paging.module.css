@@ -1,0 +1,62 @@
+/* Paging.module.css */
+
+
+/* Paging.module.css */
+.paginationWrapper {
+  margin-top: 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.pageItem {
+  display: inline-block;
+  margin: 0 2px;
+}
+
+.pageLink {
+  border: none;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #333;
+  background-color: transparent;
+  transition: background-color 0.3s, color 0.3s;
+  border-radius: 4px;
+}
+
+.pageLink:hover {
+  background-color: #f0f0f0;
+    font-weight: bold;
+
+}
+
+.active .pageLink {
+  background-color: #444;
+  color: white;
+  
+}
+
+.active .pageLink:hover {
+  background-color: #333;
+}
+
+/* Style for first, last, prev, and next buttons */
+.pageItem:first-child .pageLink,
+.pageItem:last-child .pageLink,
+.pageItem:nth-child(2) .pageLink,
+.pageItem:nth-last-child(2) .pageLink {
+  font-weight: bold;
+  font-size: 18px; /* Increased font size for arrows */
+  line-height: 0.5; /* Adjust line height to vertically center the arrows */
+  padding: 6px 12px; /* Adjust padding to keep overall button size consistent */
+}
+
+/* Additional adjustment for vertical alignment */
+.pageItem:first-child .pageLink,
+.pageItem:last-child .pageLink,
+.pageItem:nth-child(2) .pageLink,
+.pageItem:nth-last-child(2) .pageLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

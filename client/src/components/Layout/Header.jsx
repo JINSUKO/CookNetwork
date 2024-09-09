@@ -1,6 +1,6 @@
 import React from "react";
 import Logo from "../Logo.jsx";
-import NavbarElement from "../NavbarElement";
+import NavbarElement from "./NavbarElement";
 
 function Header({user}) {
 
