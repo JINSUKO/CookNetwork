@@ -214,8 +214,8 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
 
   const sendEmailAuth = async () => {
 
-    // isEmailAvailable가 false일 때, display: none 속성 적용 중이라 밑의 코드는 동작하지 않음.
-    if (!isEmailAvailable) { alert('이메일 중복확인을 먼저 진행해주세요.'); return; }
+    // isEmailChecked false일 때, display: none 속성 적용 중이라 밑의 코드는 어차피 동작하지 않음.
+    if (!isEmailChecked) { alert('이메일 중복확인을 먼저 진행해주세요.'); return; }
 
     alert('이메일로 인증 번호 발송하고 있습니다.')
 
