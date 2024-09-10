@@ -7,6 +7,14 @@ import styles from '../assets/styles/Login.module.css';
 
 function Login({setUser, setProfilePic}) {
 
+  const logged_in = localStorage.getItem('loginUser');
+  const AT = localStorage.getItem('accessToken');
+
+  if (logged_in || AT) {
+  //   alert('로그인 중인 유저는 접근할 수 없습니다.');
+    window.location.href = '/';
+  }
+
   const API_URL = import.meta.env.VITE_HOST_IP; // 브라우저의 url과 hostname이 같아야 cookie가 넘어감.
   const [loginUser, setLoginUser] = useState({
     userId: '',
