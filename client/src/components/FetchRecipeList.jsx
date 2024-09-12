@@ -80,25 +80,30 @@ function FetchRecipeList() {
           setRecipes(result);
           setFilteredRecipes(result);
           setTotalCount(result.totalCount);
-
         } else {
           setRecipes(prevRecipes => [...prevRecipes, ...result]);
           setFilteredRecipes(prevRecipes => [...prevRecipes, ...result]);
         }
-        setHasMore(result.length === 3); // 3개 미만이면 더 이상 데이터가 없다고 판단
-
+        // setHasMore(result.length === 3); // 3개 미만이면 더 이상 데이터가 없다고 판단
+        setHasMore(recipes.length + result.recipes.length < result.totalCount);
+      } else {
+        setHasMore(false);
       }
     } catch (e) {
       console.error("실패:", e);
+      setHasMore(false)   // 추가 로드 방지
     } finally {
       setIsLoading(false)
     }
-  }, [currentCategory, selectedFilters, searchParams]);
+  }, [currentCategory, selectedFilters, searchParams, API_URL]);
    // 카테고리 값이 변경될 때 함수 재생성
   
   useEffect(() => {   // 컴포넌트가 마운트될 때 fetch 함수 호출
     setPage(1);
-    fetchRecipes();
+    setHasMore(true);
+    setRecipes([]);
+    setFilteredRecipes([]);
+    fetchRecipes(1);
   }, [fetchRecipes, currentCategory, selectedFilters]);   // currentCategory가 바뀔때마다 다시 실행
 
   useEffect(() => {
@@ -106,6 +111,7 @@ function FetchRecipeList() {
     setPage(1);
   }, [currentCategory])   // currentCategory가 바뀔때마다 필터 새로고침
 
+  // 종류별 필터 선택
   const handleFilterChange = (filters) => {
     setSelectedFilters(filters);
     const newSearchParams = new URLSearchParams(searchParams);
@@ -120,18 +126,26 @@ function FetchRecipeList() {
     setSearchParams(newSearchParams);
     navigate(`/category/${currentCategory}?${newSearchParams.toString()}`);
     setPage(1);
+    // setRecipes([]);
     fetchRecipes(1);
   };
   
+  // 무한 스크롤
   const loadMore = useCallback(() => {
     console.log('loadMore', page)
-    if (hasMore) {
-      console.log('남은 데이터', hasMore)
+    if (!isLoading && hasMore) {
+      console.log('새 페이지 로딩 시작')
       const nextPage = page + 1;
       setPage(nextPage);
-      fetchRecipes(nextPage);
+      console.log('다음 페이지:', nextPage);
+      setIsLoading(true);
+      fetchRecipes(nextPage).finally(() => {
+        setIsLoading(false);  // 로딩 상태 해제
+        console.log('페이지 로딩 완료');
+      });
+
     }
-  }, [hasMore, page, fetchRecipes]);
+  }, [hasMore, page, isLoading, fetchRecipes]);
 
   // 리스트 상단 소개에 카테고리 표시
   const displayCategory = () => {
@@ -163,7 +177,7 @@ function FetchRecipeList() {
             currentCategory={currentCategory}
             hasMore={hasMore}
             loadMore={loadMore}
-            // isLoading={isLoading}
+            isLoading={isLoading}
             totalCount={totalCount}
           />
         </>

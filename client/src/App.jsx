@@ -18,13 +18,13 @@ import authFetch from './fetchInterceptorAuthToken';
 import authManager from "./authManager";
 import NotFound from './pages/NotFound';
 
-
-import './App.css'
-
 import BookmarkPage from './pages/BookmarkPage';
 import Editor from './Editor'
-import RecipeEditor from './components/RecipeEditor';
-import MyRecipe from './pages/MyRecipe';
+import RecipeWrite from './pages/RecipeWrite';
+import MyRecipeList from './pages/MyRecipeList';
+import RecipeUpdate from './pages/RecipeUpdate';
+
+import './App.css'
 
 
 
@@ -104,6 +104,7 @@ function App() {
       setMessage('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
     }
   };
+  
 
   return (
     <div className="App">
@@ -128,12 +129,15 @@ function App() {
                                                       setProfilePic={setProfilePic}/>
                                                 : <Login />}
             />
+            <Route path='/myrecipe' element={<MyRecipeList user={user}/>}/>
+            <Route path='/writerecipe' element={<RecipeWrite user={user}/>} />
+            <Route path='/updaterecipe/:recipe_id' element={<RecipeUpdate user={user} />} />
           </Route>
 
           <Route path='*' element={<NotFound />}/>
-
-          <Route path='/writerecipe' element={<RecipeEditor />} />
-          <Route path='/myrecipe' element={<MyRecipe />}/>
+          <Route path='/myrecipe' element={<MyRecipeList user={user}/>}/>
+          <Route path='/writerecipe' element={<RecipeWrite user={user}/>} />
+          <Route path='/updaterecipe/:recipe_id' element={<RecipeUpdate user={user} />} />
         </Routes>
       </Router>
       {user && <OpenChat userData = {user}/>}

@@ -22,6 +22,7 @@ function BookmarkButton({ recipe_id, initialIsBookmarked }) {
   }, [recipe_id]);
 
   const fetchBookmarkStatus = async () => {
+    // [ ] 로그인 계정 정보 연동
     try {
       const response = await fetch(`/api/bookmark/status/${recipe_id}`, {
         method: 'GET',
@@ -41,8 +42,8 @@ function BookmarkButton({ recipe_id, initialIsBookmarked }) {
   };
 
   const handleBookmark = async () => {
-
-  // 제거 OR 추가 
+  // [ ] 로그인 유저? --> 비로그인: 로그인페이지 리다이렉트
+  // 제거 OR 추가
   try {
     const response = await fetch(`/api/bookmark/${recipe_id}`, {
       method: isBookmarked ? 'DELETE' : 'POST',

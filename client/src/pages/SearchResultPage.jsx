@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
-import Paging from "../components/UI/Paging";
+import Paging from "../components/UI/Paging";   // 페이지네이션
 
 const API_URL = import.meta.env.VITE_HOST_IP;
 
