@@ -93,6 +93,9 @@ app.use("/api/search",searchRouter)
 const detailpageRouter = require("./router/detailPage.js");
 app.use("/api/recipe",detailpageRouter)
 
+// 새로운 레시피 작성 라우트
+const writeRecipesRouter = require("./router/writeRecipes.js");
+app.use("/api/writeRecipe",writeRecipesRouter)
 
 // 로그아웃 라우트 연결
 const logoutRouter = require("./router/logout.js");
@@ -109,9 +112,9 @@ app.get("/api/authPage", authAccessToken, authRefreshToken, (req, res) => {
     }
 
 });
-
+// 1:1 채팅 관련 라우트
 const personalRouter = require("./router/personalData.js");
-app.use("/api/personal",personalRouter)
+app.use("/chat/personal",personalRouter)
 
 // 정적 파일 서빙 (프로덕션 모드)
 if (process.env.NODE_ENV === 'production') {
