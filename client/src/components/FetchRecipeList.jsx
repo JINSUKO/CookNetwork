@@ -14,6 +14,8 @@ import RecipeListPage from "../pages/RecipeListPage";
 import FilterBox from "./FilterBox";
 import Loading from "./UI/Loading"
 
+import { useBookmarkContext } from "../context/BookmarkContext";
+
 function FetchRecipeList() { 
   const { category } = useParams();
   const navigate = useNavigate();
@@ -30,6 +32,8 @@ function FetchRecipeList() {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
+
+  const { isBookmarked } = useBookmarkContext(); 
 
   const filterOptions = [
     "모두보기", "메인요리", "반찬", "국/탕", "디저트", "면", 
@@ -74,8 +78,19 @@ function FetchRecipeList() {
       const result = await response.json();
       console.log("성공:", result)
 
+      // 북마크 상태 확인
+      if (result && result.recipes) {
+        const recipesWithBookmarkStatus = result.recipes.map(recipe => ({
+          ...recipe,
+          isBookmarked: isBookmarked(recipe.id)
+        }));
+        setRecipes(prevRecipes => [...prevRecipes, ...recipesWithBookmarkStatus]);
+        setFilteredRecipes(prevRecipes => [...prevRecipes, ...recipesWithBookmarkStatus]);
+      }
+      
       if (result) {
         console.log(`${currentCategory} 레시피 목록 호출 성공`);
+        
         if (pageNum === 1) {
           setRecipes(result);
           setFilteredRecipes(result);
@@ -85,7 +100,7 @@ function FetchRecipeList() {
           setFilteredRecipes(prevRecipes => [...prevRecipes, ...result]);
         }
         // setHasMore(result.length === 3); // 3개 미만이면 더 이상 데이터가 없다고 판단
-        setHasMore(recipes.length + result.recipes.length < result.totalCount);
+        setHasMore(Array.isArray(result.recipes) && recipes.length + result.recipes.length < result.totalCount);   // 남은데이터가 더 있으면 로드
       } else {
         setHasMore(false);
       }

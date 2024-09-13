@@ -3,39 +3,19 @@
  * 
  */
 
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
-// import { useBookmarkContext } from './BookmarkContext';
+import { useBookmarkContext } from '../../context/BookmarkContext';
 
 const BookmarkList = () => {
-  const [bookmarkedRecipes, setBookmarkedRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchBookmarks = async () => {
-      try {
-        const response = await fetch('/api/bookmarks', {
-          credentials: 'include',
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch bookmarks');
-        }
-        const data = await response.json();
-        setBookmarkedRecipes(data);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
-    fetchBookmarks();
-  }, []);
+  const { bookmarkedRecipes, removeBookmark, loading, error } = useBookmarkContext();
   
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  // if (error) return <div>Error: {error}</div>;
+
+  if (!Array.isArray(bookmarkedRecipes) || bookmarkedRecipes.length === 0) {
+    return <div className="d-flex justify-content-center align-items-center">북마크한 레시피가 없습니다.</div>;
+  }
 
   return (
     <div>
@@ -55,6 +35,7 @@ const BookmarkList = () => {
               />
               <Card.Body>
                 <Card.Title>{recipe.title}</Card.Title>
+                <button onClick={() => removeBookmark(recipe.id)}>북마크 제거</button>
               </Card.Body>
             </Card>
           </Col>

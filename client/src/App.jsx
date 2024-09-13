@@ -18,6 +18,7 @@ import authFetch from './fetchInterceptorAuthToken';
 import authManager from "./authManager";
 import NotFound from './pages/NotFound';
 
+import { BookmarkProvider } from './context/BookmarkContext';
 import BookmarkPage from './pages/BookmarkPage';
 import Editor from './Editor'
 import RecipeWrite from './pages/RecipeWrite';
@@ -25,6 +26,7 @@ import MyRecipeList from './pages/MyRecipeList';
 import RecipeUpdate from './pages/RecipeUpdate';
 
 import './App.css'
+import BookmarkList from './components/Bookmark/BookmarkList';
 
 
 
@@ -110,6 +112,7 @@ function App() {
     <div className="App">
       <p>{message}</p>
       <Router>
+        <BookmarkProvider>
         <Header user={user}/>
         <Routes>
           <Route path = '/' element = {<Main />}/>
@@ -138,7 +141,9 @@ function App() {
           <Route path='/myrecipe' element={<MyRecipeList user={user}/>}/>
           <Route path='/writerecipe' element={<RecipeWrite user={user}/>} />
           <Route path='/updaterecipe/:recipe_id' element={<RecipeUpdate user={user} />} />
+          <Route path='/mybookmark' element={<BookmarkList/>} />
         </Routes>
+        </BookmarkProvider>
       </Router>
       {user && <OpenChat userData = {user}/>}
       <Footer/>

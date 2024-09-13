@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
-
+import styles from '../assets/styles/RecipeCard.module.css';
 
 function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading  }) {
   const observer = useRef();
@@ -39,6 +39,17 @@ function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading
     console.log('RecipeListPage - Recipes:', recipes.length, 'HasMore:', hasMore, 'IsLoading:', isLoading);
   }, [recipes, hasMore, isLoading]);
 
+  const handleCardclick = (e, recipe_id) => {
+    // 북마크 버튼 클릭 시 이벤트 전파 중지
+    if (e.target.closest(`.${styles.bookmarkWrapper}`)){
+      e.preventDefault();
+      e.stopPropagation();
+    } else {
+      // 카드의 다른 부분 클릭시 레시피 상세 페이지로 이동
+      window.location.href = `/recipe/${recipe_id}`;
+    }
+  };
+
   // const loadingStyle = {
   //   backgroundColor: '#ffffff',
   //   padding: '4rem 0 2rem 0',
@@ -47,7 +58,6 @@ function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading
   //   justifyContent: 'center',
   //   alignItems: 'center'
   // };
-
   // if (!recipes || recipes.length === 0) {
   //   return (
   //     <Container style={loadingStyle}>
@@ -66,24 +76,31 @@ function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading
             recipes.map((recipe, index) => (
           <Col key={recipe.recipe_id} ref={index === recipes.length - 1 ? lastRecipeElementRef : null}>  
             <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
-              <Card style={{ border: 'none', borderRadius:0, cursor: 'pointer' }}>
+              <Card 
+                className={styles.recipeCard}
+                onClick={(e) => handleCardclick(e, recipe.recipe_id)}
+                >
+              <div className={styles.imageWrapper}>
                 {recipe.recipe_img ? (
-              <Card.Img variant="top" src={recipe.recipe_img} style={{borderRadius:0}}/>
+                <Card.Img variant="top" src={recipe.recipe_img}  className={styles.recipeImage}/>
                 ) : (
                   <div style={{height: '200px' }}></div>
                 )}
+                    <div className={styles.bookmarkWrapper}>
+                        <BookmarkButton recipe_id={recipe.recipe_id} />
+                    </div>
+              </div>
               <Card.Body>
-                <Card.Title  style={{ textAlign: 'start', fontSize: '16px', fontWeight: 'bold' }}>
+                <Card.Title className={styles.recipeTitle}>
                   {recipe.recipe_name}
                 </Card.Title>
-                <Card.Title  style={{ textAlign: 'start', fontSize: '14px' }}>
+                <Card.Title  className={styles.recipeInfo}>
                   {recipe.recipe_desc}
                 </Card.Title>
-                <div style={{ display: 'flex', justifyContent: 'flex-start', fontSize: '12px', color: '#666' }}>
-                  <span style={{ marginRight: '16px'}}>📌{recipe.level}</span>
+                <div className={styles.recipeInfo}>
+                  <span style={{ marginRight: '16px'}}>📌레벨{recipe.level}</span>
                   <span>🕛{recipe.cooked_time}분</span>
                 </div>
-                <BookmarkButton />
               </Card.Body>
             </Card>
           </Link>
