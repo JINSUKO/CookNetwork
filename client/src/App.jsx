@@ -13,6 +13,7 @@ import SearchResultPage from './pages/SearchResultPage';
 import FetchRecipeList from './components/FetchRecipeList';
 import Logout from "./components/Logout";
 import ProtectedPage from "./pages/authToken/ProtectedPage";
+import Admin from './pages/Admin';
 
 import authFetch from './fetchInterceptorAuthToken';
 import authManager from "./authManager";
@@ -106,7 +107,6 @@ function App() {
       setMessage('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
     }
   };
-  
 
   return (
     <div className="App">
@@ -136,6 +136,8 @@ function App() {
             <Route path='/writerecipe' element={<RecipeWrite user={user}/>} />
             <Route path='/updaterecipe/:recipe_id' element={<RecipeUpdate user={user} />} />
           </Route>
+          {/* 추가 중이라서 영자 계정만 접근할 수 있게 막지는 않았습니다.*/}
+          <Route path='/admin' element={<Admin />} />
 
           <Route path='*' element={<NotFound />}/>
           <Route path='/myrecipe' element={<MyRecipeList user={user}/>}/>
