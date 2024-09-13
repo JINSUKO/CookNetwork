@@ -13,6 +13,7 @@ import SearchResultPage from './pages/SearchResultPage';
 import FetchRecipeList from './components/FetchRecipeList';
 import Logout from "./components/Logout";
 import ProtectedPage from "./pages/authToken/ProtectedPage";
+import Admin from './pages/Admin';
 
 import authFetch from './fetchInterceptorAuthToken';
 import authManager from "./authManager";
@@ -134,6 +135,7 @@ function App() {
 
           <Route path='/writerecipe' element={<RecipeEditor />} />
           <Route path='/myrecipe' element={<MyRecipe />}/>
+          <Route path='/admin' element={<Admin />} />
         </Routes>
       </Router>
       {user && <OpenChat userData = {user}/>}
