@@ -1,7 +1,9 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
+// Context 생성 
 const BookmarkContext = createContext();
 
+// 북마크 커스텀 훅
 export const useBookmarkContext = () => {
   const context = useContext(BookmarkContext);
   if (!context) {
@@ -10,20 +12,22 @@ export const useBookmarkContext = () => {
   return context;
 };
 
+// Provider 컴포넌트 생성
 export const BookmarkProvider = ({ children }) => {
   const [bookmarkedRecipes, setBookmarkedRecipes] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchBookmarkedRecipes = async () => {
+  // 북마크 목록 조회
+  const fetchBookmark = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/bookmarked-recipes');
+      const response = await fetch('/api/bookmarkedRecipe');
       if (!response.ok) {
         throw new Error('Failed to fetch bookmarked recipes');
       }
       const data = await response.json();
-      setBookmarkedRecipes(data);
+      setBookmarkedRecipes(response.data);
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -32,12 +36,14 @@ export const BookmarkProvider = ({ children }) => {
     }
   };
 
+  // 컴포넌트가 마운트될 때 북마크 목록 조회
   useEffect(() => {
-    fetchBookmarkedRecipes();
+    fetchBookmark();
   }, []);
 
   const isBookmarked = (recipeId) => bookmarkedRecipes.some(recipe => recipe.id === recipeId);
 
+  // 북마크 추가
   const addBookmark = async (recipeId) => {
     try {
       const response = await fetch(`/api/bookmark/${recipeId}`, {
@@ -48,15 +54,17 @@ export const BookmarkProvider = ({ children }) => {
         credentials: 'include',
       });
       if (!response.ok) {
-        throw new Error('Failed to add bookmark');
+        throw new Error('서버 응답 오류 Failed to add bookmark');
       }
-      await fetchBookmarkedRecipes(); // 북마크 목록 갱신
+      const newBookmark = await response.json(); // 북마크 목록 갱신
+      setBookmarkedRecipes([...bookmarkedRecipes, newBookmark]);
     } catch (err) {
       setError(err.message);
     }
   };
 
-  const removeBookmark = async (recipeId) => {
+  // 북마크 제거
+  const removeBookmark = async (bookmarkId) => {    // bookmarkID?
     try {
       const response = await fetch(`/api/bookmark/${recipeId}`, {
         method: 'DELETE',
@@ -68,7 +76,8 @@ export const BookmarkProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error('Failed to remove bookmark');
       }
-      await fetchBookmarkedRecipes(); // 북마크 목록 갱신
+      setBookmarkedRecipes(prev => prev.filter(id => id !== recipeId));
+      // 북마크 목록 갱신
     } catch (err) {
       setError(err.message);
     }
@@ -81,7 +90,7 @@ export const BookmarkProvider = ({ children }) => {
     isBookmarked,
     addBookmark,
     removeBookmark,
-    fetchBookmarkedRecipes
+    fetchBookmark
   };
 
   return (

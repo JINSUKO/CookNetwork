@@ -17,7 +17,7 @@ function LeftSidebar({ show, handleClose, user }) {
       <Offcanvas.Body className={`d-flex flex-column ${styles.offcanvasBody}`}>
         <Nav className="flex-column flex-grow-1">
           <Nav.Link as={Link} to="/mypage" onClick={handleClose} className={styles.navLink}>마이페이지</Nav.Link>
-          <Nav.Link as={Link} to="/mypage" onClick={handleClose} className={styles.navLink}>북마크한 레시피</Nav.Link>
+          <Nav.Link as={Link} to="/mybookmark" onClick={handleClose} className={styles.navLink}>북마크한 레시피</Nav.Link>
           <Nav.Link as={Link} to="/writerecipe" onClick={handleClose} className={styles.navLink}>나만의 레시피 등록</Nav.Link>
           <Nav.Link as={Link} to="/myrecipe" onClick={handleClose} className={styles.navLink}>나만의 레시피 관리</Nav.Link>
         </Nav>

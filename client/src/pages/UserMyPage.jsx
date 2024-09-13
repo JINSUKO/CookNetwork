@@ -9,6 +9,7 @@ import UserCategoryModifyModal from '../components/UserCategoryModifyModal'
 
 import authFetch from '../fetchInterceptorAuthToken'
 import UserSelectedCategories from "../components/UserSelectedCategories.jsx";
+import BookmarkList from '../components/Bookmark/BookmarkList.jsx';
 
 
 const UserMyPage = ({user, setUser, profilePic, setProfilePic}) => {
@@ -378,6 +379,7 @@ const UserMyPage = ({user, setUser, profilePic, setProfilePic}) => {
                                         ))}
                                     </Row>
                                     <h6 className="mb-3">최근 북마크 레시피</h6>
+                                    {/* <BookmarkList /> */}
                                     <Row xs={2} md={3} lg={4} className="g-2 mb-4">
                                         {[...Array(8)].map((_, idx) => (
                                             <Col key={idx}>
