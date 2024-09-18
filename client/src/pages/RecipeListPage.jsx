@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
 import styles from '../assets/styles/RecipeCard.module.css';
+import Skeleton from '../components/UI/Skeleton';
 
 function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading  }) {
   const observer = useRef();
@@ -50,63 +51,55 @@ function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading
     }
   };
 
-  // const loadingStyle = {
-  //   backgroundColor: '#ffffff',
-  //   padding: '4rem 0 2rem 0',
-  //   display: 'flex',
-  //   flexDirection: 'column',
-  //   justifyContent: 'center',
-  //   alignItems: 'center'
-  // };
-  // if (!recipes || recipes.length === 0) {
-  //   return (
-  //     <Container style={loadingStyle}>
-  //       <Spinner animation="border" role="status">
-  //       <span className="visually-hidden">Loading...</span>
-  //       </Spinner>
-  //     </Container>
-  //   );
+  // if (isLoading && (!recipes || recipes.length === 0)) {
+  //   return <Skeleton />;
   // }
 
   return (
     <div>
-      <Container className="text-start">
-        <Row xs={2} md={3} lg={4} className="g-4">
-          {recipes && 
-            recipes.map((recipe, index) => (
-          <Col key={recipe.recipe_id} ref={index === recipes.length - 1 ? lastRecipeElementRef : null}>  
-            <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
-              <Card 
-                className={styles.recipeCard}
-                onClick={(e) => handleCardclick(e, recipe.recipe_id)}
-                >
-              <div className={styles.imageWrapper}>
-                {recipe.recipe_img ? (
-                <Card.Img variant="top" src={recipe.recipe_img}  className={styles.recipeImage}/>
-                ) : (
-                  <div style={{height: '200px' }}></div>
-                )}
-                    <div className={styles.bookmarkWrapper}>
-                        <BookmarkButton recipe_id={recipe.recipe_id} />
+      <Container className="py-5">
+        <Row className="justify-content-center">
+          <Col xs={12} md={10} lg={10}>
+            <Row xs={2} md={3} lg={4} className="g-4">
+              {recipes && 
+                recipes.map((recipe, index) => (
+              <Col key={recipe.recipe_id} ref={index === recipes.length - 1 ? lastRecipeElementRef : null}>  
+                <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
+                  <Card 
+                    className={styles.recipeCard}
+                    onClick={(e) => handleCardclick(e, recipe.recipe_id)}
+                    >
+                  <div className={styles.imageWrapper}>
+                    {recipe.recipe_img ? (
+                    <Card.Img variant="top" src={recipe.recipe_img}  className={styles.recipeImage}/>
+                    ) : (
+                      <div style={{height: '200px' }}></div>
+                    )}
+                        <div className={styles.bookmarkWrapper}>
+                            <BookmarkButton recipe_id={recipe.recipe_id} />
+                        </div>
+                  </div>
+                  <Card.Body>
+                    <Card.Title className={styles.recipeTitle}>
+                      {recipe.recipe_name}
+                    </Card.Title>
+                    <Card.Title  className={styles.recipeInfo}>
+                      {recipe.recipe_desc}
+                    </Card.Title>
+                    <div className={styles.recipeInfo}>
+                      <span style={{ marginRight: '16px'}}>📌레벨{recipe.level}</span>
+                      <span>🕛{recipe.cooked_time}분</span>
                     </div>
-              </div>
-              <Card.Body>
-                <Card.Title className={styles.recipeTitle}>
-                  {recipe.recipe_name}
-                </Card.Title>
-                <Card.Title  className={styles.recipeInfo}>
-                  {recipe.recipe_desc}
-                </Card.Title>
-                <div className={styles.recipeInfo}>
-                  <span style={{ marginRight: '16px'}}>📌레벨{recipe.level}</span>
-                  <span>🕛{recipe.cooked_time}분</span>
-                </div>
-              </Card.Body>
-            </Card>
-          </Link>
-        </Col>
-        ))}
+                  </Card.Body>
+                </Card>
+              </Link>
+            </Col>
+            ))}
+            </Row>
+          </Col>
         </Row>
+        {isLoading && recipes.length > 0 && <Skeleton />}
+
       </Container>
     </div>
   )

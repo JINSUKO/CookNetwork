@@ -13,6 +13,7 @@ import { Container } from 'react-bootstrap';
 import RecipeListPage from "../pages/RecipeListPage";
 import FilterBox from "./FilterBox";
 import Loading from "./UI/Loading"
+import Skeleton from "./UI/Skeleton";
 
 import { useBookmarkContext } from "../context/BookmarkContext";
 
@@ -173,11 +174,10 @@ function FetchRecipeList() {
 
   return (
     <Container>
+
       {isLoading && recipes.length === 0 ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
+          <Skeleton/>
         </div>
       ) : (
         <>
