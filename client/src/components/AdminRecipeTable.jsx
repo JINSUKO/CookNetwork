@@ -191,6 +191,7 @@ const [currentIndex, setCurrentIndex] = useState(0);  // 현재 인덱스를 저
     const tableRef = useRef(null);
     const headerRef = useRef(null);
     const ITEMS_PER_PAGE = 3;
+    const ITEM_SIZE = 110;
 
     const loadMoreRecipes = useCallback(async (startIndex, stopIndex) => {
         console.log('startIndex', startIndex);
@@ -201,6 +202,8 @@ const [currentIndex, setCurrentIndex] = useState(0);  // 현재 인덱스를 저
         setIsRecipesLoading(true);
 
         const page = Math.floor(startIndex / ITEMS_PER_PAGE) + 1;
+        console.log('page',page)
+        console.log('currentPage.current', currentPage.current)
 
         if (page > currentPage.current - 1) {
             try {
@@ -230,6 +233,7 @@ const [currentIndex, setCurrentIndex] = useState(0);  // 현재 인덱스를 저
         return () => {
             setRecipes([]);
             currentPage.current = 1;
+            tableRef.current.scrollTop = 0;
         }
     }, [activeTab]);
 
@@ -259,13 +263,20 @@ const [currentIndex, setCurrentIndex] = useState(0);  // 현재 인덱스를 저
     // tableContainer 스크롤에 따라 startIndex를 계산하여 loadMoreRecipes 호출
     const handleContainerScroll = (e) => {
         // todo 높이의 값을 적절하게 나눠서 페이지 요청을 보내야한다.
-
-        if (e.target) {
-            const scrollTop = e.target.scrollTop;  // 현재 스크롤 위치
-            const currentIndex = Math.floor(scrollTop / 50);  // 행 높이로 인덱스 계산
-            // listRef.current.scrollToItem(currentIndex);  // 스크롤 위치에 맞춰 리스트 업데이트
-            console.log('currentIndex', currentIndex)
-            loadMoreRecipes(currentIndex, currentIndex + ITEMS_PER_PAGE);
+        console.log('e.target.scrollTop', e.target.scrollTop)
+        // if (Math.ceil((e.target.scrollTop/ITEM_SIZE) % 3) === 1 && (Math.ceil((e.target.scrollTop/ITEM_SIZE) % 3) + 1 > currentPage.current)) {
+        //     // console.log(currentPage)
+        //     loadMoreRecipes(Math.ceil((e.target.scrollTop/ITEM_SIZE) % 3) * 3, currentIndex + ITEMS_PER_PAGE);
+        // }
+        console.log(Math.ceil((e.target.scrollTop/ITEM_SIZE)) + 1 );
+        console.log('currentPage.current',currentPage.current)
+        // if ((Math.ceil((e.target.scrollTop/ITEM_SIZE)) + 1 > currentPage.current) && totalRecipesCount > Math.ceil((e.target.scrollTop/ITEM_SIZE)) * 3) {
+        //     // console.log(currentPage)
+        //     loadMoreRecipes(Math.ceil((e.target.scrollTop/ITEM_SIZE)) * 3, totalRecipesCount);
+        // }
+        if ((Math.floor(Math.ceil(e.target.scrollTop/ITEM_SIZE)) + 1 > currentPage.current) && totalRecipesCount > Math.ceil((e.target.scrollTop/ITEM_SIZE)) * ITEMS_PER_PAGE) {
+            // console.log(currentPage)
+            loadMoreRecipes(Math.ceil((e.target.scrollTop/ITEM_SIZE)) * ITEMS_PER_PAGE, totalRecipesCount);
         }
     };
 
@@ -295,8 +306,10 @@ const [currentIndex, setCurrentIndex] = useState(0);  // 현재 인덱스를 저
         const recipe = recipes[index];
         if (!recipe) {
             return <div style={style}><div>Loading...</div></div>;
+            // return ;
         }
-
+        console.log(recipe)
+        console.log(recipes)
         return (
             <div style={{...style, width: `${totalWidth}px`}} className={AdminStyle.tableRow}>
                 <div style={{width: `${columns[0].width}px`}} className={AdminStyle.tableCell} >{recipe['Recipe Id']}</div>
@@ -345,9 +358,9 @@ const [currentIndex, setCurrentIndex] = useState(0);  // 현재 인덱스를 저
                             >
                                 {({ onItemsRendered, ref }) => (
                                     <FixedSizeList
-                                        height={300}
+                                        height={200}
                                         itemCount={totalRecipesCount}
-                                        itemSize={70}
+                                        itemSize={ITEM_SIZE}
                                         onScroll={handleListScroll} // FixedSizeList의 스크롤 이벤트 핸들러
                                         onItemsRendered={onItemsRendered}
                                         ref={ref}
