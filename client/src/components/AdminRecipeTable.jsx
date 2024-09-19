@@ -255,41 +255,41 @@ const [currentIndex, setCurrentIndex] = useState(0);  // 현재 인덱스를 저
         const width = columns.reduce((acc, column) => acc + column.width, 0);
         setTotalWidth(width);
     }, []);
-    //
-    // // tableContainer 스크롤에 따라 startIndex를 계산하여 loadMoreRecipes 호출
-    // const handleContainerScroll = (e) => {
-    //     // todo 높이의 값을 적절하게 나눠서 페이지 요청을 보내야한다.
-    //
-    //     if (e.target) {
-    //         const scrollTop = e.target.scrollTop;  // 현재 스크롤 위치
-    //         const currentIndex = Math.floor(scrollTop / 50);  // 행 높이로 인덱스 계산
-    //         // listRef.current.scrollToItem(currentIndex);  // 스크롤 위치에 맞춰 리스트 업데이트
-    //         console.log('currentIndex', currentIndex)
-    //         loadMoreRecipes(currentIndex, currentIndex + ITEMS_PER_PAGE);
-    //     }
-    // };
-    //
-    // // InfiniteLoader로부터 전달받는 onScroll 이벤트에서 startIndex 계산
-    // const handleListScroll = ({ scrollOffset }) => {
-    //     if (tableRef.current) {
-    //         tableRef.current.scrollTop = scrollOffset;  // tableContainer와 동기화
-    //     }
-    // };
 
+    // tableContainer 스크롤에 따라 startIndex를 계산하여 loadMoreRecipes 호출
+    const handleContainerScroll = (e) => {
+        // todo 높이의 값을 적절하게 나눠서 페이지 요청을 보내야한다.
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (headerRef.current && listRef.current) {
-                headerRef.current.scrollLeft = listRef.current.state.scrollOffset;
-            }
-        };
-
-        const listElement = listRef.current?._outerRef;
-        if (listElement) {
-            listElement.addEventListener('scroll', handleScroll);
-            return () => listElement.removeEventListener('scroll', handleScroll);
+        if (e.target) {
+            const scrollTop = e.target.scrollTop;  // 현재 스크롤 위치
+            const currentIndex = Math.floor(scrollTop / 50);  // 행 높이로 인덱스 계산
+            // listRef.current.scrollToItem(currentIndex);  // 스크롤 위치에 맞춰 리스트 업데이트
+            console.log('currentIndex', currentIndex)
+            loadMoreRecipes(currentIndex, currentIndex + ITEMS_PER_PAGE);
         }
-    }, []);
+    };
+
+    // InfiniteLoader로부터 전달받는 onScroll 이벤트에서 startIndex 계산
+    const handleListScroll = ({ scrollOffset }) => {
+        if (tableRef.current) {
+            tableRef.current.scrollTop = scrollOffset;  // tableContainer와 동기화
+        }
+    };
+
+
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //         if (tableRef.current && listRef.current) {
+    //             tableRef.current.scrollLeft = listRef.current.state.scrollOffset;
+    //         }
+    //     };
+    //
+    //     const listElement = listRef.current?._outerRef;
+    //     if (listElement) {
+    //         listElement.addEventListener('scroll', handleScroll);
+    //         return () => listElement.removeEventListener('scroll', handleScroll);
+    //     }
+    // }, []);
 
     const RecipeRow = React.memo(({ index, style }) => {
         const recipe = recipes[index];
@@ -328,7 +328,7 @@ const [currentIndex, setCurrentIndex] = useState(0);  // 현재 인덱스를 저
         <Card>
             <Card.Header as="h5">Recent Recipes</Card.Header>
             <Card.Body>
-                <div className={AdminStyle.tableContainer} ref={tableRef}>
+                <div className={AdminStyle.tableContainer} ref={tableRef} onScroll={handleContainerScroll}>
                     <Container fluid>
                         <div className={AdminStyle.tableHeader} ref={headerRef}>
                             {columns.map(column => (
@@ -348,11 +348,11 @@ const [currentIndex, setCurrentIndex] = useState(0);  // 현재 인덱스를 저
                                         height={300}
                                         itemCount={totalRecipesCount}
                                         itemSize={70}
-                                        // onScroll={handleListScroll} // FixedSizeList의 스크롤 이벤트 핸들러
+                                        onScroll={handleListScroll} // FixedSizeList의 스크롤 이벤트 핸들러
                                         onItemsRendered={onItemsRendered}
                                         ref={ref}
                                         width={totalWidth}
-                                        // style={{overflow: 'visible'}}
+                                        style={{overflow: 'visible'}}
                                     >
                                         {RecipeRow}
                                     </FixedSizeList>
