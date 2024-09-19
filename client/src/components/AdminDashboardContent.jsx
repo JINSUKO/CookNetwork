@@ -1,10 +1,28 @@
 import {Button, Card, Col, Row, Table} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBook, faExclamationCircle, faUsers, faUtensils} from "@fortawesome/free-solid-svg-icons";
-import React from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import Container from "react-bootstrap/Container";
 
-const AdminDashboardContent = () => {
+import {getRecipesCount, getUsersCount} from "./DashboardAPI.jsx";
+
+const AdminDashboardContent = ({activeTab}) => {
+
+    const [allRecipesCounts, setAllRecipesCounts] = useState(null);
+    const [allUserCounts, setAllUserCounts] = useState(null);
+
+    // todo 1. 화면에 보이는 대쉬 보드 서버 API로 데이터 받아서 채우기. 2. 다른 거 뭐 채울지 고민... 3. 그래프 등 시각화 넣어보기?
+    const getDashboardData = useCallback(async () => {
+        setAllRecipesCounts(await getRecipesCount());
+        setAllUserCounts(await getUsersCount());
+    })
+
+    useEffect(() => {
+        if (activeTab === 'dashboard') {
+            getDashboardData();
+        }
+    }, [activeTab]);
+
 
     return (
         <Container>
@@ -15,9 +33,9 @@ const AdminDashboardContent = () => {
                         <Card.Body>
                             <Card.Title>
                                 <FontAwesomeIcon icon={faUtensils} className="me-2"/>
-                                Total Recipes
+                                레시피 전체 개수
                             </Card.Title>
-                            <Card.Text className="h2">1,234</Card.Text>
+                            <Card.Text className="h2">{allRecipesCounts}</Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -26,9 +44,9 @@ const AdminDashboardContent = () => {
                         <Card.Body>
                             <Card.Title>
                                 <FontAwesomeIcon icon={faUsers} className="me-2"/>
-                                Total Users
+                                사용자 전체 수
                             </Card.Title>
-                            <Card.Text className="h2">5,678</Card.Text>
+                            <Card.Text className="h2">{allUserCounts}</Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -37,9 +55,9 @@ const AdminDashboardContent = () => {
                         <Card.Body>
                             <Card.Title>
                                 <FontAwesomeIcon icon={faBook} className="me-2"/>
-                                Pending Approvals
+                                승인 대기 중
                             </Card.Title>
-                            <Card.Text className="h2">42</Card.Text>
+                            <Card.Text className="h2">추가 중...</Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -50,7 +68,7 @@ const AdminDashboardContent = () => {
                                 <FontAwesomeIcon icon={faExclamationCircle} className="me-2"/>
                                 Reported Content
                             </Card.Title>
-                            <Card.Text className="h2">7</Card.Text>
+                            <Card.Text className="h2">추가 중...</Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -59,4 +77,4 @@ const AdminDashboardContent = () => {
     );
 };
 
-export default AdminDashboardContent;
+export default React.memo(AdminDashboardContent);
