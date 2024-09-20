@@ -59,6 +59,7 @@ function openChat({ userData }) {
         id: user_id || '',
         name: username || '',
         message: '',
+        room: 0,
     });
     // 유저가 전송하는 닉네임 저장
     const [toId, setToId] = useState({
@@ -87,7 +88,7 @@ function openChat({ userData }) {
     // 안읽은것도 확인해야하는가????
     async function fetchPersonalRoom(){
         try{
-            const response =  await fetch(`${socket_IP}/api/personal/room`,{
+            const response =  await fetch(`${socket_IP}/chat/personal/room`,{
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -146,7 +147,6 @@ function openChat({ userData }) {
         } else if (activeTab === 'personalTalk'){
             // TODO 1:1 채팅 관련
             // 작성완료 : 처음 접속시 서버에 채팅방 요청
-            console.log("1")
             fetchPersonalRoom();
         };
         // activeTab, user_id이 바뀌면 업데이트
@@ -301,15 +301,53 @@ function openChat({ userData }) {
                 message: '',
             }));
         } else if (activeTab === 'personalTalk'){
-            //TODO 검색한 이름을 확인하여 동일한 이름이 없으면 채팅방 생성 있으면 경고창 띄우기
+            // 받은 이벤트의 id가 name일 경우 실행
+            if(e.target.querySelector('.ID-input').id === 'name'){
+            // [09/06 완] 검색한 이름을 확인하여 동일한 이름이 없으면 채팅방 생성 있으면 경고창 띄우기
             e.preventDefault();
             console.log(toId.name);
-            console.log(chatRoomArr.find(key => key.username === toId.name));
-            // submit 후 toId의 name 내용을 초기화
+            // 입력한 닉네임과 같은 방이 있을때 경고창
+            if(chatRoomArr.find(key => key.username === toId.name)){
+                alert('1')
+            // 없을 경우 새로운 채팅방 생성
+            } else{
+                fetch(`${socket_IP}/chat/personal/new_room`,{
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({id: user_id, id2: toId.name})
+                })
+                .then(response =>{
+                    if(response.status === 207){
+                        return response.json();
+                    }else if(response.status === 404){
+                        throw new Error('404: User not Found')
+                    }
+                }).then(data =>{
+                    setChatRoomArr((prevRoom)=>
+                        [
+                            ...prevRoom
+                            ,data
+                        ]
+                    )
+                    alert('채팅방이 생성되었습니다.')
+                }).catch(error =>{
+                    console.log(error)
+                    alert('존재하지 않는 유저입니다.')
+                })
+            }
             setToId((prevName) =>({
                 ...prevName,
                 name: '',
             }));
+        } else {
+            setUserMessage((prevUser) => ({
+                ...prevUser,
+                message: '',
+            }));
+        }
+            
         }
     };
 
@@ -400,7 +438,7 @@ function openChat({ userData }) {
                         )}
                     </HistoryWrapper>
                 </div>
-                {/* 1대1 톡 */}
+                {/* 1대1 채팅 */}
                 <div className={ChatDesign.personalChatRoom} ref={personalRoom}>
                     <RoomWrapper>
                         {chatRoomArr.length ? (

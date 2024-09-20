@@ -16,7 +16,7 @@ export const useBookmarkContext = () => {
 
 // Provider 컴포넌트 생성
 export const BookmarkProvider = ({ children }) => {
-  const [bookmarkedRecipes, setBookmarkedRecipes] = useState({});
+  const [bookmarkedRecipes, setBookmarkedRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 

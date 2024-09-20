@@ -7,11 +7,11 @@
 /* 새로 추가된 스타일 */
 .bookmarkIcon svg {
   stroke: #000000; 
-  stroke-width: 0.9px;  /* SVG 아이콘의 테두리 두께 증가 */
+  stroke-width: 0.5px;  /* SVG 아이콘의 테두리 두께 증가 */
   /* stroke-linejoin: round;  선이 만나는 모서리를 둥글게 */
   opacity: 0.9;
   filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.1));
-  fill: #6b6b6b;  /* 기본 내부 색상 (회색) */
+  color: #6b6b6b;  /* 기본 내부 색상 (회색) */
   background-color: rgba(255, 255, 255, 0);   /*fill 말고 내부색상 채우기? */
 }
 
