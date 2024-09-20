@@ -87,7 +87,7 @@ function openChat({ userData }) {
     // 안읽은것도 확인해야하는가????
     async function fetchPersonalRoom(){
         try{
-            const response =  await fetch(`${socket_IP}/api/personal/room`,{
+            const response =  await fetch(`${socket_IP}/chat/personal/room`,{
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',

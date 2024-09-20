@@ -10,31 +10,14 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
 import styles from '../assets/styles/RecipeCard.module.css';
 import Skeleton from '../components/UI/Skeleton';
+import useIntersectionObserver from '../components/useIntersectionObserver';
 
 function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading  }) {
-  const observer = useRef();
-  const lastRecipeElementRef = useCallback(node => {
-    if (isLoading) return;
-    if (observer.current) observer.current.disconnect();
-    console.log('observer current')
-    observer.current = new IntersectionObserver(entries => {
-      console.log('RecipeListPage')
-      if (entries[0].isIntersecting && hasMore) {
-        loadMore();
-        console.log('loadMore...');
-      }
-    }, {
-      root: null,
-      rootMargin: '1px',
-      threshold: 0.1
-    });
-    if (node) {
-      console.log('Observing new node:', node);
-      observer.current.observe(node);
-    }
-  }, [isLoading, hasMore, loadMore]);
-
-  console.log("RecipeListPage - currentCategory:", currentCategory);  // 디버깅용 로그
+  const lastRecipeElementRef = useIntersectionObserver(loadMore, {
+    root: null,
+    rootMargin: '100px',
+    threshold: 0.1,
+  });
   
   useEffect(() => {
     console.log('RecipeListPage - Recipes:', recipes.length, 'HasMore:', hasMore, 'IsLoading:', isLoading);
@@ -51,9 +34,9 @@ function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading
     }
   };
 
-  // if (isLoading && (!recipes || recipes.length === 0)) {
-  //   return <Skeleton />;
-  // }
+  if (isLoading && (!recipes || recipes.length === 0)) {
+    return <Skeleton />;
+  }
 
   return (
     <div>
@@ -61,8 +44,7 @@ function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading
         <Row className="justify-content-center">
           <Col xs={12} md={10} lg={10}>
             <Row xs={2} md={3} lg={4} className="g-4">
-              {recipes && 
-                recipes.map((recipe, index) => (
+              {recipes && recipes.map((recipe, index) => (
               <Col key={recipe.recipe_id} ref={index === recipes.length - 1 ? lastRecipeElementRef : null}>  
                 <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
                   <Card 

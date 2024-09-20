@@ -16,9 +16,19 @@ import { useNavigate } from 'react-router-dom';
 
 function BookmarkButton({ recipe_id }) {
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarkContext(); 
+  const [bookmarked, setBookmarked] = useState(false);
   const [bookmarkCount, setBookmarkCount] = useState();
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('loginUser');  
+
+  // 로그인 상태에 따라 북마크 초기 상태 설정
+  useEffect(() => {
+    if (isLoggedIn) {
+      setBookmarked(isBookmarked(recipe_id));
+    } else {
+      setBookmarked(false);
+    }
+  }, [isLoggedIn, isBookmarked, recipe_id]);
 
   // 북마크 제거 OR 추가
   // BookmarkContext의 isBookmarked, addBookmark, removeBookmark 함수 호출
@@ -32,9 +42,11 @@ function BookmarkButton({ recipe_id }) {
     try {
       if (isBookmarked(recipe_id)) {
         await removeBookmark(recipe_id);
+        setBookmarked(false);
         toast.success('북마크가 제거되었습니다.');
       } else {
         await addBookmark(recipe_id);
+        setBookmarked(true);
         toast.success('북마크에 추가되었습니다.');
       }
     } catch (error) {
@@ -62,12 +74,20 @@ function BookmarkButton({ recipe_id }) {
   //   }
   // }
 
+   // 아이콘 색상 및 스타일 설정
+   const iconStyle = {
+    fill: bookmarked ? '#FFD700' : '#6b6b6b',
+    stroke: '#000000',
+    strokeWidth: '0.9px',
+    opacity: 0.9,
+  };
+
   return( 
     <div 
-      className={`${styles.bookmarkIcon} ${isBookmarked ? styles.bookmarked : ''}`} 
+      className={`${styles.bookmarkIcon} ${bookmarked ? styles.bookmarked : ''}`} 
       onClick={handleBookmark}
     >
-      {isBookmarked ? <BsBookmarkFill size={16} /> : <BsBookmark size={16} />}
+      {bookmarked ? <BsBookmarkFill size={16} style={iconStyle}/> : <BsBookmark size={16} style={iconStyle}/>}
     </div>
   )
 };

@@ -19,7 +19,6 @@ import authFetch from './fetchInterceptorAuthToken';
 import authManager from "./authManager";
 
 import { BookmarkProvider } from './context/BookmarkContext';
-import BookmarkPage from './pages/BookmarkPage';
 import BookmarkList from './components/Bookmark/BookmarkList';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
