@@ -1,7 +1,7 @@
 /* 사용자의 마이페이지
 *   운영자, 셰프, 일반 유저 모두 동일한 마이페이지 사용함.
 * */
-import {useState, useRef, useEffect, useLayoutEffect} from 'react';
+import {useState, useRef, useEffect, useLayoutEffect, useCallback} from 'react';
 import {Image, Container, Row, Col, Nav, InputGroup, FormControl, Button, Card, Modal} from 'react-bootstrap';
 import UserNameModal from '../components/UserNameModal'
 import UserInfoModal from '../components/UserInfoModal'
@@ -9,6 +9,7 @@ import UserCategoryModifyModal from '../components/UserCategoryModifyModal'
 
 import authFetch from '../fetchInterceptorAuthToken'
 import UserSelectedCategories from "../components/UserSelectedCategories.jsx";
+import BookmarkList from '../components/Bookmark/BookmarkList.jsx';
 
 
 const UserMyPage = ({user, setUser, profilePic, setProfilePic}) => {
@@ -187,7 +188,39 @@ const UserMyPage = ({user, setUser, profilePic, setProfilePic}) => {
 
     // 카테고리 등록 삭제 시작
     const [showUserCategories, setShowUserCategories] = useState(false);
-    // 카테고리 등록 삭제 시작
+    // 카테고리 등록 삭제 끝
+
+    // 회원 탈퇴 기능 시작
+    const deleteUser = useCallback(async () => {
+
+        // todo 비밀번호 확인하는 로직으로 검증 한 번 해야 할 듯.
+        // 그럼 비밀번호 입력하고 회원탈퇴 확인받는 모달 하나 만들어야할 듯.
+
+
+        try {
+            const response = await fetch(`${API_URL}/api/userDelete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({userId: user.user_id})
+            });
+
+            const data = await response.json();
+
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('loginUser');
+
+            alert(data.message);
+
+            window.location.href = '/';
+
+        } catch (e) {
+            console.error(e);
+        }
+
+
+    })
 
 
     return (
@@ -309,6 +342,8 @@ const UserMyPage = ({user, setUser, profilePic, setProfilePic}) => {
                                         user={user}
                                         setUser={setUser}
                                     />
+                                    &nbsp;
+                                    <Button variant="danger" size="sm" className="mb-2" onClick={() => {deleteUser()}}>회원 탈퇴하기</Button>
                                     <div style={{marginTop:"30px"}}></div>
                                     <h6 className="mb-3">카테고리 찜 목록</h6>
 
@@ -344,6 +379,7 @@ const UserMyPage = ({user, setUser, profilePic, setProfilePic}) => {
                                         ))}
                                     </Row>
                                     <h6 className="mb-3">최근 북마크 레시피</h6>
+                                    {/* <BookmarkList /> */}
                                     <Row xs={2} md={3} lg={4} className="g-2 mb-4">
                                         {[...Array(8)].map((_, idx) => (
                                             <Col key={idx}>

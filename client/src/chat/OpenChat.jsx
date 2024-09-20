@@ -311,7 +311,7 @@ function openChat({ userData }) {
                 alert('1')
             // 없을 경우 새로운 채팅방 생성
             } else{
-                fetch(`${socket_IP}/api/personal/new_room`,{
+                fetch(`${socket_IP}/chat/personal/new_room`,{
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',

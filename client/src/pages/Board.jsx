@@ -1,29 +1,89 @@
-import React from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Card, Container, Row, Col } from 'react-bootstrap';
 import boardstyles from '../assets/styles/Board.module.css';
- 
+
 
 function Board() {
-  const posts = [
-    { id: 1, title: '여름 특별 레시피 콘테스트 개최', content: '7월 1일부터 8월 15일까지 여름 특별 레시피 콘테스트를 개최합니다. 더위를 이기는 창의적인 레시피를 공유해주세요. 우승자에게는 고급 주방용품 세트를 드립니다!' },
-    { id: 2, title: '사이트 개편 안내', content: '더 나은 서비스 제공을 위해 다음 주 화요일 새벽 2시부터 4시까지 사이트 개편 작업이 있을 예정입니다. 해당 시간 동안 서비스 이용이 제한되오니 양해 부탁드립니다.' },
-    { id: 3, title: '신규 기능: 영양 정보 표시', content: '사용자 여러분의 요청에 따라 모든 레시피에 영양 정보 표시 기능을 추가했습니다. 이제 각 레시피의 칼로리, 단백질, 지방, 탄수화물 정보를 확인하실 수 있습니다.' },
-  ];
-
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const observer = useRef();
   const API_URL = import.meta.env.VITE_HOST_IP; 
 
+    // 더미 데이터 생성 함수 (추후 API 데이터로 변경)
+    const generateDummyPosts = (startId, count) => {
+      return Array.from({ length: count }, (_, index) => ({
+        id: startId + index,
+        title: `공지사항 #${startId + index}`,
+        content: `무한스크롤 테스트를 위한 공지사항 #${startId + index}의 내용입니다.`
+      }));
+    };
+
+// 게시물 불러오기 함수
+const fetchPosts = useCallback(async () => {
+  if (loading) return;
+  setLoading(true);
+
+  // setTimeout 사용
+  setTimeout(() => { 
+  
+    // 실제 구현에서는 여기서 API를 호출합니다
+    // const response = await fetch(`${API_URL}/posts?page=${page}`);
+    // const newPosts = await response.json();
+    const newPosts = generateDummyPosts((page - 1) * 10 + 1, 10);
+    
+    if (newPosts.length === 0) {
+      setHasMore(false);
+    } else {
+      setPosts(prevPosts => [...prevPosts, ...newPosts]);
+      setPage(prevPage => prevPage + 1);
+    }
+    setLoading(false);
+  }, 1000);
+}, [page, loading]);
+
+// Intersection Observer 설정
+const lastPostElementRef = useCallback(node => {
+  if (loading) return;
+  if (observer.current) observer.current.disconnect();
+  observer.current = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && hasMore) {
+      fetchPosts();
+    }
+  });
+  if (node) observer.current.observe(node);
+}, [loading, hasMore, fetchPosts]);
+
+// 초기 게시물 로딩
+useEffect(() => {
+  fetchPosts();
+}, []);
+
   return (
-    <div>
-      <h1 className={boardstyles.boardHeader}>공지사항</h1>
-      
-      <div>
-        {posts.map((post) => (
-          <div key={post.id} className={boardstyles.postContainer}>
-            <p className={boardstyles.postTitle}>{post.title}</p>
-            <p className={boardstyles.postContent}>{post.content}</p>
-          </div>
+    <Container className="d-flex flex-column align-items-center">
+      <h1 className="my-5">공지사항</h1>
+      <Row xs={1} md={2} lg={2} className="g-4 justify-content-center" style={{maxWidth: '1200px' }}>
+        {posts.map((post, index) => (
+          <Col key={post.id} ref={index === posts.length - 1 ? lastPostElementRef : null}>
+            <Card className="h-100" style={{ minHeight: '200px'}}>
+              <Card.Body>
+                <Card.Title>{post.title}</Card.Title>
+                <Card.Text>{post.content}</Card.Text>
+              </Card.Body>
+              <Card.Footer>
+                <small className="text-muted">
+                  {/* {post.status} | {post.date} */}
+                  진행중 | ~2024/09/06
+                </small>
+              </Card.Footer>
+            </Card>
+          </Col>
         ))}
-      </div>
-    </div>
+      </Row>
+      {loading && <p className="text-center mt-3">로딩 중...</p>}
+      {!hasMore && <p className="text-center mt-3">더 이상 게시물이 없습니다.</p>}
+    </Container>
   );
 }
 

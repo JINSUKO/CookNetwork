@@ -1,13 +1,13 @@
-/* SearchResultPage.jsx
-검색 결과를 보여주는 페이지입니다.
-useLocation 훅을 사용하여 데이터를 useState로 상태관리 후 props로 넘겨 매번 API를 재요청하지 않고 사용합니다.
+/** SearchResultPage.jsx
+* 레시피 검색 결과가 렌더링되는 레시피 리스트 페이지입니다.
 */
 
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-
+import BookmarkButton from "../components/Bookmark/BookmarkButton";
+import Paging from "../components/UI/Paging";   // 페이지네이션
 
 const API_URL = import.meta.env.VITE_HOST_IP;
 
@@ -16,6 +16,11 @@ function SearchResultPage() {
   const [isLoading, setIsLoading] = useState(false);    // 검색 후 로딩
   const [error, setError] = useState(null);
   const location = useLocation();
+
+  // 페이지네이션 관련
+  const [activePage, setActivePage] = useState(1);
+  const itemsPerPage = 8;
+  // const totalPage = Math.ceil(results.length/itemsPerPage);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -53,7 +58,12 @@ function SearchResultPage() {
       setError('검색 중 오류가 발생했습니다. 다시 시도해 주세요.');
     } finally {
       setIsLoading(false);
+      // console.log(results)
     }
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setActivePage(pageNumber);
   };
 
   // Search Result 문구 표시
@@ -74,26 +84,37 @@ function SearchResultPage() {
   }
 
 
+  // const indexOfLastItem = activePage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // const currentItems = results.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <Container>
       <h3>검색 결과</h3>
-      <Row lg={5} className="g-4">
+      <Row xs={2} md={3} lg={4} className="g-4">
         {results.map((recipe) => (    // results 배열에 저장된 검색결과를 사용
           <Col key={recipe.recipe_id}>  
             <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
-              <Card style={{ cursor: 'pointer' }}>
-                <Card.Img variant="top" src={recipe.recipe_img} />
+              <Card style={{ border: 'none', borderRadius:0, cursor: 'pointer' }}>
+                <Card.Img variant="top" src={recipe.recipe_img} style={{borderRadius:0}} />
                 <Card.Body>
-                  <Card.Title>
+                  <Card.Title  style={{ textAlign: 'start', fontSize: '16px', fontWeight: 'bold' }}>
                     {recipe.recipe_name}
                   </Card.Title>
-                  <Button variant="dark">보러가기</Button>
+                  {/* <BookmarkButton /> */}
                 </Card.Body>
               </Card>
             </Link>
           </Col>
         ))}
+      </Row>
+      <Row>
+        <Paging
+          activePage={activePage}
+          itemsCountPerPage={itemsPerPage}
+          totalItemsCount={results.length}
+          onChange={handlePageChange}
+        />
       </Row>
     </Container>
   );

@@ -1,0 +1,251 @@
+/* RecipeEditor.module.css */
+
+.recipeEditor {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.recipeTitle {
+  font-size: 28px;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.recipeForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.inputWithLabel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  /* margin-top: 15px; */
+  margin-bottom: 10px;
+  align-items: center;
+  margin: 0px 0px;
+}
+
+.recipeInput, .recipeSelect, .recipeTextarea {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  max-height: 100px;
+}
+
+.boldSmallText {
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.halfWidth {
+  width: calc(50% - 5px);
+}
+
+.thirdWidth {
+  width: calc(33.33% - 6.67px);
+}
+
+.quarterWidth {
+  width: calc(25% - 7.5px);
+}
+
+.recipeTextarea {
+  min-height: 100px;
+  resize: vertical;
+}
+/* 
+.editorContent {
+  min-height: 100px;
+  resize: vertical;
+} */
+
+.buttonContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.addButton {
+  background-color: #faf4d8;
+  width: 100px;
+  color: #3d3d3d;
+  font-weight: bold;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.addButton:hover {
+  background-color: #fffee0;
+}
+
+.submitButton {
+  padding: 10px 20px;
+  background-color: #000000;
+  color: white;
+  border: 1px solid #000000;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  align-self: flex-end;
+}
+
+.submitButton:hover {
+  background-color: #565657;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  background-color: #ffffff;
+  color: rgb(32, 32, 32);
+  border: 1px solid #444;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  align-self: flex-end;
+  text-decoration: none;
+}
+
+.deleteButton {
+  padding: 10px 20px;
+  background-color: #ffffff;
+  color: #ff4136;
+  border: 1px solid #ff4136;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  align-self: flex-end;
+  text-decoration: none;
+}
+
+.deleteButton:hover {
+  background-color: #e6e6e6;
+}
+
+.stepImage, .previewImage {
+  max-width: 200px;
+  max-height: 200px;
+  margin-top: 10px;
+}
+
+.stepOrder {
+  width: 30px;
+  height: 30px;
+  background-color: #000000;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+
+
+
+/* ProseMirror 스타일 */
+.ProseMirror {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-height: 200px;
+  font-family: Arial, sans-serif;
+}
+
+.ProseMirror:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.ProseMirror h1 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.ProseMirror h2 {
+  font-size: 20px;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.ProseMirror p {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
+}
+
+.ProseMirror ul, .ProseMirror ol {
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid #ccc;
+  padding-left: 10px;
+  color: #666;
+  font-style: italic;
+}
+
+
+/* 필터 선택 */
+.filterOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filterToggle {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filterToggle.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.filterToggle:hover {
+  background-color: #f0f0f0;
+}
+
+.filterToggle.active:hover {
+  background-color: #0056b3;
+}

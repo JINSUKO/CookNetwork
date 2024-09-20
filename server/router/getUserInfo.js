@@ -12,14 +12,14 @@ const getUserInfo = async (req, res) => {
     const userId = req.params.userId;
 
         if (tokenUserId === userId ) {
-            const queryString = `SELECT username, user_img, sex, email, chef_code FROM users WHERE user_id = ? `;
+            const queryString = `SELECT user_code, username, user_img, sex, email, chef_code FROM users WHERE user_id = ? `;
             const [userdata] = await maria.execute(queryString, [userId]);
             if(userdata.length > 0) {
 
                 // query 를 보낼 때 select에서 민감하지 않는 정보의 컬럼만 가져와야한다.
                 // 사용자 정보는 부분적으로 마스킹해서 정보를 가려놓고 민감하지 않은 정보만 클라이언트에 넘겨야함.
                 // 지금은 그대로 넘김.
-                const {username, user_img, sex, email, chef_code} = userdata[0];
+                const {user_code, username, user_img, sex, email, chef_code} = userdata[0];
 
                 // 유저 프로필 이미지를 파일명에서 base64로 데이터 변경함.
                 // 이미지가 base64 데이터로 변환되어야 프론트의 Image 컴포넌트로 이미지 현상이 가능함.
@@ -34,7 +34,8 @@ const getUserInfo = async (req, res) => {
                     user_img: profilePic,
                     sex,
                     email,
-                    chef_code
+                    chef_code,
+                    admin: (user_code => user_code <= 10)(user_code)
                 };
 
                 return user;
