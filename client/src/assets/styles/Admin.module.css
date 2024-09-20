@@ -50,6 +50,10 @@
     overflow: visible;
 }
 
+.tableContentContainer::-webkit-scrollbar {
+    display: none; /* 크롬, 사파리, 엣지 등 웹킷 브라우저에서 스크롤바 숨기기 */
+}
+
 .recipeName {
     width: 200px;
 }
