@@ -9,6 +9,11 @@ export default defineConfig({
                 target: 'http://192.168.0.103:3000',
                 changeOrigin: true,
                 secure: false
+            },
+            '/chat': {
+                target: 'http://192.168.0.103:3000',
+                changeOrigin: true,
+                secure: false
             }
         },
         port: 5000

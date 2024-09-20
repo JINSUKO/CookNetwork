@@ -17,17 +17,20 @@ import Admin from './pages/Admin';
 
 import authFetch from './fetchInterceptorAuthToken';
 import authManager from "./authManager";
-import NotFound from './pages/NotFound';
 
 import { BookmarkProvider } from './context/BookmarkContext';
-import BookmarkPage from './pages/BookmarkPage';
+import BookmarkList from './components/Bookmark/BookmarkList';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Editor from './Editor'
 import RecipeWrite from './pages/RecipeWrite';
 import MyRecipeList from './pages/MyRecipeList';
 import RecipeUpdate from './pages/RecipeUpdate';
 
 import './App.css'
-import BookmarkList from './components/Bookmark/BookmarkList';
+import NotFound from './pages/NotFound';
+import Best from './pages/Best'
 
 
 
@@ -107,6 +110,7 @@ function App() {
       setMessage('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
     }
   };
+  
 
   return (
     <div className="App">
@@ -144,11 +148,13 @@ function App() {
           <Route path='/writerecipe' element={<RecipeWrite user={user}/>} />
           <Route path='/updaterecipe/:recipe_id' element={<RecipeUpdate user={user} />} />
           <Route path='/mybookmark' element={<BookmarkList/>} />
+          <Route path='/best' element={<Best />} />
         </Routes>
         </BookmarkProvider>
       </Router>
       {user && <OpenChat userData = {user}/>}
       <Footer/>
+      <ToastContainer />
     </div>
   )
 }

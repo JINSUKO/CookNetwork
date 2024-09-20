@@ -7,12 +7,13 @@
 */  
 
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useSearchParams, useNavigate  } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import RecipeListPage from "../pages/RecipeListPage";
+import InfiniteRecipeList from "../pages/InfiniteRecipeList";
 import FilterBox from "./FilterBox";
-import Loading from "./UI/Loading"
+import Skeleton from "./UI/Skeleton";
 
 import { useBookmarkContext } from "../context/BookmarkContext";
 
@@ -30,21 +31,37 @@ function FetchRecipeList() {
   const API_URL = import.meta.env.VITE_HOST_IP;
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
 
   const { isBookmarked } = useBookmarkContext(); 
+
+  // useRef-IntersectionObserver
+  const observer = useRef();
+  const lastRecipeElementRef = useCallback(node => {
+    if (isLoading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage(prevPage => prevPage + 1);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [isLoading, hasMore]);
 
   const filterOptions = [
     "모두보기", "메인요리", "반찬", "국/탕", "디저트", "면", 
     "밥/죽/떡", "퓨전", "양념/소스", "채식", "분식", "안주", 
     "스프", "간식", "음료", "다이어트", "도시락"
   ];
-  console.log("category:", category);
-  console.log("path:", location.pathname);
+  // console.log("category:", category);
+  // console.log("path:", location.pathname);
   console.log("filter:", selectedFilters)
 
   const fetchRecipes = useCallback(async (pageNum = 1) => {
+    // if (isLoading || !hasMore) return;
+    // setIsLoading(true);
+
     try {
       // 삼항연산자를 사용하여 API 엔드포인트 요청 url 결정
       let url = currentCategory === 'main'
@@ -79,14 +96,14 @@ function FetchRecipeList() {
       console.log("성공:", result)
 
       // 북마크 상태 확인
-      if (result && result.recipes) {
-        const recipesWithBookmarkStatus = result.recipes.map(recipe => ({
-          ...recipe,
-          isBookmarked: isBookmarked(recipe.id)
-        }));
-        setRecipes(prevRecipes => [...prevRecipes, ...recipesWithBookmarkStatus]);
-        setFilteredRecipes(prevRecipes => [...prevRecipes, ...recipesWithBookmarkStatus]);
-      }
+      // if (result && result.recipes) {
+      //   const recipesWithBookmarkStatus = result.recipes.map(recipe => ({
+      //     ...recipe,
+      //     isBookmarked: isBookmarked(recipe.id)
+      //   }));
+      //   setRecipes(prevRecipes => [...prevRecipes, ...recipesWithBookmarkStatus]);
+      //   setFilteredRecipes(prevRecipes => [...prevRecipes, ...recipesWithBookmarkStatus]);
+      // }
       
       if (result) {
         console.log(`${currentCategory} 레시피 목록 호출 성공`);
@@ -158,7 +175,6 @@ function FetchRecipeList() {
         setIsLoading(false);  // 로딩 상태 해제
         console.log('페이지 로딩 완료');
       });
-
     }
   }, [hasMore, page, isLoading, fetchRecipes]);
 
@@ -173,11 +189,10 @@ function FetchRecipeList() {
 
   return (
     <Container>
+
       {isLoading && recipes.length === 0 ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
+          <Skeleton/>
         </div>
       ) : (
         <>
@@ -195,6 +210,14 @@ function FetchRecipeList() {
             isLoading={isLoading}
             totalCount={totalCount}
           />
+
+          <InfiniteRecipeList>
+            recipes={recipes}
+            hasMore={hasMore}
+            loadMore={fetchRecipes}
+            isLoading={isLoading}
+          </InfiniteRecipeList>
+
         </>
       )}
     </Container>
