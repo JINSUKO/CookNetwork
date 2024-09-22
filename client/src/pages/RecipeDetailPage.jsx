@@ -7,7 +7,7 @@ import { Container, Row, Col, Image } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
 import BookmarkButton from '../components/Bookmark/BookmarkButton';
 import styles from '../assets/styles/RecipeDetail.module.css';
-import { FaUsers, FaClock, FaChartBar } from 'react-icons/fa';
+import { FaUtensils, FaClock, FaRegChartBar } from 'react-icons/fa';
 import Loading from '../components/UI/Loading';
 
 function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
@@ -136,13 +136,13 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
             
             <Row className={styles.recipeStats}>
               <Col xs={3}>
-                <FaUsers className={styles.icon} size={20} color="#666" />
+                <FaUtensils className={styles.icon} size={20} color="#666" />
                  {recipe.serving}인분</Col>
               <Col xs={3}>
                 <FaClock className={styles.icon} size={20} color="#666" />
                  {recipe.cooked_time}분</Col>
               <Col xs={3}>
-                <FaChartBar className={styles.icon} size={20} color="#666" />
+                <FaRegChartBar className={styles.icon} size={20} color="#666" />
                  레벨 {recipe.level}</Col>
             </Row>
           </div>
