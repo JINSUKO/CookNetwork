@@ -59,33 +59,40 @@ router.get('/recipes', async (req, res) => {
 
     try {
         const sql = `SELECT 
-                                r.recipe_id AS 'Recipe Id',
-                                u.username AS 'Author',
-                                u.user_id AS 'User Id',
-                                r.recipe_name AS 'Recipe Name',
-                                r.recipe_img AS 'Recipe Image',
-                                r.recipe_desc AS 'Recipe Description',
-                                GROUP_CONCAT(c.category_name ORDER BY c.category_id SEPARATOR ', ') AS 'Recipe Categories',
-                                r.cooked_time AS 'Cooked Time',
-                                r.serving AS 'Serving',
-                                r.level AS 'Level',
-                                r.tips AS 'Tips',
-                                DATE_FORMAT(r.create_post_date, '%Y-%m-%d %H시 %i분 %s초')  AS 'Created Date',
-                                DATE_FORMAT(r.lastupdate_post_date, '%Y-%m-%d %H시 %i분 %s초')  AS 'Last Updated Date',
-                                r.post_type AS 'Post Type',
-                                r.bookmark_count AS 'Bookmark Counts'
-                            FROM 
-                                recipe r
-                            JOIN 
-                                recipe_category rc ON r.recipe_id = rc.recipe_id
-                            JOIN 
-                                categories c ON rc.category_id = c.category_id
-                            JOIN 
-                                users u ON r.user_code = u.user_code
-                            GROUP BY                                  
-                                r.recipe_id
-                            LIMIT ? OFFSET ?;
-                            `;
+                        r.recipe_id AS 'Recipe Id',
+                        u.username AS 'Author',
+                        u.user_id AS 'User Id',
+                        r.recipe_name AS 'Recipe Name',
+                        r.recipe_img AS 'Recipe Image',
+                        r.recipe_desc AS 'Recipe Description',
+                        GROUP_CONCAT(DISTINCT c.category_name ORDER BY c.category_id SEPARATOR ', ') AS 'Recipe Categories',
+                        GROUP_CONCAT(DISTINCT CONCAT(i.ingredient_name, ' (', ri.count, ' ', ri.ingredient_unit, ')') ORDER BY ri.ingredient_id SEPARATOR ', ') AS 'Recipe Ingredients',
+                        GROUP_CONCAT(DISTINCT CONCAT(ro.cooked_order, '. ', ro.order_desc) ORDER BY ro.cooked_order SEPARATOR '\n') AS 'Cooked Orders',
+                        r.cooked_time AS 'Cooked Time',
+                        r.serving AS 'Serving',
+                        r.level AS 'Level',
+                        r.tips AS 'Tips',
+                        r.create_post_date AS 'Created Date',
+                        r.lastupdate_post_date AS 'Last Updated Date',
+                        r.post_type AS 'Post Type',
+                        r.bookmark_count AS 'Bookmark Counts'
+                    FROM 
+                        recipe r
+                    JOIN 
+                        recipe_category rc ON r.recipe_id = rc.recipe_id
+                    JOIN 
+                        categories c ON rc.category_id = c.category_id
+                    JOIN 
+                        recipe_ingredient ri ON r.recipe_id = ri.recipe_id
+                    JOIN
+                        ingredient i ON ri.ingredient_id = i.ingredient_id
+                    JOIN
+                        recipe_orders ro ON r.recipe_id = ro.recipe_id
+                    JOIN 
+                        users u ON r.user_code = u.user_code
+                    GROUP BY 
+                        r.recipe_id
+                    LIMIT ? OFFSET ?;`;
 
         console.log(pageOptions)
 
