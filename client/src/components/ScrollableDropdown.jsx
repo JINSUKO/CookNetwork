@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, {useState, useCallback, useRef, useEffect, forwardRef} from 'react';
 import { Button } from 'react-bootstrap';
 import styles from '../assets/styles/AdminDropdownMenu.module.css';
 
-const DropdownLikeModal = ({ items, activeTab }) => {
+const DropdownLikeModal = forwardRef(({ items, activeTab }, ref) => {
     const [selected, setSelected] = useState(items[0]);
     const [show, setShow] = useState(false);
     const buttonRef = useRef(null);
@@ -27,6 +27,7 @@ const DropdownLikeModal = ({ items, activeTab }) => {
 
     const onSelect = useCallback((item) => {
         setSelected(item);
+        ref.current = item === items[0] ? null : item;
         setShow(false);
     }, []);
 
@@ -93,6 +94,6 @@ const DropdownLikeModal = ({ items, activeTab }) => {
             </div>
         </div>
     );
-};
+});
 
 export default DropdownLikeModal;

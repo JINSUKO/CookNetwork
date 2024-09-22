@@ -12,15 +12,101 @@ const RecipeTable = ({ activeTab }) => {
     const [recipes, setRecipes] = useState([]);
     const [search, setSearch] = useState({});
     const [filter, setFilter] = useState([]);
-    const [sort, setSort] = useState('');
+    const [sort, setSort] = useState({});
     const [totalRecipesCount, setTotalRecipesCount] = useState(0);
     const [totalWidth, setTotalWidth] = useState(0);
     const [isRecipesLoading, setIsRecipesLoading] = useState(false);
 
     const currentPage = useRef(1);
-    const tableRef = useRef(null);
     const ITEMS_PER_PAGE = 1;
     const ITEM_SIZE = 70;
+
+    const searchKey = useRef(null);
+    const searchValue = useRef(null);
+    const filterCategory = useRef(null);
+    const filterTag = useRef(null);
+    const sortValue = useRef(null);
+
+    const dropdownSearch = [
+        "검색", "레시피 번호", "작성자", "유저 아이디", "레시피 이름", "레시피 설명", "레시피 재료"
+    ];
+
+    const dropdownCategories = [
+        "전체", "한식", "양식", "중식", "일식"
+    ];
+
+    const dropdownTags = [
+        "모두보기", "메인요리", "반찬", "국/탕", "디저트", "면",
+        "밥/죽/떡", "퓨전", "양념/소스", "채식", "분식", "안주",
+        "스프", "간식", "음료", "다이어트", "도시락"
+    ];
+
+    const dropdownOrders = [
+        "정렬", "오래된 순", "최근 순", "작성자(오름차순)", "작성자(내림차순)",
+        "레시피 번호(오름차순)", "레시피 번호(내림차순)", "레시피 이름(오름차순)", "레시피 이름(내림차순)"
+    ];
+
+    const handleSearchInputChange = (event) => {
+        searchValue.current = event.target.value;
+        console.log(searchValue.current);
+    }
+
+    const confirmSearch = async () => {
+        if ((searchKey.current && searchValue.current) || filterCategory.current || filterTag.current || sortValue.current) {
+
+            const dropdownSearchColumns = [
+                "Recipe Id", "Author", "User Id", "Recipe Name", "Recipe Description", "Recipe Ingredients"
+            ];
+
+            let tmpSearch = {};
+            if (searchKey.current && searchValue.current) {
+                tmpSearch = dropdownSearch.map((search, index) => {
+                    if (search === searchKey.current) {
+                        // 레시피 번호일 때는 숫자반 검색할 수 있게 제한한다.
+                        if ((index - 1) === 0 && !Number(searchValue.current)) {
+                            return alert('레시피 번호는 숫자로 입력해주세요.');
+                        }
+                        return {[dropdownSearchColumns[index - 1]]: searchValue.current}
+                    }
+                }).filter(element => element)[0];
+                
+                // 검색어가 올바르지않으면 값을 받지 않기 때문에 여기서 null/undefined 체크를 한다.
+                if (!tmpSearch) return;
+            }
+            setSearch(tmpSearch);
+
+            const tmpFilters = [];
+            if (filterCategory.current) tmpFilters.push(filterCategory.current);
+            if (filterTag.current) tmpFilters.push(filterTag.current);
+            setFilter(tmpFilters);
+
+            const dropdownOrderColumns = [
+                "Created Date", "User Id", "Recipe Id", "Recipe Name"
+            ];
+
+            let tmpSort = {};
+            if (sortValue.current) {
+                tmpSort = dropdownOrders.map((key, index) => {
+                    if (key === sortValue.current) {
+                        if ((index - 1) % 2) {
+                            return {DESC:dropdownOrderColumns[Math.floor((index - 1) / 2)]};
+                        } else {
+                            return {ASC:dropdownOrderColumns[Math.floor((index - 1) / 2)]};
+                        }
+                    }
+                }).filter(element => element)[0];
+            }
+            setSort(tmpSort);
+
+            try {
+                const newRecipes = await getRecipes({ search: tmpSearch, filter: tmpFilters, sort: tmpSort, recipePerPage: ITEMS_PER_PAGE});
+                setRecipes(newRecipes);
+                currentPage.current = 1;
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }
 
     const loadMoreRecipes = useCallback(async (startIndex, stopIndex) => {
         console.log('startIndex', startIndex);
@@ -34,9 +120,11 @@ const RecipeTable = ({ activeTab }) => {
         console.log('page',page)
         console.log('currentPage.current', currentPage.current)
 
+        console.log(search, filter, sort)
+
         if (page > currentPage.current - 1) {
             try {
-                const newRecipes = await getRecipes({ filter, sort, recipePerPage: ITEMS_PER_PAGE, page});
+                const newRecipes = await getRecipes({ search, filter, sort, recipePerPage: ITEMS_PER_PAGE, page});
                 setRecipes(prevRecipes => [...prevRecipes, ...newRecipes]);
                 currentPage.current = page;
             } catch (e) {
@@ -61,28 +149,19 @@ const RecipeTable = ({ activeTab }) => {
         }
 
         return () => {
+            // RecipeTable 컴포너트가 unmount 되면 상태 저장하던 값들을 모두 초기화 한다.
             setRecipes([]);
             currentPage.current = 1;
+            setSearch({});
+            setFilter([]);
+            setSort({});
+            searchKey.current = null;
+            searchValue.current = null;
+            filterCategory.current = null;
+            filterTag.current = null;
+            sortValue.current = null;
         }
     }, [activeTab]);
-
-    const dropdownSearch = [
-        "레시피 번호", "작성자", "유저 아이디", "레시피 이름", "레시피 설명", "레시피 재료"
-    ];
-
-    const dropdownCateogies = [
-        "전체", "한식", "양식", "중식", "일식"
-    ];
-    
-    const dropdownTags = [
-        "모두보기", "메인요리", "반찬", "국/탕", "디저트", "면",
-        "밥/죽/떡", "퓨전", "양념/소스", "채식", "분식", "안주",
-        "스프", "간식", "음료", "다이어트", "도시락"
-    ];
-
-    const dropdownOrders = [
-        "레시피 번호(오름차순)", "레시피 번호(내림차순)", "이름(오름차순)", "이름(내림차순)", "최근 순", "오래된 순"
-    ];
 
     const headerColumns = [
         { key: 'Recipe Id', width: 100 },
@@ -166,16 +245,16 @@ const RecipeTable = ({ activeTab }) => {
             <Card.Header className={AdminStyle.cardHeader} as="h5">
                 Recent Recipes &nbsp;
                 {activeTab === 'recipes' && (
-                    <>  <ScrollableDropdown items={dropdownSearch} activeTab={activeTab}/> &nbsp;
-                        <Form.Control style={{width: '100px'}}/>
-                        &nbsp;|&nbsp; <ScrollableDropdown items={dropdownCateogies} activeTab={activeTab}/>
-                        &nbsp;|&nbsp; <ScrollableDropdown items={dropdownTags} activeTab={activeTab}/>
-                        &nbsp;|&nbsp; <ScrollableDropdown items={dropdownOrders} activeTab={activeTab}/>
-                        &nbsp; <Button >확인</Button>
+                    <>  <ScrollableDropdown items={dropdownSearch} ref={searchKey} activeTab={activeTab}/> &nbsp;
+                        <Form.Control style={{width: '100px'}} onChange={handleSearchInputChange}/>
+                        &nbsp;|&nbsp; <ScrollableDropdown ref={filterCategory} items={dropdownCategories} activeTab={activeTab}/>
+                        &nbsp;|&nbsp; <ScrollableDropdown ref={filterTag} items={dropdownTags} activeTab={activeTab}/>
+                        &nbsp;|&nbsp; <ScrollableDropdown ref={sortValue} items={dropdownOrders} activeTab={activeTab}/>
+                        &nbsp; <Button onClick={confirmSearch}>확인</Button>
                     </> )}
             </Card.Header>
             <Card.Body>
-                <div className={AdminStyle.tableContainer} ref={tableRef}>
+                <div className={AdminStyle.tableContainer}>
                     <Container fluid>
                         <div className={AdminStyle.tableHeader}>
                             {headerColumns.map(column => (
