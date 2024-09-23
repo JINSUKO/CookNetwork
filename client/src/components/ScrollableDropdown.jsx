@@ -2,8 +2,8 @@ import React, {useState, useCallback, useRef, useEffect, forwardRef} from 'react
 import { Button } from 'react-bootstrap';
 import styles from '../assets/styles/AdminDropdownMenu.module.css';
 
-const DropdownLikeModal = forwardRef(({ items, activeTab }, ref) => {
-    const [selected, setSelected] = useState(items[0]);
+const DropdownLikeModal = forwardRef(({ state, items, activeTab }, ref) => {
+    // const [selected, setSelected] = useState(items[0]);
     const [show, setShow] = useState(false);
     const buttonRef = useRef(null);
     const modalRef = useRef(null);
@@ -26,7 +26,8 @@ const DropdownLikeModal = forwardRef(({ items, activeTab }, ref) => {
     };
 
     const onSelect = useCallback((item) => {
-        setSelected(item);
+        // setSelected(item);
+        state.current = item;
         ref.current = item === items[0] ? null : item;
         setShow(false);
     }, []);
@@ -73,7 +74,8 @@ const DropdownLikeModal = forwardRef(({ items, activeTab }, ref) => {
                 onClick={handleToggle}
                 className={`${styles.dropdownToggle} ${show ? styles.active : ''}`}
             >
-                {selected}
+                {/*{selected}*/}
+                {state.current}
                 <span className={`${styles.caret} ${show ? styles.caretRotate : ''}`}></span>
             </Button>
 

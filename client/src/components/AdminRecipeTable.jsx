@@ -17,6 +17,7 @@ const RecipeTable = ({ activeTab }) => {
     const [totalWidth, setTotalWidth] = useState(0);
     const [isRecipesLoading, setIsRecipesLoading] = useState(false);
 
+
     const currentPage = useRef(1);
     const ITEMS_PER_PAGE = 1;
     const ITEM_SIZE = 70;
@@ -45,6 +46,11 @@ const RecipeTable = ({ activeTab }) => {
         "정렬", "오래된 순", "최근 순", "작성자(오름차순)", "작성자(내림차순)",
         "레시피 번호(오름차순)", "레시피 번호(내림차순)", "레시피 이름(오름차순)", "레시피 이름(내림차순)"
     ];
+
+    const selectedDropdownSearch  = useRef(dropdownSearch[0]);
+    const selectedDropdownCategories = useRef(dropdownCategories[0]);
+    const selectedDropdownTags = useRef(dropdownTags[0]);
+    const selectedDropdownOrders = useRef(dropdownOrders[0]);
 
     const handleSearchInputChange = (event) => {
         searchValue.current = event.target.value;
@@ -110,11 +116,17 @@ const RecipeTable = ({ activeTab }) => {
         setSearch({});
         setFilter([]);
         setSort({});
-        setRecipes([]);
+        setRecipes(() => []);
         currentPage.current = 1;
+
+        selectedDropdownSearch.current = dropdownSearch[0];
+        selectedDropdownCategories.current = dropdownCategories[0];
+        selectedDropdownTags.current = dropdownTags[0];
+        selectedDropdownOrders.current = dropdownOrders[0];
 
         try {
             // const newRecipes = await getRecipes({recipePerPage: ITEMS_PER_PAGE});
+            // setRecipes(newRecipes);
             loadMoreRecipes(0, ITEMS_PER_PAGE)
         } catch (e) {
             console.error(e);
@@ -258,11 +270,11 @@ const RecipeTable = ({ activeTab }) => {
             <Card.Header className={AdminStyle.cardHeader} as="h5">
                 Recent Recipes &nbsp;
                 {activeTab === 'recipes' && (
-                    <>  <ScrollableDropdown items={dropdownSearch} ref={searchKey} activeTab={activeTab}/> &nbsp;
+                    <>  <ScrollableDropdown items={dropdownSearch} state={selectedDropdownSearch} ref={searchKey} activeTab={activeTab}/> &nbsp;
                         <Form.Control style={{width: '100px'}} onChange={handleSearchInputChange}/>
-                        &nbsp;|&nbsp; <ScrollableDropdown ref={filterCategory} items={dropdownCategories} activeTab={activeTab}/>
-                        &nbsp;|&nbsp; <ScrollableDropdown ref={filterTag} items={dropdownTags} activeTab={activeTab}/>
-                        &nbsp;|&nbsp; <ScrollableDropdown ref={sortValue} items={dropdownOrders} activeTab={activeTab}/>
+                        &nbsp;|&nbsp; <ScrollableDropdown ref={filterCategory} items={dropdownCategories} state={selectedDropdownCategories} activeTab={activeTab}/>
+                        &nbsp;|&nbsp; <ScrollableDropdown ref={filterTag} state={selectedDropdownTags} items={dropdownTags} activeTab={activeTab}/>
+                        &nbsp;|&nbsp; <ScrollableDropdown ref={sortValue} state={selectedDropdownOrders} items={dropdownOrders} activeTab={activeTab}/>
                         &nbsp; <Button onClick={confirmSearch}>확인</Button> 
                         &nbsp; <Button className='btn-success' onClick={initializeSearch}>초기화</Button>
                     </> )}

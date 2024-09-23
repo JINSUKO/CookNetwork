@@ -257,8 +257,7 @@ router.get('/recipes', async (req, res) => {
         //             GROUP BY
         //                 r.recipe_id
         //             LIMIT ? OFFSET ?;`;
-        let sql = `SELECT *
-                            FROM ( SELECT 
+        let sql = `SELECT 
                             r.recipe_id AS 'Recipe Id',
                             u.username AS 'Author',
                             u.user_id AS 'User Id',
@@ -291,7 +290,7 @@ router.get('/recipes', async (req, res) => {
                         JOIN 
                             users u ON r.user_code = u.user_code
                         GROUP BY 
-                            r.recipe_id ) t \n`;
+                            r.recipe_id \n`;
         sql = sql + whereQuery + sortQuery + ` LIMIT ? OFFSET ?;`;
     console.log(placeholderList.flat())
         const [ data ] = await maria.execute(sql, placeholderList.flat());
