@@ -68,5 +68,4 @@ router.post('/new_room', async (req,res)=>{
     }
 })
 
-
 module.exports = router

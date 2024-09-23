@@ -10,7 +10,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
 // 옵션값 지정
-const defaultOption = {
+const defaultOptions = {
   root: null,
   threshold: 1.0,
   rootMargin: '0px'

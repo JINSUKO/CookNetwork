@@ -62,6 +62,9 @@ app.use('/api/userCategoryRecipes', userCateoryRecipesRouter);
 const userInfoRouter = require('./router/getUserInfo');
 app.use('/api/userInfo', authAccessToken, authRefreshToken, userInfoRouter);
 
+// 관리자 페이지 관련 요청시 사용
+const adminRouter = require('./router/adminRouter');
+app.use('/api/admin', adminRouter);
 
 // 여기에 다른 API 라우트들을 추가합니다...
 
