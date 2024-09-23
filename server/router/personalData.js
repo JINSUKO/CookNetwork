@@ -43,18 +43,26 @@ router.post('/room', async (req,res) =>{
 router.post('/new_room', async (req,res)=>{
     let from_user_id = req.body.id;
     let to_user_name = req.body.id2;
-    const queryCheck = `SELECT user_code FROM users WHERE username = ?`
+    const queryCheck = `SELECT user_code, user_id FROM users WHERE username = ?`
 
     const [checkUser] = await maria.execute(queryCheck,[to_user_name])
 
     if(checkUser.length > 0){
+        const user_code_2 = checkUser[0].user_code;
         const queryString = `INSERT INTO user_personal_room (user_code_1, user_code_2)
-    SELECT 
-        (SELECT user_code FROM users WHERE user_id = ?) AS user_code_1,
-        (SELECT user_code FROM users WHERE username = ?) AS user_code_2`;
+        VALUES (
+            (SELECT user_code FROM users WHERE user_id = ?),
+            ?
+        )`;
 
-        const [result] = await maria.execute(queryString,[from_user_id, to_user_name])
-        return res.status(207).json({message: '성공'})
+        const [result] = await maria.execute(queryString,[from_user_id, user_code_2])
+
+        return res.status(201).json({
+            room_id: result.insertId,
+            user_code: checkUser[0].user_code,
+            user_id: checkUser[0].user_id,
+            username: to_user_name
+        });
     }else{
         return res.status(404).json({message: '실패'})
     }
