@@ -9,13 +9,15 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useSearchParams, useNavigate  } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
+import { Row, Col, Container } from 'react-bootstrap';
 import RecipeListPage from "../pages/RecipeListPage";
 import InfiniteRecipeList from "../pages/InfiniteRecipeList";
 import FilterBox from "./FilterBox";
 import Skeleton from "./UI/Skeleton";
-
+import styles from '../assets/styles/RecipeList.module.css';
 import { useBookmarkContext } from "../context/BookmarkContext";
+import InfiniteRecipeList from "../pages/InfiniteRecipeList";
+import InfiniteRecipeList2 from "../pages/InfiniteRecipeList_2";
 
 function FetchRecipeList() { 
   const { category } = useParams();
@@ -54,8 +56,6 @@ function FetchRecipeList() {
     "밥/죽/떡", "퓨전", "양념/소스", "채식", "분식", "안주", 
     "스프", "간식", "음료", "다이어트", "도시락"
   ];
-  // console.log("category:", category);
-  // console.log("path:", location.pathname);
   console.log("filter:", selectedFilters)
 
   const fetchRecipes = useCallback(async (pageNum = 1) => {
@@ -105,16 +105,16 @@ function FetchRecipeList() {
       //   setFilteredRecipes(prevRecipes => [...prevRecipes, ...recipesWithBookmarkStatus]);
       // }
       
-      if (result) {
+      if (result && result.recipes) {
         console.log(`${currentCategory} 레시피 목록 호출 성공`);
         
         if (pageNum === 1) {
           setRecipes(result);
-          setFilteredRecipes(result);
+          setFilteredRecipes(result.recipes);
           setTotalCount(result.totalCount);
         } else {
-          setRecipes(prevRecipes => [...prevRecipes, ...result]);
-          setFilteredRecipes(prevRecipes => [...prevRecipes, ...result]);
+          setRecipes(prevRecipes => [...prevRecipes, ...result.recipes]);
+          setFilteredRecipes(prevRecipes => [...prevRecipes, ...result.recipes]);
         }
         // setHasMore(result.length === 3); // 3개 미만이면 더 이상 데이터가 없다고 판단
         setHasMore(Array.isArray(result.recipes) && recipes.length + result.recipes.length < result.totalCount);   // 남은데이터가 더 있으면 로드
@@ -188,37 +188,49 @@ function FetchRecipeList() {
   
 
   return (
-    <Container>
+    <Container className={styles.recipeListContainer}>
 
       {isLoading && recipes.length === 0 ? (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div>
           <Skeleton/>
         </div>
       ) : (
-        <>
-          <h5>{displayCategory()}<br/> 다양한 레시피를 확인해보세요!</h5>
+        <Row  className="justify-content-center">
+          <Col xs={12} md={10} lg={8}>
 
-          <FilterBox 
-            filterOptions={filterOptions}
-            selectedFilters={selectedFilters}
-            onFilterChange={handleFilterChange}/>
-          <RecipeListPage 
+          <h6 className={styles.recipeListTitle}>{displayCategory()}</h6>
+
+          <div  className={styles.filterBoxWrapper}>
+            <FilterBox 
+              filterOptions={filterOptions}
+              selectedFilters={selectedFilters}
+              onFilterChange={handleFilterChange}/>
+          </div>
+          {/* <RecipeListPage 
             recipes={filteredRecipes} 
             currentCategory={currentCategory}
             hasMore={hasMore}
-            loadMore={loadMore}
+            loadMore={() => fetchRecipes(page + 1)}
             isLoading={isLoading}
             totalCount={totalCount}
-          />
-
+          /> */}
+{/* 
           <InfiniteRecipeList>
             recipes={recipes}
             hasMore={hasMore}
             loadMore={fetchRecipes}
             isLoading={isLoading}
-          </InfiniteRecipeList>
+          </InfiniteRecipeList> */}
 
-        </>
+          <InfiniteRecipeList2>
+            recipes={filteredRecipes}
+            hasMore={hasMore}
+            loadMore={fetchRecipes}
+            isLoading={isLoading}
+            totalCount={totalCount}
+            </InfiniteRecipeList2>
+          </Col>
+        </Row>
       )}
     </Container>
   )
