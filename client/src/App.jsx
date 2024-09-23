@@ -129,12 +129,11 @@ function App() {
           <Route path = '/logout' element={user && <Logout user={user}/>}/>
           <Route element = {<ProtectedPage />}>
             <Route
-              path = '/mypage' element = {user ? <UserMyPage
+              path = '/mypage' element = {user && <UserMyPage
                                                       user={user}
                                                       setUser={setUser}
                                                       profilePic={profilePic}
-                                                      setProfilePic={setProfilePic}/>
-                                                : <Login />}
+                                                      setProfilePic={setProfilePic}/>}
             />
             <Route path='/myrecipe' element={<MyRecipeList user={user}/>}/>
             <Route path='/writerecipe' element={<RecipeWrite user={user}/>} />

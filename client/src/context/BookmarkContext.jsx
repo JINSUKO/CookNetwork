@@ -1,5 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
+const API_URL = import.meta.env.VITE_HOST_IP;
+
 // Context 생성 
 const BookmarkContext = createContext();
 
@@ -22,7 +24,7 @@ export const BookmarkProvider = ({ children }) => {
   const fetchBookmark = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/bookmarkedRecipe');
+      const response = await fetch(`${API_URL}/api/bookmarkedRecipe`);
       if (!response.ok) {
         throw new Error('Failed to fetch bookmarked recipes');
       }

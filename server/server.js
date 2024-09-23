@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const chatLog = require('./module/openChat.js');
 const authAccessToken = require('./module/authAccessToken.js');
 const authRefreshToken = require('./module/authRefreshToken.js');
+// const personalData = require('./module/personalAPI.js')
 
 require('dotenv').config();
 // require('dotenv').config({ path: '.env.local' })
@@ -61,6 +62,9 @@ app.use('/api/userCategoryRecipes', userCateoryRecipesRouter);
 const userInfoRouter = require('./router/getUserInfo');
 app.use('/api/userInfo', authAccessToken, authRefreshToken, userInfoRouter);
 
+// 관리자 페이지 관련 요청시 사용
+const adminRouter = require('./router/adminRouter');
+app.use('/api/admin', adminRouter);
 
 // 여기에 다른 API 라우트들을 추가합니다...
 
@@ -103,6 +107,9 @@ app.use("/api/search",searchRouter)
 const detailpageRouter = require("./router/detailPage.js");
 app.use("/api/recipe",detailpageRouter)
 
+// 새로운 레시피 작성 라우트
+const writeRecipesRouter = require("./router/writeRecipes.js");
+app.use("/api/writeRecipe",writeRecipesRouter)
 
 // 로그아웃 라우트 연결
 const logoutRouter = require("./router/logout.js");
@@ -119,9 +126,6 @@ app.get("/api/authPage", authAccessToken, authRefreshToken, (req, res) => {
     }
 
 });
-
-const personalRouter = require("./router/personalData.js");
-app.use("/api/personal",personalRouter)
 
 // 정적 파일 서빙 (프로덕션 모드)
 if (process.env.NODE_ENV === 'production') {
@@ -168,6 +172,10 @@ const io = new socketIO.Server(server, {
         origin: '*',
     }
 });
+
+// 1:1 채팅 관련 라우트
+const personalRouter = require("./router/personalData.js");
+app.use("/chat/personal",personalRouter)
 
 // 접속 유저를 저장하기 위한 Map 생성
 const userList = new Map();
@@ -221,6 +229,15 @@ const handleSocketUserLeave = (socket) => {
     }
 };
 
+const handleSocketEventRoom = (socket, username) =>{
+    socket.join(username)
+}
+
+const handleSocketNewRoom = (socket, userData) =>{
+    // const isUser =  personalData.newPersonalRoom(userData)
+    socket.to(userData.toUser).emit('JOIN_NEW_ROOM',() => console.log('새로운 채팅방이 개설되었습니다.'))
+}
+
 const handleSocketConnection = async (socket) => {
     // 비동기로 실행
     // 클라이언이 소켓에서 'USER_ENTER'를 emit할때 실행
@@ -232,6 +249,9 @@ const handleSocketConnection = async (socket) => {
     // 클라이언트 소켓이 서버를 떠날때 실행 ( socket 내장 함수 )
     socket.on('disconnect', () => handleSocketUserLeave(socket));
 
+    socket.on('JOIN_EVENT_ROOM',(username) => handleSocketEventRoom(socket, username))
+
+    socket.on('NEW_PERSONAL_ROOM',(userData) => handleSocketNewRoom(socket,userData))
     // 아직 모르지만 클라이언트에서 바로 python 서버로 요청을 보낼 거라서 없어도 될거 같음.
     // socket.on('Room_FAQ',(roomNumber) => {
     //     socket.join(roomNumber)

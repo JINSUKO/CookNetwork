@@ -59,6 +59,7 @@ function openChat({ userData }) {
         id: user_id || '',
         name: username || '',
         message: '',
+        room: 0,
     });
     // 유저가 전송하는 닉네임 저장
     const [toId, setToId] = useState({
@@ -77,14 +78,14 @@ function openChat({ userData }) {
     // 입력창을 상황에 따라 보이거나 사라지도록 설정
     const [isFormVisible, setIsFormVisible] = useState(true)
 
-    // 서버에 요청하여 접속중인 유저id를 기준으로 1:1 채팅방을 불러오는 함수
+    const [isUpdate, setIsUpdate] = useState(false);
 
-    // TODO 새로운 1:1 채팅이 왔을때 양방향통신이 필요하니 socket으로 바꿔야할듯?
     // A가 새로운 방을 만들었을때 B가 요청없이 데이터를 받을수 있나?????
     // B가 채팅요청을 어떻게 받을지 고민?
-    // TODO 새로운 채팅이 왔을때 카카오톡처럼 1표시 가능한가?
     // 보이지않는 채팅방을 하나 만들어서 거기로 보내면???
     // 안읽은것도 확인해야하는가????
+
+    // 서버에 요청하여 접속중인 유저id를 기준으로 1:1 채팅방을 불러오는 함수
     async function fetchPersonalRoom(){
         try{
             const response =  await fetch(`${socket_IP}/chat/personal/room`,{
@@ -102,7 +103,14 @@ function openChat({ userData }) {
         }
     }
 
+    useEffect(()=>{
+        if(user_id||!(user_id ==='')){
+            socket.emit('JOIN_EVENT_ROOM',username)
+        }
+    },[user_id,socket])
+
     useEffect(() => {
+        socket.on('JOIN_NEW_ROOM',()=>setIsUpdate(true))
         //'FAQ'탭일 경우
         if(activeTab === 'FAQ'){
             const joinFAQ = () =>{
@@ -146,11 +154,15 @@ function openChat({ userData }) {
         } else if (activeTab === 'personalTalk'){
             // TODO 1:1 채팅 관련
             // 작성완료 : 처음 접속시 서버에 채팅방 요청
-            console.log("1")
             fetchPersonalRoom();
+            socket.on()
+            if(isUpdate){
+                fetchPersonalRoom();
+                setIsUpdate(false);
+            }
         };
         // activeTab, user_id이 바뀌면 업데이트
-    }, [activeTab,user_id]);
+    }, [activeTab,user_id,isUpdate]);
 
     useEffect(() => {
         //'openTalk'탭일 경우
@@ -301,15 +313,67 @@ function openChat({ userData }) {
                 message: '',
             }));
         } else if (activeTab === 'personalTalk'){
-            //TODO 검색한 이름을 확인하여 동일한 이름이 없으면 채팅방 생성 있으면 경고창 띄우기
+            // 받은 이벤트의 id가 name일 경우 실행
+            if(e.target.querySelector('.ID-input').id === 'name'){
+            // [09/06 완] 검색한 이름을 확인하여 동일한 이름이 없으면 채팅방 생성 있으면 경고창 띄우기
             e.preventDefault();
             console.log(toId.name);
-            console.log(chatRoomArr.find(key => key.username === toId.name));
-            // submit 후 toId의 name 내용을 초기화
+            // 입력한 닉네임과 같은 방이 있을때 경고창
+            if(chatRoomArr.find(key => key.username === toId.name)){
+                alert('해당 채팅방이 이미 있습니다!')
+            // 입력한 닉네임이 사용자 닉네임과 동일한지 확인
+            } else if(toId.name === username){
+                alert('자신과 채팅할수 없습니다!')
+            // 없을 경우 새로운 채팅방 생성
+            } else{
+                fetch(`${socket_IP}/chat/personal/new_room`,{
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({id: user_id, id2: toId.name})
+                })
+                .then(response =>{
+                    if(response.status === 201){
+                        return response.json();
+                    }else if(response.status === 404){
+                        throw new Error('404: User not Found');
+                    }
+                }).then(data =>{
+                    console.log('a:', data.username)
+                    console.log(chatRoomArr)
+                    setChatRoomArr((prevRoom)=>
+                        [
+                            ...prevRoom
+                            ,data
+                        ]
+                    );
+                    socket.emit('NEW_PERSONAL_ROOM',{ toUser: toId.name,
+                                                      user_id: user_id
+                                                    });
+                    alert('채팅방이 생성되었습니다.');
+                }).catch(error =>{
+                    console.log(error)
+                    alert('존재하지 않는 유저입니다.');
+                })
+                // try{
+                //     socket.emit('NEW_PERSONAL_ROOM',{toUser: toId.name, fromUser:user_id})
+                    
+                // }catch(error){
+                //     console(error)
+                // }
+            }
             setToId((prevName) =>({
                 ...prevName,
                 name: '',
             }));
+        } else {
+            setUserMessage((prevUser) => ({
+                ...prevUser,
+                message: '',
+            }));
+        }
+            
         }
     };
 
@@ -400,7 +464,7 @@ function openChat({ userData }) {
                         )}
                     </HistoryWrapper>
                 </div>
-                {/* 1대1 톡 */}
+                {/* 1대1 채팅 */}
                 <div className={ChatDesign.personalChatRoom} ref={personalRoom}>
                     <RoomWrapper>
                         {chatRoomArr.length ? (

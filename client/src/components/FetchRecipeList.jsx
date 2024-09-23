@@ -11,6 +11,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useSearchParams, useNavigate  } from 'react-router-dom';
 import { Row, Col, Container } from 'react-bootstrap';
 import RecipeListPage from "../pages/RecipeListPage";
+import InfiniteRecipeList from "../pages/InfiniteRecipeList";
 import FilterBox from "./FilterBox";
 import Skeleton from "./UI/Skeleton";
 import styles from '../assets/styles/RecipeList.module.css';
@@ -36,6 +37,19 @@ function FetchRecipeList() {
   const [totalCount, setTotalCount] = useState(0);
 
   const { isBookmarked } = useBookmarkContext(); 
+
+  // useRef-IntersectionObserver
+  const observer = useRef();
+  const lastRecipeElementRef = useCallback(node => {
+    if (isLoading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage(prevPage => prevPage + 1);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [isLoading, hasMore]);
 
   const filterOptions = [
     "모두보기", "메인요리", "반찬", "국/탕", "디저트", "면", 
