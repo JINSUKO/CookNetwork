@@ -10,6 +10,7 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
 import styles from '../assets/styles/RecipeCard.module.css';
 import Skeleton from '../components/UI/Skeleton';
+import { FaClock, FaRegChartBar } from 'react-icons/fa';
 
 function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading, totalCount }) {
   
@@ -54,6 +55,7 @@ function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading
         <Row className="justify-content-center">
           <Col xs={12} md={10} lg={10}>
             <Row xs={2} md={3} lg={4} className="g-4">
+
               {recipes && recipes.map((recipe, index) => (
               <Col key={recipe.recipe_id} ref={index === recipes.length - 1 ? lastRecipeElementRef : null}>  
                 <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
@@ -93,6 +95,7 @@ function RecipeListPage({ recipes, currentCategory, hasMore, loadMore, isLoading
               </Link>
             </Col>
             ))}
+            
             </Row>
           </Col>
         </Row>

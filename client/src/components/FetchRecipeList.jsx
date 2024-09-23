@@ -11,11 +11,12 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useSearchParams, useNavigate  } from 'react-router-dom';
 import { Row, Col, Container } from 'react-bootstrap';
 import RecipeListPage from "../pages/RecipeListPage";
-import InfiniteRecipeList from "../pages/InfiniteRecipeList";
 import FilterBox from "./FilterBox";
 import Skeleton from "./UI/Skeleton";
 import styles from '../assets/styles/RecipeList.module.css';
 import { useBookmarkContext } from "../context/BookmarkContext";
+import InfiniteRecipeList from "../pages/InfiniteRecipeList";
+import InfiniteRecipeList2 from "../pages/InfiniteRecipeList_2";
 
 function FetchRecipeList() { 
   const { category } = useParams();
@@ -199,13 +200,21 @@ function FetchRecipeList() {
             isLoading={isLoading}
             totalCount={totalCount}
           /> */}
-
+{/* 
           <InfiniteRecipeList>
             recipes={recipes}
             hasMore={hasMore}
             loadMore={fetchRecipes}
             isLoading={isLoading}
-          </InfiniteRecipeList>
+          </InfiniteRecipeList> */}
+
+          <InfiniteRecipeList2>
+            recipes={filteredRecipes}
+            hasMore={hasMore}
+            loadMore={fetchRecipes}
+            isLoading={isLoading}
+            totalCount={totalCount}
+            </InfiniteRecipeList2>
           </Col>
         </Row>
       )}
