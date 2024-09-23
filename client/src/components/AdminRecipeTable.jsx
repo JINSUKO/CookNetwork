@@ -54,19 +54,15 @@ const RecipeTable = ({ activeTab }) => {
     const confirmSearch = async () => {
         if ((searchKey.current && searchValue.current) || filterCategory.current || filterTag.current || sortValue.current) {
 
-            const dropdownSearchColumns = [
-                "Recipe Id", "Author", "User Id", "Recipe Name", "Recipe Description", "Recipe Ingredients"
-            ];
-
             let tmpSearch = {};
             if (searchKey.current && searchValue.current) {
                 tmpSearch = dropdownSearch.map((search, index) => {
                     if (search === searchKey.current) {
                         // 레시피 번호일 때는 숫자반 검색할 수 있게 제한한다.
-                        if ((index - 1) === 0 && !Number(searchValue.current)) {
+                        if (index === 1 && !Number(searchValue.current)) {
                             return alert('레시피 번호는 숫자로 입력해주세요.');
                         }
-                        return {[dropdownSearchColumns[index - 1]]: searchValue.current}
+                        return {[search]: searchValue.current}
                     }
                 }).filter(element => element)[0];
                 
@@ -99,12 +95,29 @@ const RecipeTable = ({ activeTab }) => {
             setSort(tmpSort);
 
             try {
+
                 const newRecipes = await getRecipes({ search: tmpSearch, filter: tmpFilters, sort: tmpSort, recipePerPage: ITEMS_PER_PAGE});
                 setRecipes(newRecipes);
                 currentPage.current = 1;
             } catch (e) {
                 console.error(e);
             }
+        } 
+    }
+
+    const initializeSearch = async () => {
+
+        setSearch({});
+        setFilter([]);
+        setSort({});
+        setRecipes([]);
+        currentPage.current = 1;
+
+        try {
+            // const newRecipes = await getRecipes({recipePerPage: ITEMS_PER_PAGE});
+            loadMoreRecipes(0, ITEMS_PER_PAGE)
+        } catch (e) {
+            console.error(e);
         }
     }
 
@@ -250,7 +263,8 @@ const RecipeTable = ({ activeTab }) => {
                         &nbsp;|&nbsp; <ScrollableDropdown ref={filterCategory} items={dropdownCategories} activeTab={activeTab}/>
                         &nbsp;|&nbsp; <ScrollableDropdown ref={filterTag} items={dropdownTags} activeTab={activeTab}/>
                         &nbsp;|&nbsp; <ScrollableDropdown ref={sortValue} items={dropdownOrders} activeTab={activeTab}/>
-                        &nbsp; <Button onClick={confirmSearch}>확인</Button>
+                        &nbsp; <Button onClick={confirmSearch}>확인</Button> 
+                        &nbsp; <Button className='btn-success' onClick={initializeSearch}>초기화</Button>
                     </> )}
             </Card.Header>
             <Card.Body>
