@@ -1,17 +1,20 @@
-/*
-FilterBox.jsx
-상위 카테고리 안에서 선택할수 있는 필터 버튼들을 화면에 출력하는 컴포넌트.
-*/
+/** FilterBox.jsx
+ * 상위 카테고리 안에서 선택할 수 있는 필터 토글 버튼 컴포넌트
+ * @filter 사용자가 선택한 필터
+ */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 
-function FilterBox({ filterOptions, selectedFilters, onFilterChange  }) {
+function FilterBox({ filterOptions, selectedFilters, onFilterChange, currentCategory }) {
 
-  // filter: 사용자가 선택한 필터
-  // selectedFilters: 현재 선택된 모든 필터 배열
-  // item: selectedFilters배열의 요소
-  // newFilters: 사용자가 선택한 filter를 제외한 나머지 필터들
+  // 선택된 필터가 없을 때, 초기 상태 "모두보기"
+  useEffect(() => {
+    if (selectedFilters.length === 0) {
+      onFilterChange(["모두보기"]);
+    }
+  }, []);
+  
   const handleFilterChange = (filter) => {
     let newFilters;
       if (filter === "모두보기") {
@@ -27,7 +30,7 @@ function FilterBox({ filterOptions, selectedFilters, onFilterChange  }) {
   };
 
   return (
-    <div  className="justify-content-center">
+    <div className="justify-content-center">
 
         {filterOptions.map((filter) => (
           <ToggleButton
