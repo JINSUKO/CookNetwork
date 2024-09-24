@@ -2,8 +2,10 @@ const express = require('express');
 const path = require('path')
 const fs = require('fs')
 const router = express.Router()
+const mappingImg = require('../module/fetchCloudinary');
 
 const maria = require('../module/sql') ;
+const fetchCloudinary = require('../module/fetchCloudinary');
 
 // get 요청을 동적 라우팅으로 받음
 router.get('/:category',async(req,res)=>{
@@ -40,25 +42,33 @@ router.get('/:category',async(req,res)=>{
                         WHERE c.category_name IN (${categoryList})
                         GROUP BY r.recipe_id
                         HAVING COUNT(DISTINCT c.category_name) = ${cateCount}
-                        ORDER BY RAND()
-                        LIMIT 3
+                        ORDER BY create_post_date DESC
                     `
                 } else{
-                    queryString = `SELECT * FROM recipe ORDER BY RAND() LIMIT 3`;
+                    queryString = `SELECT * FROM recipe ORDER BY create_post_date DESC`;
                 }
                 const [recipes] = await maria.execute(queryString);
-                
-                // ../uploads/recipes/thumbnail/ 경로 지정
-                const recipeImgPath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
-                // 여러개의 Promise를 비동기로 실행
-                const updatedRecipes = await Promise.all(recipes.map(async (recipe) => {
-                    // ../uploads/recipes/thumbnail/에서 recipe_img에 해당하는 이미지를 불러옴
-                    let recipePic = fs.readFileSync(path.join(recipeImgPath, recipe.recipe_img), 'base64');
-                    recipePic = 'data:image/jpeg;base64,' + recipePic;
 
-                    // json형태로 리턴
-                    return { ...recipe, recipe_img: recipePic };
-                }));
+                // const imgId = recipes.map((recipe) => recipe.recipe_img);
+
+                const updatedRecipes = mappingImg(recipes)
+
+                // ../uploads/recipes/thumbnail/ 경로 지정
+                // const recipeImgPath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
+                // 여러개의 Promise를 비동기로 실행
+                // const updatedRecipes = await Promise.all(recipes.map(async (recipe) => {
+                //     // ../uploads/recipes/thumbnail/에서 recipe_img에 해당하는 이미지를 불러옴
+                //     try{
+                //         // let recipePic = await fs.promises.readFile(path.join(recipeImgPath, recipe.recipe_img), 'base64');
+                //         const recipePic = await cloudinary.api.resource(recipe.recipe_img)
+                //         const imgUrl = recipePic.secure_url;
+                //         // recipePic = 'data:image/jpeg;base64,' + recipePic;
+                //         return { ...recipe, recipe_img: imgUrl };
+                //     }catch(error){
+                //         console.error(error);
+                //         return { ...recipe, recipe_img: null };
+                //     }
+                // }));
                 // 위에서 받은 json을 리턴
                 return res.json(updatedRecipes);
             } catch(error){
@@ -85,21 +95,29 @@ router.get('/:category',async(req,res)=>{
                 WHERE c.category_name IN (${placeHolder})
                 GROUP BY r.recipe_id
                 HAVING COUNT(DISTINCT c.category_name) = ?
-                ORDER BY RAND()
-                LIMIT 3
+                ORDER BY create_post_date DESC
             `;
             try{
                 console.log(categories)
                 const [recipes] = await maria.execute(queryString,[...categories,cateCount]);
 
-                // recipe를 각각의 이미지와 매칭시켜 리턴하는 작업 (위와 동일)
-                const profileBasePath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
-                const updatedRecipes = await Promise.all(recipes.map(async (recipe) => {
-                    let profilePic = fs.readFileSync(path.join(profileBasePath, recipe.recipe_img), 'base64');
-                    profilePic = 'data:image/jpeg;base64,' + profilePic;
-                    return { ...recipe, recipe_img: profilePic };
-                }));
-            
+                // const imgId = recipes.map((recipe) => recipe.recipe_img);
+
+                const updatedRecipes = await mappingImg(recipes)
+
+                // // recipe를 각각의 이미지와 매칭시켜 리턴하는 작업 (위와 동일)
+                // // const recipeImgPath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
+                // const updatedRecipes = await Promise.all(recipes.map(async (recipe) => {
+                //     try{
+                //         // let recipePic = await fs.promises.readFile(path.join(recipeImgPath, recipe.recipe_img), 'base64');
+                //         // recipePic = 'data:image/jpeg;base64,' + recipePic;
+                //         const recipePic =  cloudinary.api.resource(recipe.recipe_img)
+                //         return { ...recipe, recipe_img: recipePic };
+                //     }catch(error){
+                //         console.error(error);
+                //         return { ...recipe, recipe_img: null };
+                //     }
+                // }));
                 return res.json(updatedRecipes);
             } catch(error){
                 console.error(error);

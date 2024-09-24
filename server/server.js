@@ -4,6 +4,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const socketIO = require('socket.io');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const chatLog = require('./module/openChat.js');
 const authAccessToken = require('./module/authAccessToken.js');
@@ -13,6 +14,9 @@ const authRefreshToken = require('./module/authRefreshToken.js');
 require('dotenv').config();
 // require('dotenv').config({ path: '.env.local' })
 const app = express();
+
+// gzip 텍스트 압축 설정
+app.use(compression());
 
 // Morgan logging dev 모드 설정
 app.use(morgan('dev'));
@@ -28,6 +32,8 @@ app.use(cors({
 
 // Body parser
 app.use(express.json());
+
+
 
 // 유저 관련 요청은 /user/*로 미들웨어 하나로 모아 놓을 예정.
 // 유저 프로필 이미지 불러오는 요청시 사용
