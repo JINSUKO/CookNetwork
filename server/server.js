@@ -33,6 +33,8 @@ app.use(cors({
 // Body parser
 app.use(express.json());
 
+
+
 // 유저 관련 요청은 /user/*로 미들웨어 하나로 모아 놓을 예정.
 // 유저 프로필 이미지 불러오는 요청시 사용
 const uploadUserImg = require('./router/uploadUserImg');

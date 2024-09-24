@@ -10,7 +10,7 @@ require('dotenv').config({ path: '.env.local' });
  */
 const generateAccessToken = (userId) => {
     // const ACCESS_TOKEN_EXPIRY = '15m'; // Access Token 만료시간 15분으로 설정함.
-    const ACCESS_TOKEN_EXPIRY = '1s'; // Access Token 만료시간 15분으로 설정함.
+    const ACCESS_TOKEN_EXPIRY = '30m'; // Access Token 만료시간 30분으로 설정함.
 
     const SECRET_KEY = process.env.SECRET_KEY_ACCESS;
     console.log(SECRET_KEY);

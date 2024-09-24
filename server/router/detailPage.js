@@ -5,6 +5,8 @@ const router = express.Router()
 
 const maria = require('../module/sql');
 
+const url = `https://res.cloudinary.com/${process.env.CLOUDINARY_NAME}/image/upload`
+
 // get 요청을 동적 라우팅으로 받음
 router.get('/:recipe_id', async(req,res) =>{
     // 클라이언트로부터 요청받은 id를 저장
@@ -22,14 +24,17 @@ router.get('/:recipe_id', async(req,res) =>{
     if(data.length > 0){
         try{
             // ../uploads/recipes/thumbnail/ 경로 지정
-            const recipeImgPath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
+            // const recipeImgPath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
             // ../uploads/users/profile_images/ 경로 지정
             const profileBasePath = path.join(__dirname, '../', 'uploads', 'users', 'profile_images/');
-            const recipePage = async (data) => {
+            const recipePage = (data) => {
                 // ../uploads/recipes/thumbnail/경로에서 recipe_img에 해당하는 이미지를 불러옴
-                let recipePic = fs.readFileSync(path.join(recipeImgPath, data.recipe_img), 'base64');
-                recipePic = 'data:image/jpeg;base64,' + recipePic;
+                // let recipePic = fs.readFileSync(path.join(recipeImgPath, data.recipe_img), 'base64');
+                // recipePic = 'data:image/jpeg;base64,' + recipePic;
 
+                let recipePic = `${url}/${data.recipe_img}`
+
+                // TODO 유저는 아직 추가안함... 기본 이미지+ 없는 이미지 추가할것
                 // ../uploads/users/profile_images/경로에서 user_img에 해당하는 이미지를 가져옴
                 let profilePic = fs.readFileSync(path.join(profileBasePath, data.user_img), 'base64');
                 profilePic = 'data:image/jpeg;base64,' + profilePic;

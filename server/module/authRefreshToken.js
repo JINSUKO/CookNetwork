@@ -73,7 +73,7 @@ const authRefreshToken = (req, res, next) => {
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             sameSite: 'strict', // 빌드 할때 프록시를 사용하든, 크로스 도메인 에서 쿠키가 넘어가지않게 해야 한다.
-            maxAge: 9 * 60 * 60 * 1000, // 60분 후 만료 - 시간이 안 맞아서 expires 속성 사용합니다.
+            maxAge: 24 * 60 * 60 * 1000 * 30, // 30일 후 만료 - 시간이 안 맞아서 expires 속성 사용합니다.
             path: '/',
             // expires: new Date(Date.now() + 9 * 60 * 60 * 1000) // 60분 후 만료
         })
