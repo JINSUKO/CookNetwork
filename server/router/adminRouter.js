@@ -45,7 +45,7 @@ router.get('/userCounts', async (req, res) => {
     }
 })
 
-// users
+// recipes
 router.get('/recipes', async (req, res) => {
 
     const dropdownSearch = [
@@ -67,11 +67,11 @@ router.get('/recipes', async (req, res) => {
         const tmp = {...req.query};
 
         Object.keys(tmp).forEach(key => {
-
-            if (Number(tmp[key])) {
-                pageOptions[key] = Number(tmp[key]);
-                return;
-            }
+            //
+            // if (Number(tmp[key])) {
+            //     pageOptions[key] = Number(tmp[key]);
+            //     return;
+            // }
 
             pageOptions[key] = tmp[key];
         })
@@ -96,17 +96,6 @@ router.get('/recipes', async (req, res) => {
                 dropdownSearch[index + 1] === keyList[i]
             ))
 
-            // for (let j = 0; j < dropdownSearchColumns.length; j++) {
-            //     if (dropdownSearch[j + 1] === keyList[i]) {
-            //         if (dropdownSearchColumns[j] === 'Recipe Id') {
-            //             tmp.push('CAST(\`Recipe Id\` AS CHAR)');
-            //         } else {
-            //             tmp.push(dropdownSearchColumns[j]);
-            //         }
-            //     }
-            // }
-
-
             if (tmp.length === 0) {
                 if (keyList[i] === 'category') {
                     tmp.push('Recipe Categories');
@@ -124,7 +113,6 @@ router.get('/recipes', async (req, res) => {
                 placeholderList = placeholderList.filter((element) => (!(element === placeholderListCopy[i])));
                 break;
             }
-
 
             if (tmp[0] === 'Recipe Id') {
                 whereQueryList.push('CAST(\`Recipe Id\` AS CHAR) LIKE ?');
@@ -150,157 +138,64 @@ router.get('/recipes', async (req, res) => {
 
 
 
-    //
-    //
-    // console.log(pageOptions)
-    // console.log(placeholderList)
-    //
-    // // console.log(placeholderList.length - 2)
-    //
-    // // Object.entries(pageOptions).forEach(([key, value]) => {
-    // //     console.log(`${key}: ${value}`);
-    // // });
-    // console.log(whereQuery);
-    //
-    // let sqltmp3 = null;
-    //
-    // if (whereQuery.length - 2) {
-    //     sqltmp3 = whereQuery.map((list) => {
-    //         console.log(list);
-    //
-    //         return list;
-    //     }).join(' AND ')
-    // }
-    //
-    // console.log(sqltmp3)
-
-    // placeholderList[placeholderList.length - 1]
-
     placeholderList[placeholderList.length - 1] = (placeholderListCopy[placeholderListCopy.length - 2]) * (placeholderListCopy[placeholderListCopy.length - 1] -1);
-    // placeholderListCopy[placeholderListCopy.length - 1] = (placeholderList[placeholderList.length - 2]) * (placeholderList[placeholderList.length - 1] -1);
+
+    placeholderList = placeholderList.flat();
+
+    if (placeholderList.length - 2) {
+        for (let i = 0; i < placeholderList.length - 2; i++) {
+            placeholderList[i] = `%${placeholderList[i]}%`;
+        }
+    }
 
     console.log('placeholderListCopy', placeholderListCopy)
     console.log('placeholderListCopy.flat()', placeholderListCopy.flat())
 
-    // const [ data121 ] = (sql, [pageOptions.recipePerPage, pageOptions.recipePerPage * (pageOptions.page - 1)]);
-    let sqltmp = `SELECT *
-                        FROM ( SELECT 
-                        r.recipe_id AS 'Recipe Id',
-                        u.username AS 'Author',
-                        u.user_id AS 'User Id',
-                        r.recipe_name AS 'Recipe Name',
-                        r.recipe_img AS 'Recipe Image',
-                        r.recipe_desc AS 'Recipe Description',
-                        GROUP_CONCAT(DISTINCT c.category_name ORDER BY c.category_id SEPARATOR ', ') AS 'Recipe Categories',
-                        GROUP_CONCAT(DISTINCT CONCAT(i.ingredient_name, ' (', ri.count, ' ', ri.ingredient_unit, ')') ORDER BY ri.ingredient_id SEPARATOR ', ') AS 'Recipe Ingredients',
-                        GROUP_CONCAT(DISTINCT CONCAT(ro.cooked_order, '. ', ro.order_desc) ORDER BY ro.cooked_order SEPARATOR '\n') AS 'Cooked Orders',
-                        r.cooked_time AS 'Cooked Time',
-                        r.serving AS 'Serving',
-                        r.level AS 'Level',
-                        r.tips AS 'Tips',
-                        r.create_post_date AS 'Created Date',
-                        r.lastupdate_post_date AS 'Last Updated Date',
-                        r.post_type AS 'Post Type',
-                        r.bookmark_count AS 'Bookmark Counts'
-                    FROM 
-                        recipe r
-                    JOIN 
-                        recipe_category rc ON r.recipe_id = rc.recipe_id
-                    JOIN 
-                        categories c ON rc.category_id = c.category_id
-                    JOIN 
-                        recipe_ingredient ri ON r.recipe_id = ri.recipe_id
-                    JOIN
-                        ingredient i ON ri.ingredient_id = i.ingredient_id
-                    JOIN
-                        recipe_orders ro ON r.recipe_id = ro.recipe_id
-                    JOIN 
-                        users u ON r.user_code = u.user_code
-                    GROUP BY 
-                        r.recipe_id ) t `;
-    sqltmp = sqltmp + whereQuery + sortQuery + ` LIMIT ? OFFSET ?;`;
-
-    console.log('sqltmp\n',sqltmp);
     try {
-        // const sql = `SELECT
-        //                 r.recipe_id AS 'Recipe Id',
-        //                 u.username AS 'Author',
-        //                 u.user_id AS 'User Id',
-        //                 r.recipe_name AS 'Recipe Name',
-        //                 r.recipe_img AS 'Recipe Image',
-        //                 r.recipe_desc AS 'Recipe Description',
-        //                 GROUP_CONCAT(DISTINCT c.category_name ORDER BY c.category_id SEPARATOR ', ') AS 'Recipe Categories',
-        //                 GROUP_CONCAT(DISTINCT CONCAT(i.ingredient_name, ' (', ri.count, ' ', ri.ingredient_unit, ')') ORDER BY ri.ingredient_id SEPARATOR ', ') AS 'Recipe Ingredients',
-        //                 GROUP_CONCAT(DISTINCT CONCAT(ro.cooked_order, '. ', ro.order_desc) ORDER BY ro.cooked_order SEPARATOR '\n') AS 'Cooked Orders',
-        //                 r.cooked_time AS 'Cooked Time',
-        //                 r.serving AS 'Serving',
-        //                 r.level AS 'Level',
-        //                 r.tips AS 'Tips',
-        //                 r.create_post_date AS 'Created Date',
-        //                 r.lastupdate_post_date AS 'Last Updated Date',
-        //                 r.post_type AS 'Post Type',
-        //                 r.bookmark_count AS 'Bookmark Counts'
-        //             FROM
-        //                 recipe r
-        //             JOIN
-        //                 recipe_category rc ON r.recipe_id = rc.recipe_id
-        //             JOIN
-        //                 categories c ON rc.category_id = c.category_id
-        //             JOIN
-        //                 recipe_ingredient ri ON r.recipe_id = ri.recipe_id
-        //             JOIN
-        //                 ingredient i ON ri.ingredient_id = i.ingredient_id
-        //             JOIN
-        //                 recipe_orders ro ON r.recipe_id = ro.recipe_id
-        //             JOIN
-        //                 users u ON r.user_code = u.user_code
-        //             GROUP BY
-        //                 r.recipe_id
-        //             LIMIT ? OFFSET ?;`;
-        let sql = `SELECT 
-                            r.recipe_id AS 'Recipe Id',
-                            u.username AS 'Author',
-                            u.user_id AS 'User Id',
-                            r.recipe_name AS 'Recipe Name',
-                            r.recipe_img AS 'Recipe Image',
-                            r.recipe_desc AS 'Recipe Description',
-                            GROUP_CONCAT(DISTINCT c.category_name ORDER BY c.category_id SEPARATOR ', ') AS 'Recipe Categories',
-                            GROUP_CONCAT(DISTINCT CONCAT(i.ingredient_name, ' (', ri.count, ' ', ri.ingredient_unit, ')') ORDER BY ri.ingredient_id SEPARATOR ', ') AS 'Recipe Ingredients',
-                            GROUP_CONCAT(DISTINCT CONCAT(ro.cooked_order, '. ', ro.order_desc) ORDER BY ro.cooked_order SEPARATOR '\n') AS 'Cooked Orders',
-                            r.cooked_time AS 'Cooked Time',
-                            r.serving AS 'Serving',
-                            r.level AS 'Level',
-                            r.tips AS 'Tips',
-                            r.create_post_date AS 'Created Date',
-                            r.lastupdate_post_date AS 'Last Updated Date',
-                            r.post_type AS 'Post Type',
-                            r.bookmark_count AS 'Bookmark Counts'
-                        FROM 
-                            recipe r
-                        JOIN 
-                            recipe_category rc ON r.recipe_id = rc.recipe_id
-                        JOIN 
-                            categories c ON rc.category_id = c.category_id
-                        JOIN 
-                            recipe_ingredient ri ON r.recipe_id = ri.recipe_id
-                        JOIN
-                            ingredient i ON ri.ingredient_id = i.ingredient_id
-                        JOIN
-                            recipe_orders ro ON r.recipe_id = ro.recipe_id
-                        JOIN 
-                            users u ON r.user_code = u.user_code
-                        GROUP BY 
-                            r.recipe_id \n`;
+        let sql = `SELECT *
+                            FROM
+                            (SELECT 
+                                r.recipe_id AS 'Recipe Id',
+                                u.username AS 'Author',
+                                u.user_id AS 'User Id',
+                                r.recipe_name AS 'Recipe Name',
+                                r.recipe_img AS 'Recipe Image',
+                                r.recipe_desc AS 'Recipe Description',
+                                GROUP_CONCAT(DISTINCT c.category_name ORDER BY c.category_id SEPARATOR ', ') AS 'Recipe Categories',
+                                GROUP_CONCAT(DISTINCT CONCAT(i.ingredient_name, ' (', ri.count, ' ', ri.ingredient_unit, ')') ORDER BY ri.ingredient_id SEPARATOR ', ') AS 'Recipe Ingredients',
+                                GROUP_CONCAT(DISTINCT CONCAT(ro.cooked_order, '. ', ro.order_desc) ORDER BY ro.cooked_order SEPARATOR '\n') AS 'Cooked Orders',
+                                r.cooked_time AS 'Cooked Time',
+                                r.serving AS 'Serving',
+                                r.level AS 'Level',
+                                r.tips AS 'Tips',
+                                r.create_post_date AS 'Created Date',
+                                r.lastupdate_post_date AS 'Last Updated Date',
+                                r.post_type AS 'Post Type',
+                                r.bookmark_count AS 'Bookmark Counts'
+                            FROM 
+                                recipe r
+                            JOIN 
+                                recipe_category rc ON r.recipe_id = rc.recipe_id
+                            JOIN 
+                                categories c ON rc.category_id = c.category_id
+                            JOIN 
+                                recipe_ingredient ri ON r.recipe_id = ri.recipe_id
+                            JOIN
+                                ingredient i ON ri.ingredient_id = i.ingredient_id
+                            JOIN
+                                recipe_orders ro ON r.recipe_id = ro.recipe_id
+                            JOIN 
+                                users u ON r.user_code = u.user_code
+                            GROUP BY 
+                                r.recipe_id ) t \n`;
         sql = sql + whereQuery + sortQuery + ` LIMIT ? OFFSET ?;`;
-    console.log(placeholderList.flat())
-        const [ data ] = await maria.execute(sql, placeholderList.flat());
+        // console.log(sql)
+    // console.log(placeholderList)
+
+        const [ data ] = await maria.execute(sql, placeholderList);
         // const [ data ] = await maria.execute(sql, [pageOptions.recipePerPage, pageOptions.recipePerPage * (pageOptions.page - 1)]);
 
-        if ( data.length > 0) {
-            res.status(200).json(data);
-        } else {
-            // throw new Error('recipe');
-        }
+        res.status(200).json(data);
     } catch (e) {
         console.error(e);
         res.status(500).json({error: e});

@@ -58,6 +58,19 @@ const RecipeTable = ({ activeTab }) => {
     }
 
     const confirmSearch = async () => {
+
+        console.log('searchKey',searchKey)
+        console.log('searchValue',searchValue)
+        console.log('filterCategory',filterCategory)
+        console.log('filterTag',filterTag)
+        console.log('sortValue', sortValue)
+        console.log('selectedDropdownSearch', selectedDropdownSearch)
+        console.log('selectedDropdownCategories', selectedDropdownCategories)
+        console.log('selectedDropdownTags', selectedDropdownTags)
+        console.log('selectedDropdownOrders', selectedDropdownOrders)
+        console.log('currentPage.current', currentPage.current)
+
+        currentPage.current = 1;
         if ((searchKey.current && searchValue.current) || filterCategory.current || filterTag.current || sortValue.current) {
 
             let tmpSearch = {};
@@ -65,7 +78,7 @@ const RecipeTable = ({ activeTab }) => {
                 tmpSearch = dropdownSearch.map((search, index) => {
                     if (search === searchKey.current) {
                         // 레시피 번호일 때는 숫자반 검색할 수 있게 제한한다.
-                        if (index === 1 && !Number(searchValue.current)) {
+                        if (index === 1 && (isNaN(Number(searchValue.current)))) {
                             return alert('레시피 번호는 숫자로 입력해주세요.');
                         }
                         return {[search]: searchValue.current}
@@ -101,7 +114,6 @@ const RecipeTable = ({ activeTab }) => {
             setSort(tmpSort);
 
             try {
-
                 const newRecipes = await getRecipes({ search: tmpSearch, filter: tmpFilters, sort: tmpSort, recipePerPage: ITEMS_PER_PAGE});
                 setRecipes(newRecipes);
                 currentPage.current = 1;
@@ -116,7 +128,7 @@ const RecipeTable = ({ activeTab }) => {
         setSearch({});
         setFilter([]);
         setSort({});
-        setRecipes(() => []);
+        setRecipes([]);
         currentPage.current = 1;
 
         selectedDropdownSearch.current = dropdownSearch[0];
@@ -125,9 +137,9 @@ const RecipeTable = ({ activeTab }) => {
         selectedDropdownOrders.current = dropdownOrders[0];
 
         try {
-            // const newRecipes = await getRecipes({recipePerPage: ITEMS_PER_PAGE});
-            // setRecipes(newRecipes);
-            loadMoreRecipes(0, ITEMS_PER_PAGE)
+            const newRecipes = await getRecipes({recipePerPage: ITEMS_PER_PAGE});
+            setRecipes(newRecipes);
+            // loadMoreRecipes(0, ITEMS_PER_PAGE)
         } catch (e) {
             console.error(e);
         }
@@ -160,7 +172,7 @@ const RecipeTable = ({ activeTab }) => {
         } else {
             setIsRecipesLoading(false);
         }
-    }, [filter, sort, isRecipesLoading, recipes.length])
+    }, [filter, sort, search, isRecipesLoading, recipes.length])
 
     const isItemLoaded = useCallback((index) => (index < recipes.length), [recipes]);
 
