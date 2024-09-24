@@ -11,7 +11,6 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useSearchParams, useNavigate  } from 'react-router-dom';
 import { Row, Col, Container } from 'react-bootstrap';
 import RecipeListPage from "../pages/RecipeListPage";
-import InfiniteRecipeList from "../pages/InfiniteRecipeList";
 import FilterBox from "./FilterBox";
 import Skeleton from "./UI/Skeleton";
 import styles from '../assets/styles/RecipeList.module.css';
@@ -222,13 +221,13 @@ function FetchRecipeList() {
             isLoading={isLoading}
           </InfiniteRecipeList> */}
 
-          <InfiniteRecipeList2>
-            recipes={filteredRecipes}
-            hasMore={hasMore}
-            loadMore={fetchRecipes}
-            isLoading={isLoading}
-            totalCount={totalCount}
-            </InfiniteRecipeList2>
+          {/*<InfiniteRecipeList2>*/}
+          {/*  recipes={filteredRecipes}*/}
+          {/*  hasMore={hasMore}*/}
+          {/*  loadMore={fetchRecipes}*/}
+          {/*  isLoading={isLoading}*/}
+          {/*  totalCount={totalCount}*/}
+          {/*  </InfiniteRecipeList2>*/}
           </Col>
         </Row>
       )}
