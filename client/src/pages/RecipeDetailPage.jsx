@@ -132,7 +132,7 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
         <Col md={8}>
           <div className={styles.recipeInfo}>
             <p>{recipe.recipe_desc}</p>
-            <BookmarkButton recipeId={recipe.id} initialIsBookmarked={recipe.isBookmarked} />
+            {/* <BookmarkButton recipeId={recipe.id} initialIsBookmarked={recipe.isBookmarked} /> */}
             
             <Row className={styles.recipeStats}>
               <Col xs={3}>

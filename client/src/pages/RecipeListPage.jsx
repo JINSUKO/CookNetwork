@@ -30,19 +30,19 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
   };
 
   if (isLoading && (!recipes || recipes.length === 0)) {
-    return <Skeleton />;
+    return <Skeleton />
   }
 
   return (
     <div>
       <Container className="py-5">
 
-        <Row className="justify-content-center">
-          <Col xs={12} md={10} lg={10}>
-            <Row xs={2} md={3} lg={4} className="g-4">
+        {/* <Row className="justify-content-center"> */}
+          {/* <Col xs={12} md={10} lg={10}> */}
+            <Row xs={1} sm={2} md={3} lg={4} className="g-4">
 
               {recipes && recipes.map((recipe, index) => (
-              <Col key={recipe.recipe_id}>  
+              <Col key={recipe.recipe_id} className={styles.recipeCardWrapper}>  
                 <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
                   <Card 
                     className={styles.recipeCard}
@@ -55,7 +55,7 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
                       <div style={{height: '200px' }}></div>
                     )}
                         <div className={styles.bookmarkWrapper}>
-                            <BookmarkButton recipe_id={recipe.recipe_id} />
+                            {/* <BookmarkButton recipe_id={recipe.recipe_id} /> */}
                         </div>
                   </div>
                   <Card.Body>
@@ -66,7 +66,7 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
                       {recipe.recipe_desc}
                     </Card.Title>
                     <div className={styles.recipeInfo}>
-                      <span style={{ marginRight: '16px'}}>
+                      <span style={{ marginRight: '0px'}}>
                         <FaRegChartBar className={styles.icon} />
                         레벨{recipe.level}
                       </span>
@@ -82,9 +82,8 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
             ))}
             
             </Row>
-          </Col>
-        </Row>
-        {/* </InfiniteScroll> */}
+          {/* </Col> */}
+        {/* </Row> */}
 
         {isLoading && recipes.length > 0 && <Skeleton />}
 

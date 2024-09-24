@@ -20,16 +20,17 @@ export const BookmarkProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 북마크 목록 조회
+  // 북마크 목록 조회 함수
   const fetchBookmark = async () => {
     setLoading(true);
+    
     try {
-      const response = await fetch(`${API_URL}/api/bookmarkedRecipe`);
+      const response = await fetch(`${API_URL}/api/bookmar/${userId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch bookmarked recipes');
       }
       const data = await response.json();
-      setBookmarkedRecipes(response.data);
+      setBookmarkedRecipes(data.bookmarks);
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -48,42 +49,51 @@ export const BookmarkProvider = ({ children }) => {
   // 북마크 추가
   const addBookmark = async (recipeId) => {
     try {
-      const response = await fetch(`/api/bookmark/${recipeId}`, {
+      const response = await fetch(`/api/bookmark/${userId}/${recipeId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
       });
+      // 북마크 토글(제거or추가) [ ]요걸로 수정
+      // const method = isBookmarked(recipeId) ? 'DELETE' : 'POST';
+      // const response = await fetch(`${API_URL}/api/bookmarks/${userId}/${recipeId}`, { method });
+
       if (!response.ok) {
         throw new Error('서버 응답 오류 Failed to add bookmark');
       }
       const newBookmark = await response.json(); // 북마크 목록 갱신
-      setBookmarkedRecipes([...bookmarkedRecipes, newBookmark]);
+      const updatedBookmarks = [...bookmarkedRecipes, newBookmark];
+      setBookmarkedRecipes(updatedBookmarks);
+      localStorage.setItem('bookmarkedRecipes', JSON.stringify(updatedBookmarks));
+
     } catch (err) {
       setError(err.message);
     }
   };
 
   // 북마크 제거
-  const removeBookmark = async (bookmarkId) => {    // bookmarkID?
-    try {
-      const response = await fetch(`/api/bookmark/${recipeId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        throw new Error('Failed to remove bookmark');
-      }
-      setBookmarkedRecipes(prev => prev.filter(id => id !== recipeId));
-      // 북마크 목록 갱신
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  // const removeBookmark = async (recipeId) => {    // bookmarkID?
+  //   try {
+  //     const response = await fetch(`/api/bookmark/${recipeId}`, {
+  //       method: 'DELETE',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       credentials: 'include',
+  //     });
+  //     if (!response.ok) {
+  //       throw new Error('Failed to remove bookmark');
+  //     }
+  //     setBookmarkedRecipes(prev => prev.filter(id => id !== recipeId));
+  //     localStorage.setItem('bookmarkedRecipes', JSON.stringify(updatedBookmarks));
+
+  //     // 북마크 목록 갱신
+  //   } catch (err) {
+  //     setError(err.message);
+  //   }
+  // };
 
   const value = {
     bookmarkedRecipes,

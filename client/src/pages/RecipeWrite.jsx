@@ -2,7 +2,7 @@
  * 레시피 등록 페이지
  */
 
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
@@ -15,7 +15,6 @@ import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import 'prosemirror-view/style/prosemirror.css'
 import styles from '../assets/styles/RecipeEditor.module.css' 
-import fetchInterceptorAuthToken from '../fetchInterceptorAuthToken';
 
 const RecipeEditor = ({ user }) => {
 
@@ -47,6 +46,31 @@ const RecipeEditor = ({ user }) => {
     "밥/죽/떡", "퓨전", "양념/소스", "채식", "분식", "안주",
     "스프", "간식", "음료", "다이어트", "도시락"
   ];
+
+  // Cloudinary 이미지 업로드 함수
+  const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'YOUR_CLOUDINARY_UPLOAD_PRESET');
+    
+    try {
+      const response = await fetch(
+        `${API_URL}/api//writeRecipe`,
+        {
+          method: 'POSt',
+          body: formData
+        }
+      );
+      if (!response.ok) {
+        throw new Error('이미지 업로드에 실패했습니다.');
+      }
+      const data = await response.json();
+      return data.secure_url;
+    } catch (error) {
+      console.error('이미지 업로드 오류:', error);
+      return null;
+    }
+  };
 
   // 조리순서 작성 에디터 부분
   const editor = useEditor({
@@ -146,7 +170,7 @@ const RecipeEditor = ({ user }) => {
       recipe_name: recipeName,
       category,
       filters: selectedFilters,
-      recipe_img: recipeImg,
+      recipe_img: recipeImg,    // cloudinary에서 받은 id
       recipe_desc: recipeDesc,
       cooked_time: cookedTime,
       serving,
@@ -161,7 +185,8 @@ const RecipeEditor = ({ user }) => {
     };
     console.log('제출할 데이터:', recipeData);
 
-    // 데이터 전송(POST)
+    
+    // JSON 데이터 전송(POST)
     try {
       const response = await fetch(`${API_URL}/api//writeRecipe`, {
         method: 'POST',
@@ -339,10 +364,10 @@ const RecipeEditor = ({ user }) => {
         <p className={styles.boldSmallText}>요리팁</p>
         <div>
           <textarea
-                placeholder="예) 고기요리에는 소금보다 설탕을 먼저 넣어야 단맛이 겉돌지 않고 육질이 부드러워요."
-                value={tips}
-                onChange={(e) => setTips(e.target.value)}
-                className={`${styles.recipeTextarea} ${styles.fullWidth}`}
+              placeholder="예) 고기요리에는 소금보다 설탕을 먼저 넣어야 단맛이 겉돌지 않고 육질이 부드러워요."
+              value={tips}
+              onChange={(e) => setTips(e.target.value)}
+              className={`${styles.recipeTextarea} ${styles.fullWidth}`}
           />
         </div>
         <div className={styles.buttonContainer}>
