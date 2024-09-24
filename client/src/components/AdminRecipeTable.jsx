@@ -17,8 +17,7 @@ const RecipeTable = ({ activeTab }) => {
     const [totalWidth, setTotalWidth] = useState(0);
     const [isRecipesLoading, setIsRecipesLoading] = useState(false);
 
-
-    const currentPage = useRef(1);
+    const [currentPage, setCurrentPage] = useState(0);
     const ITEMS_PER_PAGE = 1;
     const ITEM_SIZE = 70;
 
@@ -68,10 +67,16 @@ const RecipeTable = ({ activeTab }) => {
         console.log('selectedDropdownCategories', selectedDropdownCategories)
         console.log('selectedDropdownTags', selectedDropdownTags)
         console.log('selectedDropdownOrders', selectedDropdownOrders)
-        console.log('currentPage.current', currentPage.current)
+        console.log('currentPage', currentPage)
+        setSearch({});
+        setFilter([]);
+        setSort({});
 
-        currentPage.current = 1;
+        setCurrentPage(0);
+
+
         if ((searchKey.current && searchValue.current) || filterCategory.current || filterTag.current || sortValue.current) {
+            setRecipes([])
 
             let tmpSearch = {};
             if (searchKey.current && searchValue.current) {
@@ -114,9 +119,10 @@ const RecipeTable = ({ activeTab }) => {
             setSort(tmpSort);
 
             try {
-                const newRecipes = await getRecipes({ search: tmpSearch, filter: tmpFilters, sort: tmpSort, recipePerPage: ITEMS_PER_PAGE});
-                setRecipes(newRecipes);
-                currentPage.current = 1;
+                loadMoreRecipes(0, ITEMS_PER_PAGE)
+                // const newRecipes = await getRecipes({ search: tmpSearch, filter: tmpFilters, sort: tmpSort, recipePerPage: ITEMS_PER_PAGE});
+                // setRecipes(newRecipes);
+                // setCurrentPage(1);
             } catch (e) {
                 console.error(e);
             }
@@ -129,7 +135,12 @@ const RecipeTable = ({ activeTab }) => {
         setFilter([]);
         setSort({});
         setRecipes([]);
-        currentPage.current = 1;
+        setCurrentPage(0);
+        searchKey.current = null;
+        searchValue.current = null;
+        filterCategory.current = null;
+        filterTag.current = null;
+        sortValue.current = null;
 
         selectedDropdownSearch.current = dropdownSearch[0];
         selectedDropdownCategories.current = dropdownCategories[0];
@@ -137,33 +148,33 @@ const RecipeTable = ({ activeTab }) => {
         selectedDropdownOrders.current = dropdownOrders[0];
 
         try {
-            const newRecipes = await getRecipes({recipePerPage: ITEMS_PER_PAGE});
-            setRecipes(newRecipes);
-            // loadMoreRecipes(0, ITEMS_PER_PAGE)
+            // const newRecipes = await getRecipes({recipePerPage: ITEMS_PER_PAGE});
+            // setRecipes(newRecipes);
+            loadMoreRecipes(0, ITEMS_PER_PAGE)
         } catch (e) {
             console.error(e);
         }
     }
 
     const loadMoreRecipes = useCallback(async (startIndex, stopIndex) => {
-        console.log('startIndex', startIndex);
-        console.log('stopIndex', stopIndex);
+        // console.log('startIndex', startIndex);
+        // console.log('stopIndex', stopIndex);
 
         if (isRecipesLoading) return;
 
         setIsRecipesLoading(true);
 
         const page = Math.floor(startIndex / ITEMS_PER_PAGE) + 1;
-        console.log('page',page)
-        console.log('currentPage.current', currentPage.current)
+        // console.log('page',page)
+        // console.log('currentPage', currentPage)
 
         console.log(search, filter, sort)
 
-        if (page > currentPage.current - 1) {
+        if (page > currentPage ) {
             try {
                 const newRecipes = await getRecipes({ search, filter, sort, recipePerPage: ITEMS_PER_PAGE, page});
                 setRecipes(prevRecipes => [...prevRecipes, ...newRecipes]);
-                currentPage.current = page;
+                setCurrentPage(page);
             } catch (e) {
                 console.error(e);
             } finally {
@@ -188,8 +199,8 @@ const RecipeTable = ({ activeTab }) => {
         return () => {
             // RecipeTable 컴포너트가 unmount 되면 상태 저장하던 값들을 모두 초기화 한다.
             setRecipes([]);
-            currentPage.current = 1;
             setSearch({});
+            setCurrentPage(0);
             setFilter([]);
             setSort({});
             searchKey.current = null;
@@ -226,6 +237,8 @@ const RecipeTable = ({ activeTab }) => {
     }, []);
 
     const RecipeRow = React.memo(({ index, style }) => {
+
+        //todo recipes가 빈 배열일 때 처리는 아직 없음.
         const recipe = recipes[index];
         if (!recipe) {
             return <div style={style}>
