@@ -43,11 +43,13 @@ const DropdownLikeModal = forwardRef(({ state, items, activeTab }, ref) => {
         }
 
         modalRef.current.style.top = `${buttonRef.current.getBoundingClientRect().bottom}px`;
+        modalRef.current.style.left = `${buttonRef.current.getBoundingClientRect().left}px`;
     }, []);
 
     // 스크롤 할 떄 드랍박스모달이 버튼 밑에 따라 붙게 하는 코드.
     const handleScrollHtmlBody = useCallback((event) => {
         modalRef.current.style.top = `${buttonRef.current.getBoundingClientRect().bottom}px`;
+        modalRef.current.style.left = `${buttonRef.current.getBoundingClientRect().left}px`;
 
     }, []);
 
