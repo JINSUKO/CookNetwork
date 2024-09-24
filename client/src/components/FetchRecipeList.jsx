@@ -66,18 +66,18 @@ function FetchRecipeList() {
       let url = currentCategory === 'main'
         ? `${API_URL}/api/category/main`   // 전체 레시피 리스트를 가져오는 main 카테고리
         : `${API_URL}/api/category/${currentCategory}`;   // 특정 카테고리
-      const params = new URLSearchParams(searchParams);     
-
-        if (selectedFilters.length > 0 && !selectedFilters.includes("모두보기")) {
-          params.set('filters', selectedFilters.join(','));
-        } else {
-          params.delete('filters');
-        }
-        
-        params.set('page', pageNum);
-        params.set('limit', 3); // 한 번에 가져올 레시피 수
-
-        url += `?${params.toString()}`;
+      // const params = new URLSearchParams(searchParams);
+      //
+      //   if (selectedFilters.length > 0 && !selectedFilters.includes("모두보기")) {
+      //     params.set('filters', selectedFilters.join(','));
+      //   } else {
+      //     params.delete('filters');
+      //   }
+      //
+      //   params.set('page', pageNum);
+      //   params.set('limit', 3); // 한 번에 가져올 레시피 수
+      //
+      //   url += `?${params.toString()}`;
         
 
         const response = await fetch(url, {
@@ -104,16 +104,17 @@ function FetchRecipeList() {
       //   setFilteredRecipes(prevRecipes => [...prevRecipes, ...recipesWithBookmarkStatus]);
       // }
       
-      if (result && result.recipes) {
+      // if (result && result.recipes) {
+      if (result) {
         console.log(`${currentCategory} 레시피 목록 호출 성공`);
         
         if (pageNum === 1) {
           setRecipes(result);
-          setFilteredRecipes(result.recipes);
-          setTotalCount(result.totalCount);
+          // setFilteredRecipes(result.recipes);
+          // setTotalCount(result.totalCount);
         } else {
-          setRecipes(prevRecipes => [...prevRecipes, ...result.recipes]);
-          setFilteredRecipes(prevRecipes => [...prevRecipes, ...result.recipes]);
+          setRecipes(prevRecipes => [...prevRecipes, ...result]);
+          // setFilteredRecipes(prevRecipes => [...prevRecipes, ...result.recipes]);
         }
         // setHasMore(result.length === 3); // 3개 미만이면 더 이상 데이터가 없다고 판단
         setHasMore(Array.isArray(result.recipes) && recipes.length + result.recipes.length < result.totalCount);   // 남은데이터가 더 있으면 로드
@@ -205,14 +206,14 @@ function FetchRecipeList() {
               selectedFilters={selectedFilters}
               onFilterChange={handleFilterChange}/>
           </div>
-          {/* <RecipeListPage 
-            recipes={filteredRecipes} 
+           <RecipeListPage
+            recipes={recipes}
             currentCategory={currentCategory}
-            hasMore={hasMore}
-            loadMore={() => fetchRecipes(page + 1)}
+            // hasMore={hasMore}
+            // loadMore={() => fetchRecipes(page + 1)}
             isLoading={isLoading}
             totalCount={totalCount}
-          /> */}
+          />
 {/* 
           <InfiniteRecipeList>
             recipes={recipes}
