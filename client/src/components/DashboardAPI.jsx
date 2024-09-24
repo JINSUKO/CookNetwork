@@ -1,16 +1,20 @@
 const API_URL = import.meta.env.VITE_HOST_IP;
 
-export const getRecipesCount = async ({filter=[], sort=''} = {}) => {
+export const getRecipesCount = async ({search={}, filter=[], sort={}} = {}) => {
     let url = `${API_URL}/api/admin/recipeCounts`;
 
     const queries = [];
+
+    if (Object.keys(search).length > 0) {
+        queries.push(`${Object.keys(search)[0]}=${search[Object.keys(search)[0]]}`);
+    }
 
     if(filter.length > 0){
         queries.push(filter.map((query) => (`category=${query}`)).join('&'));
     }
 
-    if(sort.length > 0){
-        queries.push(`sort=${sort}`);
+    if(Object.keys(sort).length > 0) {
+        queries.push(`${Object.keys(sort)[0]}=${sort[Object.keys(sort)[0]]}`);
     }
 
     if(queries.length > 0){
@@ -33,17 +37,21 @@ export const getRecipesCount = async ({filter=[], sort=''} = {}) => {
 
 }
 
-export const getUsersCount = async ({filter=[], sort=''} = {}) => {
+export const getUsersCount = async ({search={}, filter=[], sort={}} = {}) => {
     let url = `${API_URL}/api/admin/userCounts`;
 
     const queries = [];
+
+    if (Object.keys(search).length > 0) {
+        queries.push(`${Object.keys(search)[0]}=${search[Object.keys(search)[0]]}`);
+    }
 
     if(filter.length > 0){
         queries.push(filter.map((query) => (`category=${query}`)).join('&'));
     }
 
-    if(sort.length > 0){
-        queries.push(`sort=${sort}`);
+    if(Object.keys(sort).length > 0){
+        queries.push(`${Object.keys(sort)[0]}=${sort[Object.keys(sort)[0]]}`);
     }
 
     if(queries.length > 0){
@@ -65,17 +73,21 @@ export const getUsersCount = async ({filter=[], sort=''} = {}) => {
     }
 }
 
-export const getRecipes = async ({filter=[], sort='', recipePerPage=1, page=1} = {}) => {
+export const getRecipes = async ({search={}, filter=[], sort={}, recipePerPage=1, page=1} = {}) => {
     let url = `${API_URL}/api/admin/recipes`;
 
     const queries = [];
 
-    if(filter.length > 0){
+    if (Object.keys(search).length > 0) {
+        queries.push(`${Object.keys(search)[0]}=${search[Object.keys(search)[0]]}`);
+    }
+
+    if (filter.length > 0) {
         queries.push(filter.map((query) => (`category=${query}`)).join('&'));
     }
 
-    if(sort.length > 0){
-        queries.push(`sort=${sort}`);
+    if (Object.keys(sort).length > 0) {
+        queries.push(`${Object.keys(sort)[0]}=${sort[Object.keys(sort)[0]]}`);
     }
 
     queries.push(`recipePerPage=${recipePerPage}`);
