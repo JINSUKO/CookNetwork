@@ -10,6 +10,7 @@ import styles from '../../assets/styles/SideBar.module.css'
 function LeftSidebar({ show, handleClose, user }) {
   const [profileImgDBbase64, setProfileImgDBbase64] = useState(user?.user_img || 'basic_profile_img.jpg');
 
+  
   // 로그인 상태에 따라 유저에게 보여줄 메뉴
   const commonLoggedInMenu = [
     { to: "/mypage", text: "마이페이지" },
@@ -34,7 +35,7 @@ function LeftSidebar({ show, handleClose, user }) {
 
   // 사용자의 로그인 상태와 user_code(셰프 여부)에 따라 메뉴 표시
   const currentMenu = user 
-  ? user.user_code === 1    // 셰프 회원
+  ? user.chef_code === 1    // 셰프 회원
   // ? loggedInMenu 
     ? [...commonLoggedInMenu, ...chefMenu]
     : commonLoggedInMenu    // 일반 회원

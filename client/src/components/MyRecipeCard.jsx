@@ -1,9 +1,5 @@
 /** RecipeList.jsx
- * 메인, 카테고리에서 나열되는 레시피 리스트 페이지입니다.
- * [ ] 북마크
- * [ ] 레시피 카드 레시피 이름 외 난이도, 소요시간 추가
- * [ ] 레시피카드UI 컴포넌트 분리
- * [ ] 검색결과 리스트 카드 통일
+[ ] RecipeListPage.jsx로 대체하기
 */ 
 
 import React, { useRef, useCallback } from "react";
@@ -12,18 +8,18 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 
 
 function MyRecipeCard({ recipes, hasMore, loadMore, isLoading  }) {
-  const observer = useRef();
-  const lastRecipeElementRef = useCallback(node => {
-    if (observer.current) observer.current.disconnect();
-    console.log('observer current')
-    observer.current = new IntersectionObserver(entries => {
-      console.log('RecipeListPage')
-      if (entries[0].isIntersecting && hasMore) {
-        loadMore();
-      }
-    });
-    if (node) observer.current.observe(node);
-  }, [hasMore, loadMore]);
+  // const observer = useRef();
+  // const lastRecipeElementRef = useCallback(node => {
+  //   if (observer.current) observer.current.disconnect();
+  //   console.log('observer current')
+  //   observer.current = new IntersectionObserver(entries => {
+  //     console.log('RecipeListPage')
+  //     if (entries[0].isIntersecting && hasMore) {
+  //       loadMore();
+  //     }
+  //   });
+  //   if (node) observer.current.observe(node);
+  // }, [hasMore, loadMore]);
 
   // const loadingStyle = {
   //   backgroundColor: '#ffffff',
@@ -46,13 +42,13 @@ function MyRecipeCard({ recipes, hasMore, loadMore, isLoading  }) {
 
   return (
     <div>
-      <Container className="text-start">
+      {/* <Container className="text-start">
         
         <Row xs={2} md={3} lg={4} className="g-4">
           {recipes && 
             recipes.map((recipe, index) => (
           // <Col key={recipe.recipe_id} ref={index === recipes.length - 1 ? lastRecipeElementRef : null}>  
-          <Col key={recipe.recipe_id} ref={index === recipes.length - 1 ? lastRecipeElementRef : null}>  
+          <Col key={recipe.recipe_id} >  
             <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
               <Card style={{ border: 'none', borderRadius:0, cursor: 'pointer' }}>
                 {recipe.recipe_img ? (
@@ -77,7 +73,7 @@ function MyRecipeCard({ recipes, hasMore, loadMore, isLoading  }) {
         </Col>
         ))}
         </Row>
-      </Container>
+      </Container> */}
     </div>
   )
 }

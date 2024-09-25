@@ -1,66 +1,29 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import { Container } from 'react-bootstrap';
-import { useBookmarkContext } from "../../context/BookmarkContext";
+import { useBookmarkContext } from ".//BookmarkContext";
 import RecipeListPage from "../../pages/RecipeListPage";
 // import Loading from "../../components/UI/Loading";
 import Skeleton from "../../components/UI/Skeleton";
 
 function BookmarkPage() {
-  const [bookmarkedRecipes, setBookmarkedRecipes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const { fetchBookmark } = useBookmarkContext();
-
-  const fetchBookmarkedRecipes = useCallback(async (pageNum = 1) => {
-    try {
-      setIsLoading(true);
-      const response = await fetchBookmark(pageNum);
-      if (response && response.recipes) {
-        if (pageNum === 1) {
-          setBookmarkedRecipes(response.recipes);
-        } else {
-          setBookmarkedRecipes(prevRecipes => [...prevRecipes, ...response.recipes]);
-        }
-        setHasMore(response.recipes.length === 10); // Assuming 10 recipes per page
-      } else {
-        setHasMore(false);
-      }
-    } catch (error) {
-      console.error("북마크 레시피 불러오기 실패:", error);
-      setHasMore(false);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchBookmark]);
+  const { fetchBookmark, loading, bookmarkedRecipes } = useBookmarkContext();
 
   useEffect(() => {
-    fetchBookmarkedRecipes(1);
-  }, [fetchBookmarkedRecipes]);
-
-  const loadMore = useCallback(() => {
-    if (!isLoading && hasMore) {
-      const nextPage = page + 1;
-      setPage(nextPage);
-      fetchBookmarkedRecipes(nextPage);
-    }
-  }, [isLoading, hasMore, page, fetchBookmarkedRecipes]);
+    fetchBookmark(); // [ ] 북마크 isBookmarked 상태 반영
+  }, [fetchBookmark]);
 
   return (
     <Container>
-      {isLoading && bookmarkedRecipes.length === 0 ? (
+      {loading && bookmarkedRecipes.length === 0 ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
           <Skeleton />
         </div>
       ) : (
         <>
-          <h5>내 북마크 레시피<br/>좋아하는 레시피를 확인해보세요!</h5>
+          <h5>내 북마크 레시피<br/>북마크한 레시피를 확인해보세요!</h5>
           <RecipeListPage 
             recipes={bookmarkedRecipes}
-            hasMore={hasMore}
-            loadMore={loadMore}
-            isLoading={isLoading}
-            totalCount={bookmarkedRecipes.length}
+            isLoading={loading}
             isBookmarkPage={true}
           />
         </>
