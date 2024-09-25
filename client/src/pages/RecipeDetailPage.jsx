@@ -9,15 +9,17 @@ import BookmarkButton from '../components/Bookmark/BookmarkButton';
 import styles from '../assets/styles/RecipeDetail.module.css';
 import { FaUtensils, FaClock, FaRegChartBar, FaStarHalf  } from 'react-icons/fa';
 import Loading from '../components/UI/Loading';
+import StarRating from '../components/StarRating';
 
 function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
   const { recipe_id } = useParams();
   // const location = useLocation();
   const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);   // recipes 데이터 빈 배열로 설정
-  const [ingredients, setIngredients] = useState([]);
-  const [orders, setOrders] = useState([]);
-  const [categories, setCategories] = useState([]);
+  // const [ingredients, setIngredients] = useState([]);
+  // const [orders, setOrders] = useState([]);
+  // const [categories, setCategories] = useState([]);
+  // const [userRating, setUserRating] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   const API_URL = import.meta.env.VITE_HOST_IP;
@@ -34,6 +36,7 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}` 
         }
       });
       if(!response.ok) {
@@ -50,13 +53,13 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
     }
   }, [recipe_id, API_URL]);
 
-  // 레시피 재료 데이터 가져오기 함수
+  // 레시피 재료 데이터 가져오기 함수 - X
   const fetchRecipeIngredients = useCallback(async () => {
     try{
       const response = await fetch(`${API_URL}/api/recipe/${recipe_id}/ingredients`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         }
       });
       if(!response.ok) {
@@ -73,7 +76,7 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
     }
   }, [recipe_id, API_URL]);
   
-  // 레시피 조리순서 데이터 가져오기 함수
+  // 레시피 조리순서 데이터 가져오기 함수 - X
   const fetchRecipeOrders = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/api/recipe/${recipe_id}/orders`, {
@@ -120,21 +123,56 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
   // }, [recipe_id, API_URL]);
 
 
-  // [ ] 레시피 평점 데이터 가져오기 함수
-  // const fetchRecipeRate = useCallback(async () => {  
-  // }, [recipe_id]);
+  // 레시피 평점 데이터 가져오기 함수 -X
+  const fetchUserRating = useCallback(async () => {  
+    try {
+      const response = await fetch(`${API_URL}/api/recipe/${recipe_id}/rating`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}` // 사용자 인증 토큰
+        }
+      });
+      if (!response.ok) {
+        throw new Error((await response.json()).error);
+      }
 
-  
+      const result = await response.json();
+      setUserRating(result.rating);
+    } catch (error) {
+      console.error("사용자 평점 호출 실패:", error);
+    }
+  }, [recipe_id, API_URL]);
+
+  // [ ] 유저 평점 등록 함수
+  const handleRatingChange = async (newRating) => {
+    try {
+      const response = await fetch(`${API_URL}/api/recipe/${recipe_id}/rating`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // 사용자 인증 토큰
+        },
+        body: JSON.stringify({ rating: newRating })
+      });
+      if (!response.ok) {
+        throw new Error((await response.json()).error);
+      }
+      // 평점 등록 후 레시피 정보를 다시 불러옴
+      await fetchRecipeDetails();
+    } catch (error) {
+      console.error("평점 등록 실패:", error);
+    }
+  };
+
+
+
+
   // 컴포넌트가 마운트될 때 fetch 함수 호출
   useEffect(() => {
     const loadRecipeData = async () => {
       setIsLoading(true);
-      const recipeData = await fetchRecipeDetails();
-      if (recipeData) {
-        await fetchRecipeIngredients();
-        await fetchRecipeOrders();
-        await fetchRecipeCategories();
-      }
+      await fetchRecipeDetails();
       setIsLoading(false);
     };
 
@@ -274,7 +312,11 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
         <Col>
           <div className={styles.contentSection}>
             <h2 className={styles.sectionTitle}>평점 등록</h2>
-            {/* 평점 등록 컴포넌트를 여기에 추가 */}
+            <StarRating
+              initialRating={recipe.userRating}
+              onRatingChange={handleRatingChange}
+              recipeId={recipe_id}
+            />
           </div>
         </Col>
       </Row>

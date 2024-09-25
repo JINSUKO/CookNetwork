@@ -28,6 +28,7 @@
 .search-form {
   flex-wrap: nowrap;
   margin-right: 15px;
+  display: flex;
 }
 
 .search-input {
@@ -65,13 +66,13 @@
 }
 
 /* 반응형 디자인을 위한 미디어 쿼리 */
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
   .navbar .nav-link {
     padding: 0.5rem 0.75rem;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992x) {
   .navbar .nav-link {
     padding: 0.5rem 0.5rem;
   }
@@ -81,13 +82,13 @@
   }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   .navbar .nav-link {
     padding: 0.25rem 0.5rem;
     font-size: 0.9rem;
   }
   .navbar .form-control,
   .navbar .btn {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 }
