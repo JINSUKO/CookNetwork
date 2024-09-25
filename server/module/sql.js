@@ -8,11 +8,11 @@ const conn = mysql.createPool({
     port : SQL_PORT,
     user : SQL_USER,
     password : SQL_PW,
-    database : SQL_DB
+    database : SQL_DB,
+    waitForConnections: true,
+    connectionLimit: 10,
 });
 // 추가 옵션 기본 값
-// waitForConnections: true,
-// connectionLimit: 10,
 // maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
 // idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
 // queueLimit: 0 c
