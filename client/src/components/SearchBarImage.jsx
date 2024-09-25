@@ -10,6 +10,8 @@ import style from "../assets/styles/SearchBarImage.module.css";
 
 const SearchBarImage = () => {
     const [show, setShow] = useState(false);
+    const [file, setFile] = useState(null);
+    const [fileName, setFileName] = useState("이미지 파일 선택");
 
     const fileInput = useRef(null);
     const fileInputDisplay = useRef(null);
@@ -20,19 +22,31 @@ const SearchBarImage = () => {
         fileInput.current.click();
     };
 
-    const fileInputChange = () => {
+    const fileInputChange = (e) => {
 
+        const file = e.target.files[0];
+
+        if (!file) { setFileName("이미지 파일 선택") }
+
+        if (!file.type.startsWith('image/')) return alert('이미지 파일만 선택해주세요.');
+
+        console.log(file);
+        setFile(file);
+        setFileName(file.name);
     }
 
     const handleSearch = (e) => {
         e.preventDefault();
+
+        if (!file) return;
+
     }
 
     const updateModalPosition = () => {
         if (fileInputDisplay.current && speechBubble.current) {
             const rect = fileInputDisplay.current.getBoundingClientRect();
             speechBubble.current.style.top = `${rect.bottom + 10}px`;
-            speechBubble.current.style.left = `${rect.left}px`;
+            speechBubble.current.style.left = `${rect.left - 20}px`;
         }
     };
 
@@ -41,39 +55,37 @@ const SearchBarImage = () => {
     };
 
     const handleClickHtmlBody = (event) => {
-        if (button.current?.contains(event.target) && !fileInput.current.files[0]) {
-            setShow(true);
 
-            updateModalPosition()
 
-            fileInputDisplay.current.style.borderColor = '#86b7fe';
-            fileInputDisplay.current.style.border= '1px solid #ccc';
-            fileInputDisplay.current.style.boxShadow = '0 0 0 .25rem rgba(13, 110, 253, .25)';
-            fileInputDisplay.current.style.transform = 'scale(1)';
+
+        if (button.current?.contains(event.target) && fileInputDisplay.current) {
+
+            if (!file) {
+
+
+                setShow(true);
+
+                updateModalPosition()
+
+                fileInputDisplay.current.style.borderColor = '#86b7fe';
+                fileInputDisplay.current.style.border= '1px solid #ccc';
+                fileInputDisplay.current.style.boxShadow = '0 0 0 .25rem rgba(13, 110, 253, .25)';
+                fileInputDisplay.current.style.transform = 'scale(1)';
+            }
+
         } else {
             setShow(false);
 
             fileInputDisplay.current.style.borderColor = '#cccccc';
             fileInputDisplay.current.style.boxShadow = 'none';
+
+
         }
+        console.log(file)
     }
 
     const handleScrollHtmlBody = (event) => {
-        if (button.current?.contains(event.target) && !fileInput.current.files[0]) {
-            setShow(true);
-
-            speechBubble.current.style.top = `${fileInputDisplay.current.getBoundingClientRect().bottom + 10}px`;
-            speechBubble.current.style.left = `${fileInputDisplay.current.getBoundingClientRect().left}px`;
-
-            fileInputDisplay.current.style.borderColor = '#86b7fe';
-            fileInputDisplay.current.style.border= '1px solid #ccc';
-            fileInputDisplay.current.style.boxShadow = '0 0 0 .25rem rgba(13, 110, 253, .25)';
-        } else {
-            setShow(false);
-
-            fileInputDisplay.current.style.borderColor = '#cccccc';
-            fileInputDisplay.current.style.boxShadow = 'none';
-        }
+        updateModalPosition()
     }
 
     useEffect(() => {
@@ -86,9 +98,14 @@ const SearchBarImage = () => {
             document.removeEventListener('mousedown', handleClickHtmlBody);
             document.removeEventListener('scroll', handleScrollHtmlBody);
             window.removeEventListener('resize', handleResize);
+
+            fileInput.current = null;
+            fileInputDisplay.current = null;
+            speechBubble.current = null;
+            button.current = null;
         };
 
-    }, []);
+    }, [file]);
 
     return (
         <div>
@@ -101,8 +118,8 @@ const SearchBarImage = () => {
                     onChange={fileInputChange}
                     required
                 />
-                <label className={style.customFileLabel} onClick={fileInputClick} ref={fileInputDisplay}>
-                    파일 선택
+                <label className={`${style.customFileLabel} form-control`} onClick={fileInputClick} ref={fileInputDisplay}>
+                    {fileName}
                 </label>
                 <Button
                     type="submit"
@@ -120,4 +137,4 @@ const SearchBarImage = () => {
     )
 }
 
-export default SearchBarImage;
+export default React.memo(SearchBarImage);
