@@ -10,6 +10,7 @@ import LeftSidebar from './SideBar.jsx';
 import SearchBar from '../../components/SearchBar.jsx';
 import { Container, Nav, Navbar, Button } from 'react-bootstrap';
 import '../../assets/styles/Navbar.css'
+import SearchBarImage from "../../components/SearchBarImage.jsx";
 
 function NavbarElement({ user }) {
   const [showSidebar, setShowSidebar] = useState(false)
@@ -76,7 +77,7 @@ function NavbarElement({ user }) {
 
             {categories.map((category) => (
               <Nav.Item key={category.path}>
-                <Link 
+                <Link
                   to={category.path} 
                   className="nav-link px-2"
                 >{category.name}
@@ -89,6 +90,7 @@ function NavbarElement({ user }) {
         </Container>
         <Container className='d-flex justify-content-end'>
           <SearchBar onSearch={handleSearch}  />
+          <SearchBarImage/>
         </Container>
       </Navbar>
 
