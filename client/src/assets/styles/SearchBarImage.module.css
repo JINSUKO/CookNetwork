@@ -1,4 +1,13 @@
 /* CSS */
+
+.searchForm {
+  display: flex;
+  align-items: center;
+  /*max-width: 500px;*/
+  margin: 20px auto;
+  white-space: nowrap;
+}
+
 .customFileInput {
   display: none; /* 기본 파일 입력 숨기기 */
 }
@@ -6,7 +15,8 @@
 .customFileLabel {
   display: flex;
   align-items: center;
-  justify-content: center;
+  /*justify-content: center;*/
+  width: inherit;
   height: 40px;
   flex-grow: 1;
   padding: 10px 15px;
@@ -17,14 +27,8 @@
   background-color: white;
   cursor: pointer;
   transition: 0.2s;
-}
-
-.searchForm {
-  display: flex;
-  align-items: center;
-  max-width: 500px;
-  margin: 20px auto;
   white-space: nowrap;
+  overflow: hidden;
 }
 
 .searchButton {
