@@ -119,12 +119,12 @@ function App() {
         <BookmarkProvider>
         <Header user={user}/>
         <Routes>
-          <Route path = '/' element = {<Main />}/>
+          <Route path = '/' element = {<FetchRecipeList />}/>
+          <Route path = '/category/:category' element = {<FetchRecipeList/>}/>
           <Route path = '/board' element = {<Board />}/>
           <Route path = '/login' element = {<Login setUser={setUser} setProfilePic={setProfilePic} />}/>
           <Route path = '/signup' element = {<SignUp onSignUp={handleSignUp}/>}/>
           <Route path = '/search' element = {<SearchResultPage/>}/>
-          <Route path = '/category/:category' element = {<FetchRecipeList/>}/>
           <Route path = '/recipe/:recipe_id' element = {<RecipeDetailPage />}/>
           <Route path = '/logout' element={user && <Logout user={user}/>}/>
           <Route element = {<ProtectedPage />}>
