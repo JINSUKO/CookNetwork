@@ -3,7 +3,12 @@ const path = require('path')
 const fs = require('fs')
 const router = express.Router()
 
+require('dotenv').config({ path: '.env.local' })
+
+
 const maria = require('../module/sql');
+
+const url = `https://res.cloudinary.com/${process.env.CLOUDINARY_NAME}/image/upload`
 
 // get 요청을 받음
 router.get('/',async (req,res)=>{
@@ -21,12 +26,12 @@ router.get('/',async (req,res)=>{
            // console.log(searchWord)
 
             //위에서 찾은 recipe와 recipe_img를 매칭시켜 json형태로 저장
-            const recipeImgPath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
-            const searchRecipes = await Promise.all(recipes.map(async (recipe) => {
-                let recipePic = fs.readFileSync(path.join(recipeImgPath, recipe.recipe_img), 'base64');
-                recipePic = 'data:image/jpeg;base64,' + recipePic;
-                return { ...recipe, recipe_img: recipePic };
-            }));
+            // const recipeImgPath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
+            const searchRecipes = recipes.map((recipe) => {
+                // let recipePic = fs.readFileSync(path.join(recipeImgPath, recipe.recipe_img), 'base64');
+                // recipePic = 'data:image/jpeg;base64,' + recipePic;
+                return { ...recipe, recipe_img: `${url}/${recipe.recipe_img}` };
+            });
             // 클라이언트로 response
             return res.json(searchRecipes);
         } catch(error){
@@ -48,12 +53,12 @@ router.get('/',async (req,res)=>{
                 //console.log(searchWord)
 
                 //위에서 찾은 recipe와 recipe_img를 매칭시켜 json형태로 저장
-                const profileBasePath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
-                const searchRecipes = await Promise.all(recipes.map(async (recipe) => {
-                    let profilePic = fs.readFileSync(path.join(profileBasePath, recipe.recipe_img), 'base64');
-                    profilePic = 'data:image/jpeg;base64,' + profilePic;
-                    return { ...recipe, recipe_img: profilePic };
-                }));
+                // const profileBasePath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
+                const searchRecipes = recipes.map((recipe) => {
+                    // let recipePic = fs.readFileSync(path.join(profileBasePath, recipe.recipe_img), 'base64');
+                    // recipePic = 'data:image/jpeg;base64,' + recipePic;
+                    return { ...recipe, recipe_img: `${url}/${recipe.recipe_img}` };
+                });
             // 클라이언트로 response
                 return res.json(searchRecipes);
             } catch(error){

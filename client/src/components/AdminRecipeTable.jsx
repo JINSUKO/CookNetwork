@@ -1,42 +1,180 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Card, Container } from "react-bootstrap";
+import {Button, Card, Container, Form} from "react-bootstrap";
 import { FixedSizeList } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
 
 import AdminStyle from "../assets/styles/Admin.module.css";
 
 import { getRecipes, getRecipesCount } from "./DashboardAPI.jsx"
+import ScrollableDropdown from "./ScrollableDropdown.jsx";
 
 const RecipeTable = ({ activeTab }) => {
     const [recipes, setRecipes] = useState([]);
+    const [search, setSearch] = useState({});
     const [filter, setFilter] = useState([]);
-    const [sort, setSort] = useState('');
+    const [sort, setSort] = useState({});
     const [totalRecipesCount, setTotalRecipesCount] = useState(0);
     const [totalWidth, setTotalWidth] = useState(0);
     const [isRecipesLoading, setIsRecipesLoading] = useState(false);
 
-    const currentPage = useRef(1);
-    const tableRef = useRef(null);
-    const ITEMS_PER_PAGE = 2;
+    const [currentPage, setCurrentPage] = useState(0);
+    const ITEMS_PER_PAGE = 1;
     const ITEM_SIZE = 70;
 
+    const searchKey = useRef(null);
+    const searchValue = useRef(null);
+    const filterCategory = useRef(null);
+    const filterTag = useRef(null);
+    const sortValue = useRef(null);
+
+    const dropdownSearch = [
+        "검색", "레시피 번호", "작성자", "유저 아이디", "레시피 이름", "레시피 설명", "레시피 재료"
+    ];
+
+    const dropdownCategories = [
+        "전체", "한식", "양식", "중식", "일식"
+    ];
+
+    const dropdownTags = [
+        "모두보기", "메인요리", "반찬", "국/탕", "디저트", "면",
+        "밥/죽/떡", "퓨전", "양념/소스", "채식", "분식", "안주",
+        "스프", "간식", "음료", "다이어트", "도시락"
+    ];
+
+    const dropdownOrders = [
+        "정렬", "오래된 순", "최근 순", "작성자(오름차순)", "작성자(내림차순)",
+        "레시피 번호(오름차순)", "레시피 번호(내림차순)", "레시피 이름(오름차순)", "레시피 이름(내림차순)"
+    ];
+
+    const selectedDropdownSearch  = useRef(dropdownSearch[0]);
+    const selectedDropdownCategories = useRef(dropdownCategories[0]);
+    const selectedDropdownTags = useRef(dropdownTags[0]);
+    const selectedDropdownOrders = useRef(dropdownOrders[0]);
+
+    const handleSearchInputChange = (event) => {
+        searchValue.current = event.target.value;
+        console.log(searchValue.current);
+    }
+
+    const confirmSearch = async () => {
+
+        console.log('searchKey',searchKey)
+        console.log('searchValue',searchValue)
+        console.log('filterCategory',filterCategory)
+        console.log('filterTag',filterTag)
+        console.log('sortValue', sortValue)
+        console.log('selectedDropdownSearch', selectedDropdownSearch)
+        console.log('selectedDropdownCategories', selectedDropdownCategories)
+        console.log('selectedDropdownTags', selectedDropdownTags)
+        console.log('selectedDropdownOrders', selectedDropdownOrders)
+        console.log('currentPage', currentPage)
+        setSearch({});
+        setFilter([]);
+        setSort({});
+
+        setCurrentPage(0);
+
+
+        if ((searchKey.current && searchValue.current) || filterCategory.current || filterTag.current || sortValue.current) {
+            setRecipes([])
+
+            let tmpSearch = {};
+            if (searchKey.current && searchValue.current) {
+                tmpSearch = dropdownSearch.map((search, index) => {
+                    if (search === searchKey.current) {
+                        // 레시피 번호일 때는 숫자반 검색할 수 있게 제한한다.
+                        if (index === 1 && (isNaN(Number(searchValue.current)))) {
+                            return alert('레시피 번호는 숫자로 입력해주세요.');
+                        }
+                        return {[search]: searchValue.current}
+                    }
+                }).filter(element => element)[0];
+                
+                // 검색어가 올바르지않으면 값을 받지 않기 때문에 여기서 null/undefined 체크를 한다.
+                if (!tmpSearch) return;
+            }
+            setSearch(tmpSearch);
+
+            const tmpFilters = [];
+            if (filterCategory.current) tmpFilters.push(filterCategory.current);
+            if (filterTag.current) tmpFilters.push(filterTag.current);
+            setFilter(tmpFilters);
+
+            const dropdownOrderColumns = [
+                "Created Date", "User Id", "Recipe Id", "Recipe Name"
+            ];
+
+            let tmpSort = {};
+            if (sortValue.current) {
+                tmpSort = dropdownOrders.map((key, index) => {
+                    if (key === sortValue.current) {
+                        if ((index - 1) % 2) {
+                            return {DESC:dropdownOrderColumns[Math.floor((index - 1) / 2)]};
+                        } else {
+                            return {ASC:dropdownOrderColumns[Math.floor((index - 1) / 2)]};
+                        }
+                    }
+                }).filter(element => element)[0];
+            }
+            setSort(tmpSort);
+
+            try {
+                loadMoreRecipes(0, ITEMS_PER_PAGE)
+                // const newRecipes = await getRecipes({ search: tmpSearch, filter: tmpFilters, sort: tmpSort, recipePerPage: ITEMS_PER_PAGE});
+                // setRecipes(newRecipes);
+                // setCurrentPage(1);
+            } catch (e) {
+                console.error(e);
+            }
+        } 
+    }
+
+    const initializeSearch = async () => {
+
+        setSearch({});
+        setFilter([]);
+        setSort({});
+        setRecipes([]);
+        setCurrentPage(0);
+        searchKey.current = null;
+        searchValue.current = null;
+        filterCategory.current = null;
+        filterTag.current = null;
+        sortValue.current = null;
+
+        selectedDropdownSearch.current = dropdownSearch[0];
+        selectedDropdownCategories.current = dropdownCategories[0];
+        selectedDropdownTags.current = dropdownTags[0];
+        selectedDropdownOrders.current = dropdownOrders[0];
+
+        try {
+            // const newRecipes = await getRecipes({recipePerPage: ITEMS_PER_PAGE});
+            // setRecipes(newRecipes);
+            loadMoreRecipes(0, ITEMS_PER_PAGE)
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     const loadMoreRecipes = useCallback(async (startIndex, stopIndex) => {
-        console.log('startIndex', startIndex);
-        console.log('stopIndex', stopIndex);
+        // console.log('startIndex', startIndex);
+        // console.log('stopIndex', stopIndex);
 
         if (isRecipesLoading) return;
 
         setIsRecipesLoading(true);
 
         const page = Math.floor(startIndex / ITEMS_PER_PAGE) + 1;
-        console.log('page',page)
-        console.log('currentPage.current', currentPage.current)
+        // console.log('page',page)
+        // console.log('currentPage', currentPage)
 
-        if (page > currentPage.current - 1) {
+        console.log(search, filter, sort)
+
+        if (page > currentPage ) {
             try {
-                const newRecipes = await getRecipes({ filter, sort, recipePerPage: ITEMS_PER_PAGE, page});
+                const newRecipes = await getRecipes({ search, filter, sort, recipePerPage: ITEMS_PER_PAGE, page});
                 setRecipes(prevRecipes => [...prevRecipes, ...newRecipes]);
-                currentPage.current = page;
+                setCurrentPage(page);
             } catch (e) {
                 console.error(e);
             } finally {
@@ -45,11 +183,12 @@ const RecipeTable = ({ activeTab }) => {
         } else {
             setIsRecipesLoading(false);
         }
-    }, [filter, sort, isRecipesLoading, recipes.length])
+    }, [filter, sort, search, isRecipesLoading, recipes.length])
 
     const isItemLoaded = useCallback((index) => (index < recipes.length), [recipes]);
 
     useEffect(() => {
+        console.log(activeTab)
         if (activeTab === 'recipes') {
             loadMoreRecipes(0, ITEMS_PER_PAGE);
             getRecipesCount()
@@ -58,12 +197,21 @@ const RecipeTable = ({ activeTab }) => {
         }
 
         return () => {
+            // RecipeTable 컴포너트가 unmount 되면 상태 저장하던 값들을 모두 초기화 한다.
             setRecipes([]);
-            currentPage.current = 1;
+            setSearch({});
+            setCurrentPage(0);
+            setFilter([]);
+            setSort({});
+            searchKey.current = null;
+            searchValue.current = null;
+            filterCategory.current = null;
+            filterTag.current = null;
+            sortValue.current = null;
         }
     }, [activeTab]);
 
-    const columns = [
+    const headerColumns = [
         { key: 'Recipe Id', width: 100 },
         { key: 'Author', width: 130 },
         { key: 'User Id', width: 100 },
@@ -71,6 +219,8 @@ const RecipeTable = ({ activeTab }) => {
         { key: 'Recipe Image', width: 150 },
         { key: 'Recipe Description', width: 300 },
         { key: 'Recipe Categories', width: 200 },
+        { key: 'Recipe Ingredients', width: 300 },
+        { key: 'Cooked Orders', width: 300 },
         { key: 'Cooked Time', width: 120 },
         { key: 'Serving', width: 80 },
         { key: 'Level', width: 60 },
@@ -82,12 +232,13 @@ const RecipeTable = ({ activeTab }) => {
     ];
 
     useEffect(() => {
-        const width = columns.reduce((acc, column) => acc + column.width, 0);
+        const width = headerColumns.reduce((acc, column) => acc + column.width, 0);
         setTotalWidth(width);
     }, []);
 
     const RecipeRow = React.memo(({ index, style }) => {
-        console.log('index', index)
+
+        //todo recipes가 빈 배열일 때 처리는 아직 없음.
         const recipe = recipes[index];
         if (!recipe) {
             return <div style={style}>
@@ -98,79 +249,98 @@ const RecipeTable = ({ activeTab }) => {
 
         return (
             <div style={{...style, width: `${totalWidth}px`}} className={AdminStyle.tableRow}>
-                <div style={{width: `${columns[0].width}px`}}
+                <div style={{width: `${headerColumns[0].width}px`}}
                      className={AdminStyle.tableCell}>{recipe['Recipe Id']}</div>
-                <div style={{width: `${columns[1].width}px`}} className={AdminStyle.tableCell}>{recipe['Author']}</div>
-                <div style={{width: `${columns[2].width}px`}} className={AdminStyle.tableCell}>{recipe['User Id']}</div>
+                <div style={{width: `${headerColumns[1].width}px`}} className={AdminStyle.tableCell}>{recipe['Author']}</div>
+                <div style={{width: `${headerColumns[2].width}px`}} className={AdminStyle.tableCell}>{recipe['User Id']}</div>
                 <div className={`${AdminStyle.tooltipContainer} ${AdminStyle.recipeName}`}>
-                    <span className={AdminStyle.truncated}>{recipe['Recipe Name']}</span>
+                    <span className={AdminStyle.nameTruncated}>{recipe['Recipe Name']}</span>
                     <span className={AdminStyle.tooltipText}>{recipe['Recipe Name']}</span>
                 </div>
-                <div style={{width: `${columns[4].width}px`}}
+                <div style={{width: `${headerColumns[4].width}px`}}
                      className={AdminStyle.tableCell}>{recipe['Recipe Image']}</div>
                 <div className={`${AdminStyle.tooltipContainer} ${AdminStyle.recipeDescription}`}>
-                    <span className={AdminStyle.truncated}>{recipe['Recipe Description']}</span>
+                    <span className={AdminStyle.descTruncated}>{recipe['Recipe Description']}</span>
                     <span className={AdminStyle.tooltipText}>{recipe['Recipe Description']}</span>
                 </div>
-                <div style={{width: `${columns[6].width}px`}}
+                <div style={{width: `${headerColumns[6].width}px`}}
                      className={AdminStyle.tableCell}>{recipe['Recipe Categories']}</div>
-                <div style={{width: `${columns[7].width}px`}}
+                <div className={`${AdminStyle.tooltipContainer} ${AdminStyle.recipeDescription}`}>
+                    <span className={AdminStyle.truncated}>{recipe['Recipe Ingredients']}</span>
+                    <span className={AdminStyle.tooltipText}>{recipe['Recipe Ingredients']}</span>
+                </div>
+                <div className={`${AdminStyle.tooltipContainer} ${AdminStyle.recipeDescription}`}>
+                    <span className={AdminStyle.truncated}>{recipe['Cooked Orders']}</span>
+                    <span className={AdminStyle.tooltipText}>{recipe['Cooked Orders']}</span>
+                </div>
+                <div style={{width: `${headerColumns[9].width}px`}}
                      className={AdminStyle.tableCell}>{recipe['Cooked Time']}</div>
-                <div style={{width: `${columns[8].width}px`}} className={AdminStyle.tableCell}>{recipe['Serving']}</div>
-                <div style={{width: `${columns[9].width}px`}} className={AdminStyle.tableCell}>{recipe['Level']}</div>
-                <div style={{width: `${columns[10].width}px`}} className={AdminStyle.tableCell}>{recipe['Tips']}</div>
-                <div style={{width: `${columns[11].width}px`}}
+                <div style={{width: `${headerColumns[10].width}px`}} className={AdminStyle.tableCell}>{recipe['Serving']}</div>
+                <div style={{width: `${headerColumns[11].width}px`}} className={AdminStyle.tableCell}>{recipe['Level']}</div>
+                <div style={{width: `${headerColumns[12].width}px`}} className={AdminStyle.tableCell}>{recipe['Tips']}</div>
+                <div style={{width: `${headerColumns[13].width}px`}}
                      className={AdminStyle.tableCell}>{recipe['Created Date']}</div>
-                <div style={{width: `${columns[12].width}px`}}
+                <div style={{width: `${headerColumns[14].width}px`}}
                      className={AdminStyle.tableCell}>{recipe['Last Updated Date']}</div>
-                <div style={{width: `${columns[13].width}px`}}
+                <div style={{width: `${headerColumns[15].width}px`}}
                      className={AdminStyle.tableCell}>{recipe['Post Type']}</div>
-                <div style={{width: `${columns[14].width}px`}}
+                <div style={{width: `${headerColumns[16].width}px`}}
                      className={AdminStyle.tableCell}>{recipe['Bookmark Counts']}</div>
             </div>
         );
     });
 
     return (
-            <Card>
-                <Card.Header as="h5">Recent Recipes</Card.Header>
-                <Card.Body>
-                    <div className={AdminStyle.tableContainer} ref={tableRef}>
-                        <Container fluid>
-                            <div className={AdminStyle.tableHeader}>
-                                {columns.map(column => (
-                                    <div key={column.key} className={AdminStyle.headerCell}
-                                         style={{width: column.width, backgroundColor: '#f8f9fa'}}>
-                                        {column.key}
-                                    </div>
-                                ))}
-                            </div>
-                            <div className={AdminStyle.tableBody}>
-                                <InfiniteLoader
-                                    isItemLoaded={isItemLoaded}
-                                    itemCount={totalRecipesCount}
-                                    loadMoreItems={loadMoreRecipes}
-                                >
-                                    {({onItemsRendered, ref}) => (
-                                        <FixedSizeList
-                                            className={AdminStyle.tableContentContainer}
-                                            height={400}
-                                            itemCount={totalRecipesCount}
-                                            itemSize={ITEM_SIZE}
-                                            width={totalWidth}
-                                            onItemsRendered={onItemsRendered}
-                                            ref={ref}
-                                        >
-                                            {RecipeRow}
-                                        </FixedSizeList>
-                                    )}
-                                </InfiniteLoader>
-                            </div>
-                        </Container>
-                    </div>
-                </Card.Body>
-            </Card>
+        <Card>
+            <Card.Header className={AdminStyle.cardHeader} as="h5">
+                Recent Recipes &nbsp;
+                {activeTab === 'recipes' && (
+                    <>  <ScrollableDropdown items={dropdownSearch} state={selectedDropdownSearch} ref={searchKey} activeTab={activeTab}/> &nbsp;
+                        <Form.Control style={{width: '100px'}} onChange={handleSearchInputChange}/>
+                        &nbsp;|&nbsp; <ScrollableDropdown ref={filterCategory} items={dropdownCategories} state={selectedDropdownCategories} activeTab={activeTab}/>
+                        &nbsp;|&nbsp; <ScrollableDropdown ref={filterTag} state={selectedDropdownTags} items={dropdownTags} activeTab={activeTab}/>
+                        &nbsp;|&nbsp; <ScrollableDropdown ref={sortValue} state={selectedDropdownOrders} items={dropdownOrders} activeTab={activeTab}/>
+                        &nbsp; <Button onClick={confirmSearch}>확인</Button> 
+                        &nbsp; <Button className='btn-success' onClick={initializeSearch}>초기화</Button>
+                    </> )}
+            </Card.Header>
+            <Card.Body>
+                <div className={AdminStyle.tableContainer}>
+                    <Container fluid>
+                        <div className={AdminStyle.tableHeader}>
+                            {headerColumns.map(column => (
+                                <div key={column.key} className={AdminStyle.headerCell}
+                                     style={{width: column.width, backgroundColor: '#f8f9fa'}}>
+                                    {column.key}
+                                </div>
+                            ))}
+                        </div>
+                        <div className={AdminStyle.tableBody}>
+                            <InfiniteLoader
+                                isItemLoaded={isItemLoaded}
+                                itemCount={totalRecipesCount}
+                                loadMoreItems={loadMoreRecipes}
+                            >
+                                {({onItemsRendered, ref}) => (
+                                    <FixedSizeList
+                                        className={AdminStyle.tableContentContainer}
+                                        height={700}
+                                        itemCount={totalRecipesCount}
+                                        itemSize={ITEM_SIZE}
+                                        width={totalWidth}
+                                        onItemsRendered={onItemsRendered}
+                                        ref={ref}
+                                    >
+                                        {RecipeRow}
+                                    </FixedSizeList>
+                                )}
+                            </InfiniteLoader>
+                        </div>
+                    </Container>
+                </div>
+            </Card.Body>
+        </Card>
     );
 };
 
-export default RecipeTable;
+export default React.memo(RecipeTable);

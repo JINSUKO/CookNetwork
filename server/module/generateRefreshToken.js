@@ -11,7 +11,7 @@ require("dotenv").config({ path: '.env.local' });
  * @returns {{token: JWT Refresh Token, jti: uuidv4}}
  */
 const generateRefreshToken = (userId) => {
-    const REFRESH_TOKEN_EXPIRY = '1h';
+    const REFRESH_TOKEN_EXPIRY = '30d';
 
     const SECRET_KEY = process.env.SECRET_KEY_REFRESH;
 
