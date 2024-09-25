@@ -5,8 +5,7 @@
 import React, { useState, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-
+import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image'
 import Placeholder from '@tiptap/extension-placeholder'
 import Underline from '@tiptap/extension-underline'
@@ -17,6 +16,10 @@ import 'prosemirror-view/style/prosemirror.css'
 import styles from '../assets/styles/RecipeEditor.module.css' 
 
 const RecipeEditor = ({ user }) => {
+  if (!user) {
+    // console.log(user)
+    return <div>사용자 정보를 불러오는 중입니다...</div>;
+  }
 
   const navigate = useNavigate();
   const [recipeName, setRecipeName] = useState('')
@@ -24,11 +27,12 @@ const RecipeEditor = ({ user }) => {
   const [selectedFilters, setSelectedFilters] = useState([])
   const [recipeDesc, setRecipeDesc] = useState('')
   const [recipeImg, setRecipeImg] = useState('')
+  const [recipeImgPreview, setRecipeImgPreview] = useState('')
   const [cookedTime, setCookedTime] = useState('')
   const [serving, setServing] = useState('')
   const [level, setLevel] = useState('')
   const [ingredients, setIngredients] = useState([{ name: '', count: '', unit: '' }])
-  const [steps, setSteps] = useState([{ order: 1, desc: '', img: '' }])
+  const [steps, setSteps] = useState([{ order: 1, desc: '', img: '', imgFile: null }])
   const [tips, setTips] = useState('')
   
   const API_URL = import.meta.env.VITE_HOST_IP;
@@ -47,30 +51,47 @@ const RecipeEditor = ({ user }) => {
     "스프", "간식", "음료", "다이어트", "도시락"
   ];
 
-  // Cloudinary 이미지 업로드 함수
-  const uploadImage = async (file) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'YOUR_CLOUDINARY_UPLOAD_PRESET');
+  // 대표 이미지 업로드 함수
+  const uploadImage = async (event) => {
+    const file = event.target.files[0]
     
-    try {
-      const response = await fetch(
-        `${API_URL}/api//writeRecipe`,
-        {
-          method: 'POSt',
-          body: formData
-        }
-      );
-      if (!response.ok) {
-        throw new Error('이미지 업로드에 실패했습니다.');
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('이미지 파일만 선택해주세요.');
+      return;
+    }
+
+    if (file) {
+      setRecipeImg(file)    // 파일 객체 저장
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setRecipeImgPreview(e.target.result)  // 미리보기 URL 저장
       }
-      const data = await response.json();
-      return data.secure_url;
-    } catch (error) {
-      console.error('이미지 업로드 오류:', error);
-      return null;
+      reader.readAsDataURL(file)
     }
   };
+
+  // 단계별 이미지 업로드 함수
+  const uploadStepImage = (index, file) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('이미지 파일만 선택해주세요.');
+      return;
+    }
+
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setSteps(prevSteps => 
+          prevSteps.map((step, i) => 
+            i === index ? { ...step, img: e.target.result, imgFile: file } : step
+          )
+        );
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
 
   // 조리순서 작성 에디터 부분
   const editor = useEditor({
@@ -107,18 +128,6 @@ const RecipeEditor = ({ user }) => {
     });
   }
 
-  //대표이미지 업로드
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setRecipeImg(e.target.result)
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
   // 재료 입력
   const handleIngredientChange = (index, field, value) => {
     const newIngredients = [...ingredients]
@@ -126,7 +135,7 @@ const RecipeEditor = ({ user }) => {
     setIngredients(newIngredients)
   }
 
-  // 재료 추가
+  // 재료 추가 버튼
   const addIngredient = () => {
     setIngredients([...ingredients, {name: '', count:'', unit:''}])
   }
@@ -140,37 +149,38 @@ const RecipeEditor = ({ user }) => {
     );
   }
 
-  // 단계 추가
+  // 단계 추가 버튼
   const addStep = () => {
     setSteps([...steps, { order: steps.length +1, desc:'', img:''}])
   }
 
 
-  // 단계별 이미지 업로드
-  const handleStepImageUpload = (index, file) => {
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setSteps(prevSteps => 
-          prevSteps.map((step, i) => 
-            i === index ? { ...step, img: e.target.result } : step
-          )
-        );
-      }
-      reader.readAsDataURL(file)
-    }
-  }
+  // // 조리단계별 이미지 업로드
+  // const handleStepImageUpload = (index, file) => {
+  //   if (file) {
+  //     const reader = new FileReader()
+  //     reader.onload = (e) => {
+  //       setSteps(prevSteps => 
+  //         prevSteps.map((step, i) => 
+  //           i === index ? { ...step, img: e.target.result } : step
+  //         )
+  //       );
+  //     }
+  //     reader.readAsDataURL(file)
+  //   }
+  // }
 
 
   // 폼 제출
   const handleSubmit = async (e) => {
     e.preventDefault()
+
     const recipeData = {
       user_id: user.user_id, 
       recipe_name: recipeName,
       category,
       filters: selectedFilters,
-      recipe_img: recipeImg,    // cloudinary에서 받은 id
+      // recipe_img: recipeImg,    // cloudinary에서 받은 id
       recipe_desc: recipeDesc,
       cooked_time: cookedTime,
       serving,
@@ -179,31 +189,42 @@ const RecipeEditor = ({ user }) => {
       cooked_order: steps.map(step => ({
         cooked_order: step.order,
         order_desc: step.desc,
-        order_img: step.img
+        // order_img: step.img
       })),
       tips
     };
     console.log('제출할 데이터:', recipeData);
 
-    
-    // JSON 데이터 전송(POST)
-    try {
-      const response = await fetch(`${API_URL}/api//writeRecipe`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(recipeData)
-      })
+    const formData = new FormData();
 
+    // 이미지 제외 데이터 FormData에 추가
+    formData.append('recipeData',JSON.stringify(recipeData));
+    // 대표 이미지 추가
+    if (recipeImg) {
+      formData.append('recipe_img', recipeImg);
+    }
+    //단계별이미지추가
+    steps.forEach((step, index) => {
+      if (step.imgFile) {
+        formData.append(`step_img_${index}`, step.imgFile);
+      }
+    });
+
+    // FormData 데이터 전송
+    try {
+      const response = await fetch(`${API_URL}/api/writeRecipe`, {
+        method: 'POST',
+        body: formData,
+      })
       if (!response.ok) {
         throw new Error('레시피 등록에 실패했습니다.');
       }
       console.log('Recipe submitted:', response);
       alert("레시피가 성공적으로 등록되었습니다.")
-      navigate("/");
+      navigate("/", { replace: true });  // replace: true를 사용하여 현재 페이지를 대체
     } catch (error) {
       console.error('레시피 등록 오류', error);
+      alert("레시피 등록 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
   }
 
@@ -250,11 +271,11 @@ const RecipeEditor = ({ user }) => {
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => handleImageUpload(e, setRecipeImg)}
+            onChange={uploadImage}
             className={`${styles.recipeSelect} ${styles.halfWidth}`}
             // required
           />
-          {recipeImg && <img src={recipeImg} alt="Recipe" className={styles.previewImage} />}
+        {recipeImgPreview && <img src={recipeImgPreview} alt="대표이미지" className={styles.previewImage} />}
         </div>
         <div className={styles.formGroup}>
           <input
@@ -262,7 +283,7 @@ const RecipeEditor = ({ user }) => {
             placeholder="간단한 설명을 적어주세요."
             value={recipeDesc}
             onChange={(e) => setRecipeDesc(e.target.value)}
-            className={`${styles.recipeInput} ${styles.fullWidth}`}
+            className={`${styles.recipeInput} ${styles.fullWidth} ${styles.lightPlaceholder}`}
           />
         </div>
 
@@ -273,7 +294,7 @@ const RecipeEditor = ({ user }) => {
             placeholder="조리 시간"
             value={cookedTime}
             onChange={(e) => setCookedTime(e.target.value)}
-            className={`${styles.recipeInput} ${styles.quarterWidth}`}
+            className={`${styles.recipeInput} ${styles.quarterWidth} ${styles.lightPlaceholder}`}
             required
             min="10"
             step="10"
@@ -316,21 +337,21 @@ const RecipeEditor = ({ user }) => {
               placeholder="재료명"
               value={ingredient.name}
               onChange={(e) => handleIngredientChange(index, 'name', e.target.value)}
-              className={`${styles.recipeInput} ${styles.thirdWidth}`}
+              className={`${styles.recipeInput} ${styles.thirdWidth} ${styles.lightPlaceholder}`}
             />
             <input
               type="text"
               placeholder="수량"
               value={ingredient.count}
               onChange={(e) => handleIngredientChange(index, 'count', e.target.value)}
-              className={`${styles.recipeInput} ${styles.quarterWidth}`}
+              className={`${styles.recipeInput} ${styles.quarterWidth} ${styles.lightPlaceholder}`}
             />
             <input
               type="text"
               placeholder="단위(예:g, 개)"
               value={ingredient.unit}
               onChange={(e) => handleIngredientChange(index, 'unit', e.target.value)}
-              className={`${styles.recipeInput} ${styles.quarterWidth}`}
+              className={`${styles.recipeInput} ${styles.quarterWidth} ${styles.lightPlaceholder}`}
             />
           </div>
         ))}
@@ -346,12 +367,12 @@ const RecipeEditor = ({ user }) => {
               placeholder="조리 방법을 적어주세요."
               value={step.desc}
               onChange={(e) => handleStepChange(index, e.target.value)}
-              className={`${styles.recipeTextarea} ${styles.fullWidth}`}
+              className={`${styles.recipeTextarea} ${styles.fullWidth} ${styles.lightPlaceholder}`}
             />
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => handleStepImageUpload(index, e.target.files[0])}
+              onChange={uploadStepImage}
               className={`${styles.recipeInput} ${styles.fullWidth}`}
             />
             {step.img && <img src={step.img} alt={`Step ${step.order}`} className={styles.stepImage} />}
@@ -367,7 +388,7 @@ const RecipeEditor = ({ user }) => {
               placeholder="예) 고기요리에는 소금보다 설탕을 먼저 넣어야 단맛이 겉돌지 않고 육질이 부드러워요."
               value={tips}
               onChange={(e) => setTips(e.target.value)}
-              className={`${styles.recipeTextarea} ${styles.fullWidth}`}
+              className={`${styles.recipeTextarea} ${styles.fullWidth}  ${styles.lightPlaceholder}`}
           />
         </div>
         <div className={styles.buttonContainer}>

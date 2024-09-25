@@ -8,13 +8,16 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams  } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import MyRecipeCard from "../components/MyRecipeCard";
+import RecipeListPage from './RecipeListPage';
 // import FilterBox from "../components/FilterBox";
 import Loading from "../components/UI/Loading"
 
-const MyRecipeList = () => {    // { recipes }
+const MyRecipeList = ({ user }) => {    // { recipes }
+  if (!user) {
+    console.log(user)
+    return <div>사용자 정보를 불러오는 중입니다...</div>;
+  }
   const [recipes, setRecipes] = useState([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const API_URL = import.meta.env.VITE_HOST_IP;
 
@@ -48,15 +51,14 @@ const MyRecipeList = () => {    // { recipes }
   }
 ]
 
-  const fetchRecipes = async () => {
+  const getMyRecipes = async () => {
     try {
       const response = await fetch(`${API_URL}/api/myRecipe`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        // },
-        // body: JSON.stringify({user_id: user.user_id})
-        }
+        },
+        
       });
 
       if (!response.ok) throw new Error((await response.json()).error); 
@@ -71,12 +73,11 @@ const MyRecipeList = () => {    // { recipes }
 
   // 컴포넌트가 마운트될 때 fetch 함수 호출
   useEffect(() => {   
-    setPage(1);
-    fetchRecipes();
+    getMyRecipes();
   }, []);
 
   return (
-    <Container>
+    <Container style={{ textAlign: 'center' }}>
       {isLoading && recipes.length === 0 ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
           <Spinner animation="border" role="status">
@@ -85,14 +86,8 @@ const MyRecipeList = () => {    // { recipes }
         </div>
       ) : (
         <>
-          <h2>나만의 레시피 관리</h2>
-          <MyRecipeCard 
-          recipes = {sampleRecipes}
-            // recipes={recipes}
-            // hasMore={hasMore}
-            // loadMore={loadMore}
-            // isLoading={isLoading}
-          />
+          <h2 style={{ margin: '30px 0' }}>나만의 레시피 관리</h2>
+          <RecipeListPage recipes = {sampleRecipes}/>
         </>
       )}
     </Container>

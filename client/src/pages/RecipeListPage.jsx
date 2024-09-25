@@ -68,7 +68,7 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
                     <div className={styles.recipeInfo}>
                       <span style={{ marginRight: '0px'}}>
                         <FaRegChartBar className={styles.icon} />
-                        레벨{recipe.level}
+                        Lv.{recipe.level}
                       </span>
                       <span>
                         <FaClock className={styles.icon} />

@@ -101,7 +101,7 @@ export const BookmarkProvider = ({ children }) => {
     error,
     isBookmarked,
     addBookmark,
-    removeBookmark,
+    // removeBookmark,
     fetchBookmark
   };
 

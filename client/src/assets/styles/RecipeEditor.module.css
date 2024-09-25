@@ -46,6 +46,10 @@
   max-height: 100px;
 }
 
+.lightPlaceholder::placeholder {
+  color: #999; /* 연한 회색으로 설정 */
+}
+
 .boldSmallText {
   font-weight: bold;
   font-size: 16px;
