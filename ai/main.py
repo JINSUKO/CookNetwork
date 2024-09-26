@@ -1,7 +1,7 @@
 # pip install langchain-openai
 # pip install python-dotenv
 # pip install langchain
-# pip install lanchain-community sentence-transformers torch
+# pip install langchain-community sentence-transformers torch
 # pip install python-multipart
 
 from fastapi import FastAPI # pip install fastapi

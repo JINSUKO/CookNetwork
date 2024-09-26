@@ -2,28 +2,25 @@ import os
 import json
 
 from fastapi import APIRouter, Body, Form, File, UploadFile
-from pydantic import BaseModel
 from dotenv import load_dotenv
 
-from typing import List
-from langchain.docstore.document import Document
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain.chains import RetrievalQA
+from langchain_community.vectorstores.utils import DistanceStrategy
 from langchain_openai import ChatOpenAI
+from langchain_openai import OpenAIEmbeddings
 from langchain.prompts import PromptTemplate
-from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough, RunnableParallel
-from dotenv import load_dotenv
+from langchain_core.output_parsers import StrOutputParser
 
 print(load_dotenv())
+
 
 def parse_ingredient(ingredient):
     if isinstance(ingredient, dict):
         return {k: v for k, v in ingredient.items() if v}
     else:
         return str(ingredient)
+
 
 def parse_content(content):
     parsed_content = {}
@@ -57,6 +54,7 @@ def parse_content(content):
                 parsed_content[key] = content[key]
     return json.dumps(parsed_content, ensure_ascii=False)
 
+
 def load_json_documents(directory: str):
     documents = []
     for filename in os.listdir(directory):
@@ -68,19 +66,20 @@ def load_json_documents(directory: str):
     return documents
 
 
-
 def create_vector_store(texts):
     # 단어 수준의 임베딩에 적합한 모델 사용
     embeddings = OpenAIEmbeddings(model='text-embedding-3-large')
-    vector_store = FAISS.from_texts(texts, embeddings)
+    vector_store = FAISS.from_texts(texts, embeddings, distance_strategy = DistanceStrategy.COSINE )
     return vector_store
 
 
 def format_docs(docs):
     return '\n\n'.join(doc.page_content for doc in docs)
 
+
 def extract_page_contents(docs):
     return [doc.page_content for doc in docs]
+
 
 def setup_rag(vector_store):
     retriever = vector_store.as_retriever(search_type='similarity', search_kwargs={"k": 5})
@@ -117,6 +116,7 @@ def qa_chain_with_sources(qa_chain, retriever, query):
     docs = retriever.invoke(query)
     return {"result": result, "source_documents": docs}
 
+
 router = APIRouter()
 
 directory = "./Recipe_Contents"
@@ -149,11 +149,10 @@ async def recipes_answer(query: dict = Body(...)):
     return {"answer": result['result']}
 
 
-class ImageFormDate(BaseModel):
-    image: UploadFile
-
 @router.post("/search")
+# 파일 하나만 받을 때
 # async def image_classifier(image: UploadFile = File(...)):
+# 폼 데이터를 받을 때
 async def image_classifier(image: UploadFile = Form(...)):
     print(image)
 
