@@ -1,12 +1,9 @@
 import json
 import os
-from typing import List
 
 from fastapi import APIRouter, Body
-from pydantic import BaseModel
 
 from dotenv import load_dotenv  # pip install python-dotenv
-from langchain.docstore.document import Document
 from langchain.prompts import PromptTemplate
 # from langchain_huggingface  import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS

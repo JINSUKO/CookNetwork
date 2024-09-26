@@ -61,7 +61,7 @@ const SearchBarImage = ( {onSearch} ) => {
         alert('이미지 분류 중입니다. 잠시만 기다려 주세요.');
         let data = null;
         try {
-            const response = await fetch(`http://localhost:8080/search?user=${user.username}`, {
+            const response = await fetch(``, {
                 method: 'Post',
                 body: formData
             });
@@ -69,7 +69,7 @@ const SearchBarImage = ( {onSearch} ) => {
             data = await response.json();
             console.log(data);
 
-            if (data.message) {
+            if (data.errorMessage) {
                 return alert('이미지 분류에 실패했습니다. 관리자에게 문의해주세요.')
             }
         } catch (e) {
