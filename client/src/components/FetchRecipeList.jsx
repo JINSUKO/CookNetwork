@@ -24,7 +24,7 @@ function FetchRecipeList() {
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState(() => {
     const filters = searchParams.get('filters');
-    return filters ? filters.split(',') : [];
+    return filters ? filters.split(',') : ["X"];
   });
   const API_URL = import.meta.env.VITE_HOST_IP;
   const [isLoading, setIsLoading] = useState(false);
@@ -113,7 +113,8 @@ function FetchRecipeList() {
   }, [fetchRecipes]);   
 
   useEffect(() => {
-    setSelectedFilters([]);
+    const filters = searchParams.get('filters');
+    setSelectedFilters(filters ? filters.split(',') : ["X"]);
   }, [currentCategory])   // currentCategory가 바뀔때마다 필터 새로고침
 
   // 종류별 필터 선택
@@ -162,7 +163,8 @@ function FetchRecipeList() {
             <FilterBox 
               filterOptions={filterOptions}
               selectedFilters={selectedFilters}
-              onFilterChange={handleFilterChange}/>
+              onFilterChange={handleFilterChange}
+              currentCategory={currentCategory}/>
           </div>
           <RecipeListPage 
             recipes={filteredRecipes} 

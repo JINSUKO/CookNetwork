@@ -11,9 +11,9 @@ function FilterBox({ filterOptions, selectedFilters, onFilterChange, currentCate
   // 선택된 필터가 없을 때, 초기 상태 "모두보기"
   useEffect(() => {
     if (selectedFilters.length === 0) {
-      onFilterChange(["X"]);
+      onFilterChange(["X"]); 
     }
-  }, []);
+  }, [currentCategory]);   // 카테고리 변경시에도 초기 상태 "X" 반영 
   
   const handleFilterChange = (filter) => {
     let newFilters;
@@ -26,7 +26,12 @@ function FilterBox({ filterOptions, selectedFilters, onFilterChange, currentCate
         newFilters = [...selectedFilters.filter(item => item !== "X"), filter];
       }
     }
-    onFilterChange(newFilters);   // 변경된 필터 상태를 부모 컴포넌트에 전달
+
+    if (newFilters.length === 0) {
+      newFilters = ["X"];
+    }
+    
+    onFilterChange(newFilters);
   };
 
   return (
