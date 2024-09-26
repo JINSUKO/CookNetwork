@@ -108,7 +108,7 @@ const SearchBarImage = ( {onSearch} ) => {
     };
 
     const handleClickHtmlBody = (event) => {
-        event.preventDefault()
+        // event.preventDefault()
 
         if (fileInputDisplay.current) {
 

@@ -10,6 +10,7 @@ import UserCategoryModifyModal from '../components/UserCategoryModifyModal'
 import authFetch from '../fetchInterceptorAuthToken'
 import UserSelectedCategories from "../components/UserSelectedCategories.jsx";
 import BookmarkList from '../components/Bookmark/BookmarkList.jsx';
+import ConfirmModal from "../components/ConfirmModal.jsx";
 
 
 const UserMyPage = ({user, setUser, profilePic, setProfilePic}) => {
@@ -260,8 +261,9 @@ const UserMyPage = ({user, setUser, profilePic, setProfilePic}) => {
                                     >
                                         사진 변경하기
                                     </Button>
-                                    <ImgConfirmModal
+                                    <ConfirmModal
                                         show={showImgConfirmModal}
+                                        title="이미지 변경"
                                         message="선택된 사진으로 변경하려면 확인을 눌러주세요."
                                         onConfirm={uploadProfileConfirm}
                                         onCancel={uploadProfileCancel}

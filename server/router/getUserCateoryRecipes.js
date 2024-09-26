@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 const maria = require('../module/sql');
+const mappingImg = require('../module/fetchCloudinary');
 
 const router = express.Router();
 
@@ -24,16 +25,19 @@ router.get('/', async (req, res) => {
 
         let [userCategoryRecipes] = await maria.execute(query, [user_id]);
         console.log('userCategoryRecipes',userCategoryRecipes);
-        const recipePicBasePath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
 
-        userCategoryRecipes = userCategoryRecipes.map( recipe => {
-            console.log('fdsfsda',fs.readFileSync(path.join(recipePicBasePath, recipe.recipe_img)))
-            let recipeImgBase64 = fs.readFileSync(path.join(recipePicBasePath, recipe.recipe_img), 'base64');
-            return {
-                ...recipe,
-                recipe_img: 'data:image/jpeg;base64,' + recipeImgBase64
-            }
-        })
+        // Cloudinary를 사용하는 주소 값으로 recipe_image 변경
+        userCategoryRecipes = mappingImg(userCategoryRecipes);
+
+        // const recipePicBasePath = path.join(__dirname, '../', 'uploads', 'recipes', 'thumbnail/');
+        // userCategoryRecipes = userCategoryRecipes.map( recipe => {
+        //     console.log('fdsfsda',fs.readFileSync(path.join(recipePicBasePath, recipe.recipe_img)))
+        //     let recipeImgBase64 = fs.readFileSync(path.join(recipePicBasePath, recipe.recipe_img), 'base64');
+        //     return {
+        //         ...recipe,
+        //         recipe_img: 'data:image/jpeg;base64,' + recipeImgBase64
+        //     }
+        // })
 
 
         console.log(userCategoryRecipes)
