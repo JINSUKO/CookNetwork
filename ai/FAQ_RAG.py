@@ -92,7 +92,7 @@ def qa_chain_with_sources(qa_chain, retriever, query):
     return {"result": result, "source_documents": docs}
 
 
-router = APIRouter( prefix="/ai/FAQAnswer" )
+router = APIRouter()
 
 directory = "./FAQ_Answer"
 

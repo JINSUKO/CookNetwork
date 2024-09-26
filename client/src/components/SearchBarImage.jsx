@@ -7,8 +7,11 @@ import React, {useEffect, useRef, useState} from "react";
 import {Button, Form} from "react-bootstrap";
 
 import style from "../assets/styles/SearchBarImage.module.css";
+import {useNavigate} from "react-router-dom";
 
-const SearchBarImage = () => {
+const SearchBarImage = ( {onSearch} ) => {
+    const navigate = useNavigate();
+
     const [show, setShow] = useState(false);
     const [file, setFile] = useState(null);
     const [fileName, setFileName] = useState("이미지 파일 선택");
@@ -26,19 +29,63 @@ const SearchBarImage = () => {
 
         const file = e.target.files[0];
 
-        if (!file) { setFileName("이미지 파일 선택") }
+        if (!file) { return setFileName("이미지 파일 선택"); }
 
         if (!file.type.startsWith('image/')) return alert('이미지 파일만 선택해주세요.');
 
-        console.log(file);
         setFile(file);
         setFileName(file.name);
     }
 
-    const handleSearch = (e) => {
+    const handleSearch = async (e) => {
         e.preventDefault();
 
-        if (!file) return;
+        if (!file) {
+
+            setShow(true);
+
+            updateModalPosition()
+
+            fileInputDisplay.current.style.borderColor = '#86b7fe';
+            fileInputDisplay.current.style.border= '1px solid #ccc';
+            fileInputDisplay.current.style.boxShadow = '0 0 0 .25rem rgba(13, 110, 253, .25)';
+            fileInputDisplay.current.style.transform = 'scale(1)';
+            return
+        }
+
+        console.log(file)
+
+        const formData = new FormData();
+        formData.append('searchImage', file);
+
+        alert('이미지 분류 중입니다. 잠시만 기다려 주세요.');
+        let data = null;
+        try {
+            const response = await fetch(`http://localhost:8080/search?user=${user.username}`, {
+                method: 'Post',
+                body: formData
+            });
+
+            data = await response.json();
+            console.log(data);
+
+            if (data.message) {
+                return alert('이미지 분류에 실패했습니다. 관리자에게 문의해주세요.')
+            }
+        } catch (e) {
+            console.error(e);
+            return alert('이미지 분류에 실패했습니다. 관리자에게 문의해주세요.')
+        }
+
+        try {
+            navigate(`/search?q=${encodeURIComponent(data.result)}`);
+
+            if (onSearch) {
+              onSearch(`/search?q=${encodeURIComponent(data.result)}`);
+            }
+        } catch (e) {
+            console.error(e);
+        }
 
     }
 
@@ -57,31 +104,16 @@ const SearchBarImage = () => {
     const handleClickHtmlBody = (event) => {
 
 
+        if (fileInputDisplay.current) {
 
-        if (button.current?.contains(event.target) && fileInputDisplay.current) {
+            if (button.current?.contains(event.target)) return;
 
-            if (!file) {
-
-
-                setShow(true);
-
-                updateModalPosition()
-
-                fileInputDisplay.current.style.borderColor = '#86b7fe';
-                fileInputDisplay.current.style.border= '1px solid #ccc';
-                fileInputDisplay.current.style.boxShadow = '0 0 0 .25rem rgba(13, 110, 253, .25)';
-                fileInputDisplay.current.style.transform = 'scale(1)';
-            }
-
-        } else {
+            console.log(21321)
             setShow(false);
 
             fileInputDisplay.current.style.borderColor = '#cccccc';
             fileInputDisplay.current.style.boxShadow = 'none';
-
-
         }
-        console.log(file)
     }
 
     const handleScrollHtmlBody = (event) => {
@@ -99,13 +131,19 @@ const SearchBarImage = () => {
             document.removeEventListener('scroll', handleScrollHtmlBody);
             window.removeEventListener('resize', handleResize);
 
+        };
+
+    }, [file]);
+
+    useEffect(() => {
+
+        return () => {
             fileInput.current = null;
             fileInputDisplay.current = null;
             speechBubble.current = null;
             button.current = null;
-        };
-
-    }, [file]);
+        }
+    }, []);
 
     return (
         <div>

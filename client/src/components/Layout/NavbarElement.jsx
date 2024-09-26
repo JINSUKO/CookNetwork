@@ -90,7 +90,7 @@ function NavbarElement({ user }) {
         </Container>
         <Container className='d-flex justify-content-end'>
           <SearchBar onSearch={handleSearch}  />
-          <SearchBarImage/>
+          <SearchBarImage onSearch={handleSearch} />
         </Container>
       </Navbar>
 

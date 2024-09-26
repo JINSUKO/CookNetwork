@@ -12,7 +12,9 @@ origins = ["https://cooknetwork.shop", "http://localhost:5000", "http://192.168.
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True,
                    allow_methods=["*"], allow_headers=["*"])
 
-app.include_router(FAQ_RAG.router)
+app.include_router(FAQ_RAG.router, prefix="/ai/FAQAnswer")
+
+# app.include_router(FAQ_RAG.router, prefix="/ai/FAQAnswer")
 
 if __name__ == "__main__":
     uvicorn.run(
