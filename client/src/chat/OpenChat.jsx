@@ -279,22 +279,16 @@ function openChat({ userData }) {
         
         // event별 submit 구분
         if(activeTab ==='FAQ'){
-            // submit누를때 페이지 새로 로딩하는것 방지
             e.preventDefault();
-            // userMessage.user_id, userMessage.name, userMessage.message을 json형태로 저장
-            const FAQToSend = {id: userMessage.id, name: userMessage.name, message: userMessage.message};
+            const FAQToSend = {id: socket.id, name: userMessage.name, message: userMessage.message};
             // console.log(socket.id)
-
-            // 서버의 'Message_FAQ' 이벤트를 실행하고 socket.id,FAQToSend전달
-            socket.emit('Message_FAQ',socket.id,FAQToSend);
-            
-            // messageFAQHistory에 기존요소을 불러와 FAQToSend을 추가하고
+            console.log('FAQToSend', FAQToSend)
             setMessageFAQHistory((prevHistory) => [...prevHistory, FAQToSend]);
-            // userMessage.message를 ''로 변경
             setUserMessage((prevUser) => ({
                 ...prevUser,
                 message: '',
             }));
+            fetchFAQAnswer(FAQToSend);
         } else if (activeTab === 'openTalk'){
             // 전송 방지
             // 없을경우 Submit버튼 누를때 페이지 새로고침함
