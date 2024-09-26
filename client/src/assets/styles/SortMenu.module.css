@@ -1,0 +1,64 @@
+/* SortMenu.module.css
+정렬 컴포넌트 스타일 */
+
+.sortMenuContainer {
+  position: relative;
+  width: 120px;
+  font-family: Arial, sans-serif;
+  /* text-align: center; */
+}
+
+.sortMenuHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px;
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.arrow {
+  border: solid #868585;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 3px;
+  transition: transform 0.2s;
+}
+
+.down {
+  transform: rotate(45deg);
+}
+
+.up {
+  transform: rotate(-135deg);
+}
+
+.sortMenuOptions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ced4da;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  z-index: 1000;
+}
+
+.sortMenuItem {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sortMenuItem:hover {
+  background-color: #f8f9fa;
+}
+
+.selected {
+  background-color: #e9ecef;
+}

@@ -1,7 +1,11 @@
+/** StarRating.jsx
+ * 레시피 상세페이지 내 평점 컴포넌트
+ */
+
 import React, { useState, useEffect } from "react";
 import styles from "../assets/styles/StarRating.module.css";
 
-const StarRating = ({ initialRating, onRatingChange, recipeId }) => {
+const StarRating = ({ initialRating, onRatingChange, recipe_id }) => {
   const [rating, setRating] = useState(initialRating || 0);
 
   useEffect(() => {
@@ -9,19 +13,19 @@ const StarRating = ({ initialRating, onRatingChange, recipeId }) => {
   }, [initialRating]);
 
   const handleRatingChange = (newRating) => {
-    setRating(newRating);
-    onRatingChange(newRating, recipeId);
+    setRating(recipe_id, newRating);
+    onRatingChange(newRating, recipe_id);
   };
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.rating}>
-        {[5, 4, 3, 2, 1].map((star) => (
+        {[1, 2, 3, 4, 5].map((star) => (
           <React.Fragment key={star}>
             <input
               value={star}
-              name="rate"
-              id={`star${star}`}
+              name={`rate-${recipe_id}`}
+              id={`star${star}-${recipe_id}`}
               type="radio"
               checked={rating === star}
               onChange={() => handleRatingChange(star)}

@@ -1,6 +1,18 @@
 /* StarRating.module.css
 별점 컴포넌트 스타일 */
 
+
+.wrapper {
+  display: flex;
+  justify-content: flex-start;
+}
+
+
+.rating {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
 .rating:not(:checked) > input {
   position: absolute;
   appearance: none;

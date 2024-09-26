@@ -301,7 +301,7 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
         <Row>
           <Col>
             <div className={styles.contentSection}>
-              <h2 className={styles.sectionTitle}>#태그</h2>
+              <h2 className={styles.sectionTitle}>태그</h2>
               <p>{recipe.categories.map(cat => cat.category_name).join(', ')}</p>
             </div>
           </Col>
@@ -311,7 +311,7 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
       <Row>
         <Col>
           <div className={styles.contentSection}>
-            <h2 className={styles.sectionTitle}>평점 등록</h2>
+            <h2 className={styles.sectionTitle}>내 평점 등록</h2>
             <StarRating
               initialRating={recipe.userRating}
               onRatingChange={handleRatingChange}

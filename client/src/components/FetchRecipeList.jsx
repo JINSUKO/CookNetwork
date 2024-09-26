@@ -14,6 +14,7 @@ import FilterBox from "./FilterBox";
 import Skeleton from "./UI/Skeleton";
 import styles from '../assets/styles/RecipeList.module.css';
 import { useBookmarkContext } from "./Bookmark/BookmarkContext";
+import SortMenu from "./SortMenu";
 
 function FetchRecipeList() { 
   const { category } = useParams();
@@ -30,6 +31,7 @@ function FetchRecipeList() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { isBookmarked } = useBookmarkContext(); 
+  const [sortOption, setSortOption] = useState("최신순");
 
   const filterOptions = [
     "메인요리", "반찬", "국/탕", "디저트", "면", 
@@ -37,6 +39,13 @@ function FetchRecipeList() {
     "스프", "간식", "음료", "다이어트", "도시락", "X"
   ];
   console.log("filter:", selectedFilters)
+
+  const sortOptionList = [
+    { value: "최신순", name: "최신순" },
+    { value: "오래된순", name: "오래된순" },
+    { value: "난이도순", name: "난이도순" },
+    { value: "조리시간순", name: "조리시간순" },
+  ];
 
   const fetchRecipes = useCallback(async () => {
     setIsLoading(true);
@@ -113,8 +122,7 @@ function FetchRecipeList() {
   }, [fetchRecipes]);   
 
   useEffect(() => {
-    const filters = searchParams.get('filters');
-    setSelectedFilters(filters ? filters.split(',') : ["X"]);
+    setSelectedFilters([]);
   }, [currentCategory])   // currentCategory가 바뀔때마다 필터 새로고침
 
   // 종류별 필터 선택
@@ -146,7 +154,7 @@ function FetchRecipeList() {
 
   return (
     <Container className={styles.recipeListContainer}>
-
+      
       {isLoading && filteredRecipes.length === 0 ? (
         <Row className="justify-content-center">
           <Col xs={12} md={10} lg={8}>
@@ -166,6 +174,13 @@ function FetchRecipeList() {
               onFilterChange={handleFilterChange}
               currentCategory={currentCategory}/>
           </div>
+          <Row>
+            <SortMenu
+            value={sortOption}
+            onChange={setSortOption}
+            optionList={sortOptionList}
+            />
+          </Row>
           <RecipeListPage 
             recipes={filteredRecipes} 
             currentCategory={currentCategory}
