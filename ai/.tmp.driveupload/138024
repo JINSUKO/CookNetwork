@@ -154,7 +154,7 @@ class ImageFormDate(BaseModel):
 
 @router.post("/search")
 # async def image_classifier(image: UploadFile = File(...)):
-async def image_classifier(image: UploadFile = Form(...)):
+async def image_classifier(data: ImageFormDate = Form(...)):
     print(image)
 
     return {"result": "이미지 넘어옴."}

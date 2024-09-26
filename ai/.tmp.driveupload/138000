@@ -1,8 +1,7 @@
 import os
 import json
 
-from fastapi import APIRouter, Body, Form, File, UploadFile
-from pydantic import BaseModel
+from fastapi import APIRouter, Body
 from dotenv import load_dotenv
 
 from typing import List
@@ -19,40 +18,25 @@ from dotenv import load_dotenv
 
 print(load_dotenv())
 
-def parse_ingredient(ingredient):
-    if isinstance(ingredient, dict):
-        return {k: v for k, v in ingredient.items() if v}
-    else:
-        return str(ingredient)
-
 def parse_content(content):
     parsed_content = {}
 
     # 기본 정보 추가 (값이 있는 경우에만)
     for key in ["제목", "설명", "serving", "조리시간", "난이도", "재료", "조리도구", "조리순서"]:
         if content.get(key):
-            if key == "재료":
-                if isinstance(content[key], dict):
-                    # 재료가 딕셔너리인 경우
-                    parsed_content[key] = {}
-                    for category, ingredients in content[key].items():
-                        if isinstance(ingredients, dict):
-                            # 카테고리 안에 단일 재료 정보가 있는 경우
-                            parsed_content[key][category] = parse_ingredient(ingredients)
-                        elif isinstance(ingredients, list):
-                            # 카테고리 안에 여러 재료가 리스트로 있는 경우
-                            parsed_content[key][category] = [parse_ingredient(ing) for ing in ingredients]
-                        else:
-                            # 카테고리 자체가 재료 정보인 경우
-                            parsed_content[key][category] = ingredients
-                elif isinstance(content[key], list):
-                    # 재료가 리스트인 경우
-                    parsed_content[key] = [parse_ingredient(ing) for ing in content[key]]
-                else:
-                    # 예외 처리: 재료가 딕셔너리나 리스트가 아닌 경우
-                    parsed_content[key] = str(content[key])
+            elif key == "재료":
+            if isinstance(item[key], dict):
+                재료 = []
+                for category, ingredients in item[key].items():
+                    if isinstance(ingredients, list):
+                        재료.extend([f"{category} - {ing['이름']} {ing['양']}" for ing in ingredients])
+                    elif isinstance(ingredients, dict):
+                        재료.append(f"{category} - {ingredients['이름']} {ingredients['양']}")
+                parsed_item[key] = 재료
+            elif isinstance(item[key], list):
+                parsed_item[key] = [f"{ing['이름']} {ing['양']}" for ing in item[key]]
             elif key == "조리순서":
-                parsed_content[key] = [(index, step["설명"]) for index, step in enumerate(content[key], 1)]
+                parsed_content[key] = [step["설명"] for step in content[key]]
             else:
                 parsed_content[key] = content[key]
     return json.dumps(parsed_content, ensure_ascii=False)
@@ -64,23 +48,30 @@ def load_json_documents(directory: str):
             file_path = os.path.join(directory, filename)
             with open(file_path, 'r', encoding='utf-8') as file:
                 data = json.load(file)
+                # content = json.loads(json.dumps(data, ensure_ascii=False, indent=2))
+                # print(content)
+                # documents.append(Document(page_content=content, metadata={"source": file_path}))
                 documents.append(parse_content(data))
     return documents
 
+
+# def split_documents(documents: list[Document]) -> list[Document]:
+#     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200, add_start_index=True)
+#     return text_splitter.split_documents(documents)
 
 
 def create_vector_store(texts):
     # 단어 수준의 임베딩에 적합한 모델 사용
     embeddings = OpenAIEmbeddings(model='text-embedding-3-large')
+    # vector_store = FAISS.from_documents(texts, embeddings)
     vector_store = FAISS.from_texts(texts, embeddings)
+    # vector_store = Chroma.from_documents(documents=texts, embedding=embeddings)
     return vector_store
 
 
 def format_docs(docs):
     return '\n\n'.join(doc.page_content for doc in docs)
 
-def extract_page_contents(docs):
-    return [doc.page_content for doc in docs]
 
 def setup_rag(vector_store):
     retriever = vector_store.as_retriever(search_type='similarity', search_kwargs={"k": 5})
@@ -102,7 +93,7 @@ def setup_rag(vector_store):
 
     qa_chain = (
             RunnableParallel(
-                {"context": retriever | extract_page_contents, "question": RunnablePassthrough()}
+                {"context": retriever, "question": RunnablePassthrough()}
             )
             | QA_CHAIN_PROMPT
             | llm
@@ -123,18 +114,20 @@ directory = "./Recipe_Contents"
 
 # JSON 문서 로드 및 처리
 documents = load_json_documents(directory)
+# texts = split_documents(documents)
+print(documents)
+# print(f"{len(texts)}개의 텍스트 청크를 생성했습니다.")
 
 vector_store = create_vector_store(documents)
-print("레시피 벡터 저장소 생성 완료")
+print("벡터 저장소 생성 완료")
 
 qa_chain, retriever = setup_rag(vector_store)
-print("레시피 RAG 설정 완료")
-
+print("RAG 설정 완료")
 
 @router.post("/recipes")
 async def recipes_answer(query: dict = Body(...)):
-    # query = await query['query']
-    query = query['query']
+
+
 
     result = qa_chain_with_sources(qa_chain, retriever, query)
     # print(result)
@@ -146,15 +139,5 @@ async def recipes_answer(query: dict = Body(...)):
     for doc in result['source_documents']:
         print(f"- {doc.page_content[:100]}...")  # 첫 100자만 출력
 
-    return {"answer": result['result']}
 
-
-class ImageFormDate(BaseModel):
-    image: UploadFile
-
-@router.post("/search")
-# async def image_classifier(image: UploadFile = File(...)):
-async def image_classifier(image: UploadFile = Form(...)):
-    print(image)
-
-    return {"result": "이미지 넘어옴."}
+# @router.post("/search")

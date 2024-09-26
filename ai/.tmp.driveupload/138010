@@ -1,8 +1,7 @@
 import os
 import json
 
-from fastapi import APIRouter, Body, Form, File, UploadFile
-from pydantic import BaseModel
+from fastapi import APIRouter, Body, Form
 from dotenv import load_dotenv
 
 from typing import List
@@ -130,10 +129,8 @@ print("레시피 벡터 저장소 생성 완료")
 qa_chain, retriever = setup_rag(vector_store)
 print("레시피 RAG 설정 완료")
 
-
 @router.post("/recipes")
 async def recipes_answer(query: dict = Body(...)):
-    # query = await query['query']
     query = query['query']
 
     result = qa_chain_with_sources(qa_chain, retriever, query)
@@ -146,15 +143,7 @@ async def recipes_answer(query: dict = Body(...)):
     for doc in result['source_documents']:
         print(f"- {doc.page_content[:100]}...")  # 첫 100자만 출력
 
-    return {"answer": result['result']}
-
-
-class ImageFormDate(BaseModel):
-    image: UploadFile
 
 @router.post("/search")
-# async def image_classifier(image: UploadFile = File(...)):
-async def image_classifier(image: UploadFile = Form(...)):
-    print(image)
-
-    return {"result": "이미지 넘어옴."}
+async def image_classifier(formData: Form(...)):
+    

@@ -9,9 +9,9 @@ from langchain.prompts import PromptTemplate
 from langchain_community.vectorstores import FAISS
 from langchain_community.vectorstores.utils import DistanceStrategy
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough, RunnableParallel  # pip install langchain
+from langchain_core.runnables import RunnablePassthrough, RunnableParallel  # pip install lanchain
 from langchain_openai import ChatOpenAI
-from langchain_openai import OpenAIEmbeddings  # pip install langchain-openai
+from langchain_openai import OpenAIEmbeddings  # pip install lanchain-openai
 
 # from langchain_community.embeddings import HuggingFaceEmbeddings
 # https://wikidocs.net/231573 # pip install lanchain-community sentence-transformers torch
@@ -107,11 +107,10 @@ print("FAQ 벡터 저장소 생성 완료")
 qa_chain, retriever = setup_rag(vector_store)
 print("FAQ RAG 설정 완료")
 
-# @router.post("/")
+@router.post("/")
 # async def faq_answer(query: dict = Body(...)):
     # query = query['query']
 
-@router.post("/")
 async def faq_answer(request: Request):
     body = await request.body()
 

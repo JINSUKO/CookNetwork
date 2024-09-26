@@ -150,11 +150,11 @@ async def recipes_answer(query: dict = Body(...)):
 
 
 class ImageFormDate(BaseModel):
-    image: UploadFile
+    searchImage: UploadFile
 
 @router.post("/search")
-# async def image_classifier(image: UploadFile = File(...)):
-async def image_classifier(image: UploadFile = Form(...)):
-    print(image)
+# async def image_classifier(searchImage: UploadFile = File(...)):
+async def image_classifier(searchImage: UploadFile = File(...)):
+    print(searchImage)
 
     return {"result": "이미지 넘어옴."}

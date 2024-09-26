@@ -10,6 +10,9 @@ import style from "../assets/styles/SearchBarImage.module.css";
 import {useNavigate} from "react-router-dom";
 
 const SearchBarImage = ( {onSearch} ) => {
+
+    const AI_HOST_IP = import.meta.env.VITE_AI_HOST_IP;
+
     const navigate = useNavigate();
 
     const [show, setShow] = useState(false);
@@ -56,12 +59,17 @@ const SearchBarImage = ( {onSearch} ) => {
         console.log(file)
 
         const formData = new FormData();
-        formData.append('searchImage', file);
+        formData.append('image', file);
 
-        alert('이미지 분류 중입니다. 잠시만 기다려 주세요.');
+        fileInput.current.value = null;
+
+        setTimeout(() => {
+            alert('이미지 분류 중입니다. 잠시만 기다려 주세요.');
+        }, 1);
+
         let data = null;
         try {
-            const response = await fetch(``, {
+            const response = await fetch(`${AI_HOST_IP}/ai/recipeImage/search`, {
                 method: 'Post',
                 body: formData
             });
@@ -69,12 +77,10 @@ const SearchBarImage = ( {onSearch} ) => {
             data = await response.json();
             console.log(data);
 
-            if (data.errorMessage) {
-                return alert('이미지 분류에 실패했습니다. 관리자에게 문의해주세요.')
-            }
+            if (!response.ok) {return alert('에러가 발생했습니다. 관리자에게 문의해주세요.');}
         } catch (e) {
             console.error(e);
-            return alert('이미지 분류에 실패했습니다. 관리자에게 문의해주세요.')
+            return alert('에러가 발생했습니다. 관리자에게 문의해주세요.');
         }
 
         try {
@@ -102,7 +108,7 @@ const SearchBarImage = ( {onSearch} ) => {
     };
 
     const handleClickHtmlBody = (event) => {
-
+        event.preventDefault()
 
         if (fileInputDisplay.current) {
 
@@ -138,10 +144,12 @@ const SearchBarImage = ( {onSearch} ) => {
     useEffect(() => {
 
         return () => {
-            fileInput.current = null;
+            // fileInput.current = null;
             fileInputDisplay.current = null;
             speechBubble.current = null;
             button.current = null;
+            setFile(null);
+            setFileName("이미지 파일 선택");
         }
     }, []);
 
