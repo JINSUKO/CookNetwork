@@ -188,25 +188,44 @@ function FetchRecipeList() {
   
 
   return (
-    <Container className={styles.recipeListContainer}>
+    <Container className={styles.recipeListContainer} style={{margin: '0 auto'}}>
 
       {isLoading && recipes.length === 0 ? (
         <div>
           <Skeleton/>
         </div>
       ) : (
-        <Row  className="justify-content-center">
-          <Col xs={12} md={10} lg={8}>
+        <>
+          <Row  className="justify-content-center">
+            <Col xs={12} md={10} lg={8}>
 
-          <h6 className={styles.recipeListTitle}>{displayCategory()}</h6>
+            <h6 className={styles.recipeListTitle}>{displayCategory()}</h6>
 
-          <div  className={styles.filterBoxWrapper}>
-            <FilterBox 
-              filterOptions={filterOptions}
-              selectedFilters={selectedFilters}
-              onFilterChange={handleFilterChange}/>
-          </div>
-           <RecipeListPage
+            <div  className={styles.filterBoxWrapper}>
+              <FilterBox
+                filterOptions={filterOptions}
+                selectedFilters={selectedFilters}
+                onFilterChange={handleFilterChange}/>
+            </div>
+
+  {/*
+            <InfiniteRecipeList>
+              recipes={recipes}
+              hasMore={hasMore}
+              loadMore={fetchRecipes}
+              isLoading={isLoading}
+            </InfiniteRecipeList> */}
+
+            {/*<InfiniteRecipeList2>*/}
+            {/*  recipes={filteredRecipes}*/}
+            {/*  hasMore={hasMore}*/}
+            {/*  loadMore={fetchRecipes}*/}
+            {/*  isLoading={isLoading}*/}
+            {/*  totalCount={totalCount}*/}
+            {/*  </InfiniteRecipeList2>*/}
+            </Col>
+          </Row>
+          <RecipeListPage
             recipes={recipes}
             currentCategory={currentCategory}
             // hasMore={hasMore}
@@ -214,23 +233,7 @@ function FetchRecipeList() {
             isLoading={isLoading}
             totalCount={totalCount}
           />
-{/* 
-          <InfiniteRecipeList>
-            recipes={recipes}
-            hasMore={hasMore}
-            loadMore={fetchRecipes}
-            isLoading={isLoading}
-          </InfiniteRecipeList> */}
-
-          {/*<InfiniteRecipeList2>*/}
-          {/*  recipes={filteredRecipes}*/}
-          {/*  hasMore={hasMore}*/}
-          {/*  loadMore={fetchRecipes}*/}
-          {/*  isLoading={isLoading}*/}
-          {/*  totalCount={totalCount}*/}
-          {/*  </InfiniteRecipeList2>*/}
-          </Col>
-        </Row>
+        </>
       )}
     </Container>
   )
