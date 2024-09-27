@@ -1,7 +1,6 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {io} from 'socket.io-client';
-import {ListGroup, Nav, Offcanvas} from 'react-bootstrap';
-
+import {Image, ListGroup, Nav, Offcanvas} from 'react-bootstrap';
 //작성해둔 컴포넌트 불러옴
 import {StyledApp} from './styled.jsx';
 
@@ -24,10 +23,10 @@ const{
 } = StyledApp;
 
 const socket_IP  = import.meta.env.VITE_HOST_IP
-// const socket = new io('http://192.168.0.103:3001/'); // 관용님 학원 pc ip
 // 클라이언트 소켓 서버와 연결
 const socket = new io(socket_IP);
-// const socket = new io('http://192.168.0.14:3001/'); // 진수님 학원 wifi ip
+
+const AI_HOST_IP = import.meta.env.VITE_AI_HOST_IP;
 
 function openChat({ userData }) {
     // 유저 데이터를 받아와서 변수에 지정
@@ -86,6 +85,8 @@ function openChat({ userData }) {
 
     const [isUpdate, setIsUpdate] = useState(false);
 
+    const [searchImg, setSearchImg] = useState(null);
+    const [searchImgBase64, setSearchImgBase64] = useState(null);
     const fileInputRef = useRef(null);
     const [showImgConfirmModal, setShowImgConfirmModal] = useState(false)
 
@@ -245,7 +246,6 @@ function openChat({ userData }) {
         try {
 
             console.log('FAQToSend.message', FAQToSend.message)
-            const AI_HOST_IP = import.meta.env.VITE_AI_HOST_IP;
             const response = await fetch(`${AI_HOST_IP}/ai/FAQAnswer`, {
                 method: 'POST',
                 headers: {
@@ -256,11 +256,37 @@ function openChat({ userData }) {
 
             const { answer } = await response.json();
 
-            const FAQAnswer = {...FAQToSend,id:'faq', name: 'FAQ', message: answer};
+            const FAQAnswer = {id:'faq', name: 'FAQ', message: answer};
 
             console.log('FAQAnswer', FAQAnswer)
 
             setMessageFAQHistory((prevFAQHistory) => [...prevFAQHistory, FAQAnswer]);
+
+
+        } catch (e) {
+            console.error(e);
+        }
+
+    });
+
+    const fetchRecipeAnswer = useCallback( async (RecipeToSend) => {
+        try {
+            console.log('RecipeToSend.message', RecipeToSend.message)
+            const response = await fetch(`${AI_HOST_IP}/ai/recipeImage/chat/talk`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({query: RecipeToSend.message})
+            });
+
+            const { answer } = await response.json();
+
+            const RecipeAnswer = {id:'recipe', name: '???', message: answer};
+
+            console.log('RecipeAnswer', RecipeAnswer)
+
+            setMessageRecipeHistory((prevRecipeHistory) => [...prevRecipeHistory, RecipeAnswer]);
 
 
         } catch (e) {
@@ -300,15 +326,15 @@ function openChat({ userData }) {
             fetchFAQAnswer(FAQToSend);
         } else if(activeTab ==='Recipe'){
             e.preventDefault();
-            const FAQToSend = {id: socket.id, name: userMessage.name, message: userMessage.message};
+            const RecipeToSend = {id: socket.id, name: userMessage.name, message: userMessage.message};
             // console.log(socket.id)
-            console.log('FAQToSend', FAQToSend)
-            setMessageRecipeHistory((prevHistory) => [...prevHistory, FAQToSend]);
+            console.log('RecipeToSend', RecipeToSend)
+            setMessageRecipeHistory((prevHistory) => [...prevHistory, RecipeToSend]);
             setUserMessage((prevUser) => ({
                 ...prevUser,
                 message: '',
             }));
-            // fetchFAQAnswer(FAQToSend);
+            fetchRecipeAnswer(RecipeToSend);
         } else if (activeTab === 'openTalk'){
             // 전송 방지
             // 없을경우 Submit버튼 누를때 페이지 새로고침함
@@ -391,21 +417,21 @@ function openChat({ userData }) {
         }
     };
 
-    const handleFileChange = (e) => {
-        console.log(e.target.files[0]);
+    const handleFileChange = (event) => {
+        console.log(event.target.files[0]);
 
-        const file = e.target.files[0];
+        const file = event.target.files[0];
 
         if (!file) return
 
         if (!file.type.startsWith('image/')) return alert('이미지 파일만 선택해주세요.');
 
-        // setProfileImg(file);
-        // const reader = new FileReader();
-        // reader.onload = (e) => {
-        //     setProfileImgDBbase64(e.target.result);
-        // }
-        // reader.readAsDataURL(file);
+        setSearchImg(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            setSearchImgBase64(e.target.result);
+        }
+        reader.readAsDataURL(file);
 
 
         setShowImgConfirmModal(true)
@@ -415,12 +441,16 @@ function openChat({ userData }) {
         setShowImgConfirmModal(false);
         // 파일 저장 formData 객체 생성
         const formData = new FormData();
-        console.log('fetch 직전 file:', profileImg)
-        formData.append('file', profileImg);
-        formData.append('user_id', user.user_id);
+        formData.append('file', searchImg);
+
+        let RecipeToSend = {id: socket.id, name: userMessage.name, message: "이미지를 분석중입니다 ..."};
+        setMessageRecipeHistory((prevHistory) => [...prevHistory, RecipeToSend]);
+
+        RecipeChatRoom.current.scrollTop = RecipeChatRoom.current.scrollHeight;
+        fileInputRef.current.value = null;
 
         try {
-            const response = await fetch(`${API_URL}/api/uploadUserImg`, {
+            const response = await fetch(`${AI_HOST_IP}/ai/recipeImage/chat/image`, {
                 method: 'POST',
                 body: formData
             });
@@ -430,17 +460,18 @@ function openChat({ userData }) {
                 throw new Error(errorData.error);
             }
 
-            const result = await response.json();
+            const { answer, query } = await response.json();
 
+            RecipeToSend = {id: socket.id, name: userMessage.name, message: query};
 
-            // userInfo 변경 시와 똑같이 이거 안해도 잘 변경됨... 왜?
+            setMessageRecipeHistory((prevRecipeHistory) => [...prevRecipeHistory, RecipeToSend]);
 
-            // user.user_img = profileImgDBbase64;
-            // setUser((preUser) => ({...preUser, user_img: profileImgDBbase64}));
-            // localStorage.setItem('loginUser', JSON.stringify(loginUser));
-            // console.log('profile img upload result:', result.result);
+            const RecipeAnswer = {id:'Recipe', name: '???', message: answer};
 
-            console.log('프로필 이미지 업로드 성공!');
+            setMessageRecipeHistory((prevRecipeHistory) => [...prevRecipeHistory, RecipeAnswer]);
+            console.log('RecipeAnswer', RecipeAnswer)
+
+            RecipeChatRoom.current.scrollTop = RecipeChatRoom.current.scrollHeight;
 
         } catch (e) {
             console.error(e);
@@ -450,6 +481,8 @@ function openChat({ userData }) {
     const sendImgCancel = () => {
         fileInputRef.current.value = null;
         setShowImgConfirmModal(false);
+        setSearchImg(null);
+        setSearchImgBase64(null);
     }
 
     const handleChatShow = (e) => {
@@ -464,6 +497,7 @@ function openChat({ userData }) {
             RecipeChatRoom.current.style.display = 'none';
             openChatRoom.current.style.display = 'none';
             personalRoom.current.style.display = 'none';
+            FAQChatRoom.current.scrollTop = FAQChatRoom.current.scrollHeight;
 
             setIsFormVisible(true);
             setIsImgBtnVisible(false);
@@ -472,6 +506,7 @@ function openChat({ userData }) {
             RecipeChatRoom.current.style.display = 'flex';
             openChatRoom.current.style.display = 'none';
             personalRoom.current.style.display = 'none';
+            RecipeChatRoom.current.scrollTop = RecipeChatRoom.current.scrollHeight;
 
             setIsFormVisible(true);
             setIsImgBtnVisible(true);
@@ -643,7 +678,11 @@ function openChat({ userData }) {
                     <ConfirmModal
                         show={showImgConfirmModal}
                         title="이미지 선택"
-                        message="선택된 사진으로 변경하려면 확인을 눌러주세요."
+                        message={
+                            <Image
+                                src={searchImgBase64}
+                                style={{ width: '100%' }}
+                            />}
                         onConfirm={sendImgConfirm}
                         onCancel={sendImgCancel}
                     />

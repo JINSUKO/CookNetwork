@@ -84,20 +84,26 @@ def extract_page_contents(docs):
 def setup_rag(vector_store):
     retriever = vector_store.as_retriever(search_type='similarity', search_kwargs={"k": 5})
 
+    # 질문에 대한 답을 밑의 내용에서 찾아서 한국어로 정리해서 레시피에 대한 설명으로 답하세요.
     template = """
-    질문에 대한 답을 밑의 내용에서 찾아서 한국어로 정리해서 레시피에 대한 설명으로 답하세요.
-    밑의 내용에 정확한 대답이 없으면 "주어진 정보로는 답변할 수 없습니다."라고 말하세요.
+    당신은 질문의 내용을 레시피에서 검색하여 관련된 정보를 생성하는 설명서입니다.
+    질문에 대해 밑의 요구사항으로 순서대로 답변을 작성하세요.
+    정확한 대답을 작성할 수 없으면, "주어진 정보로는 답변할 수 없습니다."라고 말하세요.
+    
+    1. 질문을 레시피 제목에서 찾아, 레시피의 제목에 포함되면 내용에서 찾아서 한국어로 정리해서 레시피에 대한 설명으로 답하고 없으면 답변에 넣지 마세요.
+    (감자롤피자에는 파프리카 없습니다.)
+    2. 질문을 재료의 이름에서 찾아, 재료의 이름들에 포함되면 내용에서 관련된 레시피의 제목을 나열해서 답하고 없으면 답변에 넣지 마세요.
+    3. 요구사항은 답변에 넣지 마세요.         
 
     {context}
 
-    질문에 대한 답을 알 수 없다면, "주어진 정보로는 답변할 수 없습니다."라고 말하세요.
-
+    
     질문: {question}
     대답:"""
 
     QA_CHAIN_PROMPT = PromptTemplate.from_template(template)
 
-    llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0.1)
+    llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0)
 
     qa_chain = (
             RunnableParallel(
@@ -131,7 +137,7 @@ qa_chain, retriever = setup_rag(vector_store)
 print("레시피 RAG 설정 완료")
 
 
-@router.post("/recipes")
+@router.post("/chat/talk")
 async def recipes_answer(query: dict = Body(...)):
     # query = await query['query']
     query = query['query']
@@ -149,6 +155,26 @@ async def recipes_answer(query: dict = Body(...)):
     return {"answer": result['result']}
 
 
+@router.post("/chat/image")
+async def image_classifier(file: UploadFile = Form(...)):
+    print(file)
+
+    # query = query['query']
+    query = '짜장면'
+
+    result = qa_chain_with_sources(qa_chain, retriever, query)
+    # print(result)
+
+    print(f"\n질문: {query}")
+    print(f"답변: {result['result']}")
+
+    print("\n참고한 문서:")
+    for doc in result['source_documents']:
+        print(f"- {doc.page_content[:100]}...")  # 첫 100자만 출력
+
+    return {"answer": result['result'], "query": query}
+
+
 @router.post("/search")
 # 파일 하나만 받을 때
 # async def image_classifier(image: UploadFile = File(...)):
@@ -156,4 +182,4 @@ async def recipes_answer(query: dict = Body(...)):
 async def image_classifier(image: UploadFile = Form(...)):
     print(image)
 
-    return {"result": "이미지 넘어옴."}
+    return {"result": "짜장면"}

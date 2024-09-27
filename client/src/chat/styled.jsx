@@ -23,7 +23,7 @@ export const StyledApp = {
     NoHistory : ({ children }) => <div className='no-history'>{children}</div>,
     ChatItem : ({ children, me, chatDesign }) => <li className={me ? ChatDesign.me : ChatDesign.other}>{children}</li>,
     ChatName : ({ children }) => <strong className="chat-name">{children}</strong>,
-    ChatMessage : ({ children }) => <p className="chat-message">{children}</p>,
+    ChatMessage : ({ children }) => <p className="chat-message" style={{whiteSpace: 'pre-line'}}>{children}</p>,
     IDInput : (props) => (
         <input className="ID-input" {...props} autoComplete='off'/>
     ),
