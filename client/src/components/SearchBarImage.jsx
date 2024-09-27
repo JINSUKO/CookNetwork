@@ -63,9 +63,7 @@ const SearchBarImage = ( {onSearch} ) => {
 
         fileInput.current.value = null;
 
-        setTimeout(() => {
-            alert('이미지 분류 중입니다. 잠시만 기다려 주세요.');
-        }, 1);
+        alert('이미지 분류 중입니다. 잠시만 기다려 주세요.');
 
         let data = null;
         try {

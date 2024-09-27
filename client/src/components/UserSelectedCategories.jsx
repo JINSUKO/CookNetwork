@@ -46,7 +46,7 @@ const UserSelectedCategories = ({categories, userCategoryRecipes}) => {
                               <div style={{height: '200px' }}></div>
                             )}
                                 <div className={styles.bookmarkWrapper}>
-                                    <BookmarkButton recipe_id={recipe.recipe_id} />
+                                    {/*<BookmarkButton recipe_id={recipe.recipe_id} />*/}
                                 </div>
                           </div>
                           <Card.Body>
