@@ -24,6 +24,10 @@ function SearchResultPage() {
   const itemsPerPage = 8;
   // const totalPage = Math.ceil(results.length/itemsPerPage);
 
+  const searchParams = new URLSearchParams(location.search);
+  const query = searchParams.get('q');
+  const category = searchParams.get('category') || 'all'
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const query = searchParams.get('q');
@@ -103,7 +107,7 @@ function SearchResultPage() {
 
   return (
     <Container>
-      <h3>검색 결과</h3>
+      <h3>검색 결과: {query}</h3>
       <Row xs={2} md={3} lg={4} className="g-4">
         {results.map((recipe) => (    // results 배열에 저장된 검색결과를 사용
           <Col key={recipe.recipe_id}>
