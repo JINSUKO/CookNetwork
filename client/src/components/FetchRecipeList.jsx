@@ -144,7 +144,7 @@ function FetchRecipeList() {
   
 
   return (
-    <Container className={styles.recipeListContainer}>
+    <Container className={styles.recipeListContainer} >
 
       {isLoading && filteredRecipes.length === 0 ? (
         <Row className="justify-content-center">
@@ -153,24 +153,26 @@ function FetchRecipeList() {
           </Col>
         </Row>
       ) : (
-        <Row  className="justify-content-center">
-          <Col xs={12} md={10} lg={8}>
+          <>
+            <Row  className="justify-content-center">
+              <Col xs={12} md={10} lg={8}>
 
-          <h6 className={styles.recipeListTitle}>{displayCategory()}</h6>
+              <h6 className={styles.recipeListTitle}>{displayCategory()}</h6>
 
-          <div  className={styles.filterBoxWrapper}>
-            <FilterBox 
-              filterOptions={filterOptions}
-              selectedFilters={selectedFilters}
-              onFilterChange={handleFilterChange}/>
-          </div>
-          <RecipeListPage 
-            recipes={filteredRecipes} 
-            currentCategory={currentCategory}
-            isLoading={isLoading}
-          />
-          </Col>
-        </Row>
+              <div  className={styles.filterBoxWrapper}>
+                <FilterBox
+                  filterOptions={filterOptions}
+                  selectedFilters={selectedFilters}
+                  onFilterChange={handleFilterChange}/>
+              </div>
+              </Col>
+            </Row>
+            <RecipeListPage
+              recipes={filteredRecipes}
+              currentCategory={currentCategory}
+              isLoading={isLoading}
+            />
+          </>
       )}
     </Container>
   )

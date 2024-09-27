@@ -49,6 +49,18 @@
     display: none;
 }
 
+.RecipeChatRoom {
+    /*border: 1px solid black;*/
+    display: none;
+    position: relative;
+    height: 90%;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+.RecipeChatRoom::-webkit-scrollbar {
+    display: none;
+}
+
 
 .openChatRoom {
     /*border: 1px solid black;*/
@@ -76,6 +88,10 @@
     display: flex;
     max-height: 10%;
     width: 100%;
+}
+
+.ImgInput {
+    display: block;
 }
 
 .hidden{
