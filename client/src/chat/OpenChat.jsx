@@ -446,7 +446,6 @@ function openChat({ userData }) {
         let RecipeToSend = {id: socket.id, name: userMessage.name, message: "이미지를 분석중입니다 ..."};
         setMessageRecipeHistory((prevHistory) => [...prevHistory, RecipeToSend]);
 
-        RecipeChatRoom.current.scrollTop = RecipeChatRoom.current.scrollHeight;
         fileInputRef.current.value = null;
 
         try {
@@ -470,8 +469,6 @@ function openChat({ userData }) {
 
             setMessageRecipeHistory((prevRecipeHistory) => [...prevRecipeHistory, RecipeAnswer]);
             console.log('RecipeAnswer', RecipeAnswer)
-
-            RecipeChatRoom.current.scrollTop = RecipeChatRoom.current.scrollHeight;
 
         } catch (e) {
             console.error(e);
