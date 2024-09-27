@@ -32,15 +32,7 @@ const UserSelectedCategories = ({categories, userCategoryRecipes}) => {
                         className="me-2 mb-2 ">{category}</Button>
             ))}
             <Row xs={2} md={3} lg={4} className="g-2 mb-4">
-                {userCategoryRecipes.map((recipe, idx) => (
-                    // <Col key={idx}>
-                    //         <Card style={{ height: '100%', fontSize: '1rem'}}>
-                    //           <Card.Img variant="top" src={recipe.recipe_img} style={{ height: '10rem' }} />
-                    //           <Card.Body style={{padding: '0'}}>
-                    //             <Card.Title style={{fontSize: '1rem'}}>{recipe.recipe_name}</Card.Title>
-                    //           </Card.Body>
-                    //         </Card>
-                    // </Col>
+                {userCategoryRecipes.map((recipe) => (
                     <Col key={recipe.recipe_id}>
                         <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
                           <Card
