@@ -8,7 +8,7 @@
 import React, { useState } from 'react';
 import styles from '../assets/styles/SortMenu.module.css';
 
-const SortMenu = ({ value, onSortChange, optionList }) => {
+const SortMenu = ({ value, onChange, optionList }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleToggle = () => setIsOpen(!isOpen);
 
@@ -18,16 +18,6 @@ const SortMenu = ({ value, onSortChange, optionList }) => {
   };
 
   return (
-    // <select value={value} onChange={(e) => onSortChange(e.target.value)}>
-
-    //   {optionList.map((opt, index) => (
-    //       <option value={opt.value} key={index}>
-    //         {opt.name}
-    //       </option>
-    //   ))}
-    // </select>
-    
-    // css 적용한 메
     <div className={styles.sortMenuContainer}>
       <div className={styles.sortMenuHeader} onClick={handleToggle}>
         <span>{optionList.find(opt => opt.value === value)?.name || '정렬'}</span>

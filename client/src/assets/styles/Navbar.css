@@ -8,7 +8,8 @@
 .navbar-top .nav-link {
   padding: 0.25rem 0.5rem;
   font-size: 0.9rem;
-  color: black !important; 
+  font-weight: bold;
+  color: #444444 !important; 
   text-decoration: none; 
 }
 
@@ -53,6 +54,7 @@
 
 .navbar .nav-link {
   padding: 0.25rem 0.75rem;
+  font-weight: bold;
 }
 
 /* 네비게이션 아이템 간격 조정 */
