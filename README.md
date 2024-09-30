@@ -4,18 +4,18 @@
 <summary>목차 바로가기</summary>
 <div markdown="1">
 
-[1. 프로젝트 소개](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-소개)
-[2. 개발 기간](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#개발기간)
-[3. 프로젝트 구조](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-구조)
-   [- 프론트엔드 구조](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로트엔드-구조)
-   [- 백엔드 구조](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#백엔드-구조)
-[4. 주요 기능](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#주요기능)
-[5. 설치 및 설정](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#설치-및-실행)
-[6. 개발 모드 실행](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#개발-모드-실행)
-[7. 프로덕션 빌드 및 실행](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로덕션-빌드-및-실행)
-[8. 기술 스택](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#기술-스택)
-[9. 협업 가이드라인](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#협업-가이드라인)
-[10. 주의사항](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#주의사항)
+1. [프로젝트 소개](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-소개)
+2. [개발 기간](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#개발기간)
+3. [프로젝트 구조](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-구조)
+   - [프론트엔드 구조](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로트엔드-구조)
+   - [백엔드 구조](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#백엔드-구조)
+4. [주요 기능](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#주요기능)
+5. [설치 및 설정](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#설치-및-실행)
+6. [개발 모드 실행](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#개발-모드-실행)
+7. [프로덕션 빌드 및 실행](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로덕션-빌드-및-실행)
+8. [기술 스택](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#기술-스택)
+9. [협업 가이드라인](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#협업-가이드라인)
+10. [주의사항](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#주의사항)
 
 
 </div>
