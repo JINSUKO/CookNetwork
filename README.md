@@ -6,22 +6,24 @@
 
 1. [프로젝트 소개](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-소개)
 2. [개발 기간](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#개발-기간)
-3. [프로젝트 구조](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-구조)
+3. [프로젝트 팀원](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-팀원)
+4. [기술 스택](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#기술-스택)
+5. [프로젝트 구조](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-구조)
    - 프론트엔드 구조
    - 백엔드 구조
-4. [주요 기능](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#주요-기능)
-5. [설치 및 설정](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#설치-및-실행)
-6. [개발 모드 실행](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#개발-모드-실행)
-7. [프로덕션 빌드 및 실행](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로덕션-빌드-및-실행)
-8. [기술 스택](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#기술-스택)
-9. [협업 가이드라인](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#협업-가이드라인)
-10. [주의사항](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#주의사항)
+6. [주요 기능](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#주요-기능)
+7. [화면 구성](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#화면-구성)
+8. [설치 및 설정](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#설치-및-실행)
+9. [개발 모드 실행](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#개발-모드-실행)
+10. [프로덕션 빌드 및 실행](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로덕션-빌드-및-실행)
+11. [협업 가이드라인](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#협업-가이드라인)
+12. [주의사항](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#주의사항)
 
 
 </div>
 </details>
 
-## 프로젝트 소개
+## 📝 프로젝트 소개
 
  AI 기능 기반 레시피 공유 플랫폼입니다. 사용자들이 레시피를 쉽게 공유할 수 있고, ML 기능을 이용하여 음식 사진을 통해 유사한 레시피를 추천해주는 기능을 제공합니다.
 
@@ -30,6 +32,19 @@
  - 2024.07.03 - 2024.10.04
  - 주제 선정
  - 개발
+
+## 💁‍♂️ 프로젝트 팀원
+
+- 고진수: 팀장, 백엔드
+- 박관용: 백엔드
+- 김도희: 프론트엔드
+- 김소현: AI 모델링
+
+## 기술 스택
+
+- 프론트엔드: <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=white"> , <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=white">, <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=Vite&logoColor=white">
+- 백엔드: <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=white">, <img src="https://img.shields.io/badge/Node.js-5FA04E?style=flat-square&logo=Node.js&logoColor=white">, <img src="https://img.shields.io/badge/Express.js-000000?style=flat-square&logo=Express&logoColor=white">, <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white">, <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=FastAPI&logoColor=white">
+- 형상관리: <img src="https://img.shields.io/badge/Git-F05032?style=flat-square&logo=Git&logoColor=white">, <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white">
 
 ## 프로젝트 구조
 
@@ -103,13 +118,34 @@ Cloudinary:
 </div>
 </details>
 
-### 주요 기능
+## 주요 기능
 
 1. 로그인 사용자 인증 및 프로필 정보 관리
 2. 실시간 채팅,FAQ 및 레시피 정보 AI 챗봇
 3. 레시피 등록, 조회
 4. 카테고리, 검색 기반 레시피 조회
 5. 레시피 북마크
+
+
+## 화면 구성
+
+<details>
+<summary>프로트엔드 구조</summary>
+<div markdown="1">
+
+|화면 명|화면 명|
+|:---:|:---:|
+|<img src=""/>|<img src=""/>|
+|화면에 대한 설명을 입력합니다.|화면에 대한 설명을 입력합니다.|
+
+
+|화면 명|
+|:---:|
+|<img src=""/>|
+|화면에 대한 설명을 입력합니다.|
+
+</div>
+</details>
 
 ## 설치 및 설정
 
@@ -209,12 +245,6 @@ npm run dev
 ```
 npm run prod
 ```
-
-## 기술 스택
-
-- 프론트엔드: <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=white"> , <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=white">, <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=Vite&logoColor=white">
-- 백엔드: <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=white">, <img src="https://img.shields.io/badge/Node.js-5FA04E?style=flat-square&logo=Node.js&logoColor=white">, <img src="https://img.shields.io/badge/Express.js-000000?style=flat-square&logo=Express&logoColor=white">, <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white">, <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=FastAPI&logoColor=white">
-- 형상관리: <img src="https://img.shields.io/badge/Git-F05032?style=flat-square&logo=Git&logoColor=white">, <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white">
 
 ## 협업 가이드라인
 
