@@ -5,15 +5,16 @@
 
 import React, { useEffect } from 'react';
 import ToggleButton from 'react-bootstrap/ToggleButton';
+import styles from '../assets/styles/FilterBox.module.css';
 
 function FilterBox({ filterOptions, selectedFilters, onFilterChange, currentCategory }) {
 
   // 선택된 필터가 없을 때, 초기 상태 "모두보기"
   useEffect(() => {
     if (selectedFilters.length === 0) {
-      onFilterChange(["X"]);
+      onFilterChange(["X"]); 
     }
-  }, []);
+  }, [currentCategory]);   // 카테고리 변경시에도 초기 상태 "X" 반영 
   
   const handleFilterChange = (filter) => {
     let newFilters;
@@ -26,11 +27,18 @@ function FilterBox({ filterOptions, selectedFilters, onFilterChange, currentCate
         newFilters = [...selectedFilters.filter(item => item !== "X"), filter];
       }
     }
-    onFilterChange(newFilters);   // 변경된 필터 상태를 부모 컴포넌트에 전달
+
+    if (newFilters.length === 0) {
+      newFilters = ["X"];
+    }
+    
+    onFilterChange(newFilters);
   };
 
   return (
     <div className="justify-content-center">
+    <div className={styles.filterBox}>
+    <p className={styles.heading}>필터</p>
 
         {filterOptions.map((filter) => (
           <ToggleButton
@@ -38,15 +46,15 @@ function FilterBox({ filterOptions, selectedFilters, onFilterChange, currentCate
             key={filter}
             type="checkbox"
             value={filter}
+            className={`${styles.filterBtn} ${selectedFilters.includes(filter) ? styles.selected : ''}`}
             onChange={() => handleFilterChange(filter)}
             variant={selectedFilters.includes(filter) ? "dark" : "outline-dark"}
-            style={{ borderRadius: '20px', margin: '3px', fontSize: '0.875rem',  lineHeight: '1.2',}}
             checked={selectedFilters.includes(filter)}
           >
             {filter}
           </ToggleButton>
         ))}
-
+    </div>
     </div>
   );
 };

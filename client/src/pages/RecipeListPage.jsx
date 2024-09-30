@@ -1,7 +1,6 @@
 /** RecipeList.jsx
  * 메인, 카테고리에서 나열되는 레시피 리스트 페이지입니다.
  * [ ] 북마크
- * [ ] 검색결과 리스트 카드 통일
 */ 
 
 import React, { useEffect, useRef, useCallback } from "react";
@@ -10,7 +9,7 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
 import styles from '../assets/styles/RecipeCard.module.css';
 import Skeleton from '../components/UI/Skeleton';
-import { FaClock, FaRegChartBar } from 'react-icons/fa';
+import { FaClock, FaRegChartBar, FaStar } from 'react-icons/fa';
 
 function RecipeListPage({ recipes, currentCategory, isLoading }) {
   
@@ -23,10 +22,7 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
     if (e.target.closest(`.${styles.bookmarkWrapper}`)){
       e.preventDefault();
       e.stopPropagation();
-    } else {
-      // 카드의 다른 부분 클릭시 레시피 상세 페이지로 이동
-      window.location.href = `/recipe/${recipe_id}`;
-    }
+    } 
   };
 
   if (isLoading && (!recipes || recipes.length === 0)) {
@@ -36,9 +32,6 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
   return (
     <div>
       <Container className="py-5" style={{margin: '0 auto'}}>
-
-         {/*<Row className="justify-content-center">*/}
-          {/* <Col xs={12} md={10} lg={10}> */}
             <Row xs={1} sm={2} md={3} lg={4} className="g-4">
 
               {recipes && recipes.map((recipe, index) => (
@@ -62,17 +55,21 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
                     <Card.Title className={styles.recipeTitle}>
                       {recipe.recipe_name}
                     </Card.Title>
-                    <Card.Title  className={styles.recipeInfo}>
+                    <Card.Title  className={styles.recipeDesc}>
                       {recipe.recipe_desc}
                     </Card.Title>
-                    <div className={styles.recipeInfo}>
-                      <span style={{ marginRight: '0px'}}>
+                    <div className={styles. recipeInfo}>
+                      <span>
                         <FaRegChartBar className={styles.icon} />
                         Lv.{recipe.level}
                       </span>
                       <span>
                         <FaClock className={styles.icon} />
                         {recipe.cooked_time}분
+                      </span>
+                      <span>
+                        <FaStar className={styles.icon}/>
+                        평점
                       </span>
                     </div>
                   </Card.Body>
@@ -82,9 +79,7 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
             ))}
             
             </Row>
-          {/* </Col> */}
-        {/* </Row> */}
-
+            
         {isLoading && recipes.length > 0 && <Skeleton />}
 
       </Container>

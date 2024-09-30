@@ -64,9 +64,14 @@
 }
 
 .recipeDesc {
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
   margin-bottom: 10px;
+/* 설명텍스트 더보기 처리 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /*말줄임표*/
+  max-width: 100%;
 }
 
 .recipeMyPageDesc {

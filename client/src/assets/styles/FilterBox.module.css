@@ -1,0 +1,55 @@
+.filterBox {
+  width: 80%; 
+  max-width: 1000px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 1em;
+  border: 2px dashed #DAA06D;
+  border-radius: 15px;
+  background-color: #ffefd6;
+  box-shadow: 0 0 0 4px #ffefd6, 2px 2px 4px 2px rgba(0, 0, 0, 0.5);
+  transition: .4s ease-in-out;
+  justify-content: center;
+  margin: 0 auto;  /* 좌우 마진을 auto로 설정하여 중앙 정렬 */
+
+}
+
+.heading {
+  width: 100%;
+  color: #DAA06D;
+  background-color: transparent;
+  letter-spacing: .5em;
+  text-align: center;
+  padding-bottom: 0.5em;
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid #DAA06D;
+  font-weight: bold;
+}
+
+.filterBtn {
+  outline: none;
+  padding: 0.2em 0.5em;
+  border: 1px solid #DAA06D;
+  color: #4d3a29;
+  border-radius: 20px;
+  background-color: #EADDCA;
+  text-align: center;
+  cursor: pointer;
+  transition: .2s ease-in-out;
+  font-size: 0.875rem;
+  margin: 2px;
+}
+
+.filterBtn.selected {
+  background-color: #E5AA70;
+  color: white;
+}
+
+.filterBtn:hover {
+  opacity: 0.8;
+}
+
+.filterBtn:active {
+  transform: translateY(1px);
+}

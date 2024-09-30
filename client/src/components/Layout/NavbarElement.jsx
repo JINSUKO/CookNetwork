@@ -67,7 +67,7 @@ function NavbarElement({ user }) {
       </Nav>
 
       {/* 헤더 아래 네비바 */}
-      <Navbar expand="lg" className="navbar bg-body-tertiary">
+      <Navbar expand="sm" className="navbar bg-body-tertiary">
         <Container className="navbar-container d-flex justify-content-center align-items-center flex-nowrap ">
           <Button variant="link" onClick={handleSidebarShow} className="me-2 border-0" >
             <i className="fas fa-bars text-secondary" ></i>
@@ -79,7 +79,7 @@ function NavbarElement({ user }) {
               <Nav.Item key={category.path}>
                 <Link
                   to={category.path} 
-                  className="nav-link px-2"
+                  className="nav-link px-2 category-link"
                 >{category.name}
                 </Link>
               </Nav.Item>

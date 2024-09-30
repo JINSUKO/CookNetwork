@@ -5,29 +5,53 @@
  * optionList
  */
 
-import React, { useState } from 'react';
-import FetchRecipeList from './FetchRecipeList';
-
-const sortOptionList = [
-  { value: "최신순", name: "최신순" },
-  { value: "오래된순", name: "오래된순" },
-  { value: "난이도순", name: "난이도순" },
-  { value: "조리시간순", name: "조리시간순" },
-  { value: "평점순", name: "평점순" },
-]
+import React, { useState, useEffect, useRef } from 'react';
+import styles from '../assets/styles/SortMenu.module.css';
 
 const SortMenu = ({ value, onChange, optionList }) => {
-  const [sortOption, setSortOption] = useState("최신순");
-  
-  return (
-    <select value={value} onChange={(e) => onSortChange(e.target.value)}>
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
 
-      {optionList.map((opt, index) => (
-          <option value={value} key={index}>
-            {opt.name}
-          </option>
-      ))}
-    </select>
+  const handleToggle = () => setIsOpen(!isOpen);
+  const handleOptionClick = (optionValue) => {
+    onChange(optionValue);
+    setIsOpen(false);
+  };
+
+  // 메뉴 바깥을 클릭하면 열린 메뉴가 닫힘
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
+
+  return (
+    <div className={styles.sortMenuContainer} ref={menuRef}>
+      <div className={styles.sortMenuHeader} onClick={handleToggle}>
+        <span>{optionList.find(opt => opt.value === value)?.name || '정렬'}</span>
+        <span className={`${styles.arrow} ${isOpen ? styles.up : styles.down}`}></span>
+      </div>
+      {isOpen && (
+        <ul className={styles.sortMenuOptions}>
+          {optionList.map((opt) => (
+            <li
+              key={opt.value}
+              className={`${styles.sortMenuItem} ${value === opt.value ? styles.selected : ''}`}
+              onClick={() => handleOptionClick(opt.value)}
+            >
+              {opt.name}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 };
 

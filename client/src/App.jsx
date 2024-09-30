@@ -22,6 +22,7 @@ import { BookmarkProvider } from './components/Bookmark/BookmarkContext';
 import BookmarkList from './components/Bookmark/BookmarkList';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+// import { RatingProvider } from './context/StarRatingContext';
 
 import Editor from './Editor'
 import RecipeWrite from './pages/RecipeWrite';
@@ -31,7 +32,6 @@ import RecipeUpdate from './pages/RecipeUpdate';
 import './App.css'
 import NotFound from './pages/NotFound';
 import Best from './pages/Best'
-
 
 
 function App() {
@@ -116,6 +116,7 @@ function App() {
     <div className="App">
       <p>{message}</p>
       <Router>
+        {/* <RatingProvider> */}
         <BookmarkProvider>
         <Header user={user}/>
         <Routes>
@@ -150,6 +151,7 @@ function App() {
           <Route path='/best' element={<Best />} />
         </Routes>
         </BookmarkProvider>
+        {/* </RatingProvider> */}
       </Router>
       {user && <OpenChat userData = {user}/>}
       <Footer/>

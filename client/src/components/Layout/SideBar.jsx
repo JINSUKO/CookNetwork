@@ -6,6 +6,8 @@ import React, { useState } from 'react';
 import { Offcanvas, Nav, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from '../../assets/styles/SideBar.module.css'
+import { FaUser, FaUserPlus, FaUserCog, FaBookmark, FaCrown, FaCookieBite, FaListUl, FaPen } from "react-icons/fa";
+
 
 function LeftSidebar({ show, handleClose, user }) {
   const [profileImgDBbase64, setProfileImgDBbase64] = useState(user?.user_img || 'basic_profile_img.jpg');
@@ -13,24 +15,24 @@ function LeftSidebar({ show, handleClose, user }) {
   
   // 로그인 상태에 따라 유저에게 보여줄 메뉴
   const commonLoggedInMenu = [
-    { to: "/mypage", text: "마이페이지" },
-    { to: "/mybookmark", text: "북마크한 레시피" },
-    { to: "/popular", text: "인기 레시피" },
-    { to: "/about", text: "서비스 소개" },
+    { to: "/mypage", text: "마이페이지", icon: <FaUserCog /> },
+    { to: "/mybookmark", text: "북마크한 레시피", icon: <FaBookmark /> },
+    { to: "/popular", text: "인기 레시피", icon: <FaCrown /> },
+    { to: "/about", text: "서비스 소개", icon: <FaCookieBite /> },
   ];
 
   const chefMenu = [
-    { to: "/writerecipe", text: "나만의 레시피 등록"},
-    { to: "/myrecipe", text: "나만의 레시피 관리" },
+    { to: "/writerecipe", text: "나만의 레시피 등록", icon: <FaPen />},
+    { to: "/myrecipe", text: "나만의 레시피 관리", icon: <FaListUl /> },
   ]
 
   const loggedOutMenu = [
-    { to: "/login", text: "로그인" },
-    { to: "/signup", text: "회원가입" },
-    { to: "/mypage", text: "마이페이지" },
-    { to: "/mybookmark", text: "북마크한 레시피" },
-    { to: "/best", text: "인기 레시피" },
-    { to: "/about", text: "서비스 소개" },
+    { to: "/login", text: "로그인", icon: <FaUser /> },
+    { to: "/signup", text: "회원가입", icon: <FaUserPlus /> },
+    { to: "/mypage", text: "마이페이지", icon: <FaUserCog /> },
+    { to: "/mybookmark", text: "북마크한 레시피", icon: <FaBookmark />},
+    { to: "/best", text: "인기 레시피", icon: <FaCrown /> },
+    { to: "/about", text: "서비스 소개", icon: <FaCookieBite /> },
   ];
 
   // 사용자의 로그인 상태와 user_code(셰프 여부)에 따라 메뉴 표시
@@ -44,7 +46,7 @@ function LeftSidebar({ show, handleClose, user }) {
   return (
     <Offcanvas show={show} onHide={handleClose} placement="start">
       <Offcanvas.Header closeButton>
-        <Offcanvas.Title>Menu</Offcanvas.Title>
+        <Offcanvas.Title className={styles.menuTitle}>Menu</Offcanvas.Title>
       </Offcanvas.Header>
       <Offcanvas.Body className={`d-flex flex-column ${styles.offcanvasBody}`}>
         <Nav className="flex-column flex-grow-1">
@@ -57,6 +59,7 @@ function LeftSidebar({ show, handleClose, user }) {
               onClick={handleClose}
               className={styles.navLink}
             >
+              {item.icon && <span className={styles.icon}>{item.icon}</span>}
               {item.text}
             </Nav.Link>
           ))}

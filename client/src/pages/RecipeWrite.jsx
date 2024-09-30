@@ -72,7 +72,9 @@ const RecipeEditor = ({ user }) => {
   };
 
   // 단계별 이미지 업로드 함수
-  const uploadStepImage = (index, file) => {
+  const uploadStepImage = (index, event) => {
+    const file = event.target.files[0]
+
     if (!file) return;
     if (!file.type.startsWith('image/')) {
       alert('이미지 파일만 선택해주세요.');
@@ -155,26 +157,13 @@ const RecipeEditor = ({ user }) => {
   }
 
 
-  // // 조리단계별 이미지 업로드
-  // const handleStepImageUpload = (index, file) => {
-  //   if (file) {
-  //     const reader = new FileReader()
-  //     reader.onload = (e) => {
-  //       setSteps(prevSteps => 
-  //         prevSteps.map((step, i) => 
-  //           i === index ? { ...step, img: e.target.result } : step
-  //         )
-  //       );
-  //     }
-  //     reader.readAsDataURL(file)
-  //   }
-  // }
-
-
   // 폼 제출
   const handleSubmit = async (e) => {
     e.preventDefault()
-
+    const isConfirmed = window.confirm("레시피를 등록하시겠습니까?");   // 제출 확인 창
+    if (!isConfirmed) {
+      return;
+    }
     const recipeData = {
       user_id: user.user_id, 
       recipe_name: recipeName,
@@ -206,7 +195,7 @@ const RecipeEditor = ({ user }) => {
     //단계별이미지추가
     steps.forEach((step, index) => {
       if (step.imgFile) {
-        formData.append(`step_img_${index}`, step.imgFile);
+        formData.append('step_img', step.imgFile);
       }
     });
 
@@ -227,6 +216,8 @@ const RecipeEditor = ({ user }) => {
       alert("레시피 등록 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
   }
+
+  
 
   return (
     <div className={styles.recipeEditor}>
@@ -362,7 +353,6 @@ const RecipeEditor = ({ user }) => {
         {steps.map((step, index) => (
           <div key={index} className={styles.formGroup}>
             <div className={styles.stepOrder}>{step.order}</div>
-            {/* <EditorContent editor={editor} className={styles.editorContent} /> */}
             <textarea
               placeholder="조리 방법을 적어주세요."
               value={step.desc}
@@ -372,12 +362,11 @@ const RecipeEditor = ({ user }) => {
             <input
               type="file"
               accept="image/*"
-              onChange={uploadStepImage}
+              onChange={(e) => uploadStepImage(index, e)}
               className={`${styles.recipeInput} ${styles.fullWidth}`}
             />
             {step.img && <img src={step.img} alt={`Step ${step.order}`} className={styles.stepImage} />}
           </div>
-
         ))}
         <button type="button" onClick={addStep} className={styles.addButton}>단계 추가</button>
 
