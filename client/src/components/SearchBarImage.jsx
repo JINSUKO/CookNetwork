@@ -8,6 +8,7 @@ import {Button, Form} from "react-bootstrap";
 
 import style from "../assets/styles/SearchBarImage.module.css";
 import {useNavigate} from "react-router-dom";
+import {FaSearch} from "react-icons/fa";
 
 const SearchBarImage = ( {onSearch} ) => {
 
@@ -168,7 +169,7 @@ const SearchBarImage = ( {onSearch} ) => {
                     onClick={handleSearch}
                     ref={button}
                 >
-                    <span>검색</span>
+                <span className="search-icon"><FaSearch/></span>
                 </Button>
             </Form>
             <div className={`${style.speechBubble} ${show ? style.show : ''}`} ref={speechBubble}>
