@@ -18,7 +18,7 @@
 
 .chefProfile {
   position: absolute;
-  bottom: -25px;    /*레시피 사진과 겹침*/
+  bottom: -35px;    /*레시피 사진과 겹침*/
   left: 50%;
   transform: translateX(-50%);
   width: 100px;
