@@ -4,9 +4,9 @@
 <summary>목차 바로가기</summary>
 <div markdown="1">
 
-1. [프로젝트 소개](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-소개)
+1. [프로젝트 소개](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#-프로젝트-소개)
 2. [개발 기간](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#개발-기간)
-3. [프로젝트 팀원](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-팀원)
+3. [프로젝트 팀원](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#%EF%B8%8F-프로젝트-팀원)
 4. [기술 스택](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#기술-스택)
 5. [프로젝트 구조](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-구조)
    - 프론트엔드 구조
