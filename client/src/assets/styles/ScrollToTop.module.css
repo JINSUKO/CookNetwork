@@ -2,21 +2,45 @@
 
 .scrollContainer{
   position: fixed;
-  right: 5%;
+  right: 50%;
   bottom: 5%;
   z-index: 1;
 }
-#top{
-  font-weight: bold;
-  font-size: 15px;
-  padding :15px 10px;
-  background-color: #000;
-  color:#ffffff;
-  border: 0.5px solid rgb(255, 255, 255);
+
+.Btn {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(white, #fefefe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
-  outline: none;
   cursor: pointer;
+  position: relative;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
 }
-#top:hover{
-  color :rgb(233, 233, 233);
+
+.Btn:hover {
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.arrow path {
+  fill: #7c7b7b;
+}
+
+.Btn:hover .arrow {
+  animation: slide-in-bottom .3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@keyframes slide-in-bottom {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
