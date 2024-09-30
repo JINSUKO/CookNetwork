@@ -39,10 +39,11 @@
 <summary>프로트엔드 구조</summary>
 <div markdown="1">
 
+```
 1. 프론트:
-- vite
-- React.js
-- react-bootstrap
+   - vite
+   - React.js
+   - react-bootstrap
 
 2. 주요 컴포넌트:
    - 레이아웃 관련 컴포넌트
@@ -58,6 +59,7 @@
 
 4. 상태 관리 및 API 통신:
    - Fetch API를 사용한 인터셉터 큐를 구현하여 토큰 인증 요청을 관리
+```
 
 </div>
 </details>
@@ -66,24 +68,25 @@
 <summary>백엔드 구조</summary>
 <div markdown="1">
 
+```
 1. 서버:
-- Node.js와 Express.js 프레임워크
-- Python과 FastAPi를 사용하여 구현
+   - Node.js와 Express.js 프레임워크
+   - Python과 FastAPi를 사용하여 구현
 
 2. 데이터베이스:
 MariaDB: 주요 정보 관리
-- 사용자 정보
-- 레시피 정보
-- 카테고리
-- 재료
-- 북마크
-- 채팅 메시지
+   - 사용자 정보
+   - 레시피 정보
+   - 카테고리
+   - 재료
+   - 북마크
+   - 채팅 메시지
 
 Redis Cloud:
-- 로그인 토큰 정보 관리
+   - 로그인 토큰 정보 관리
 
 Cloudinary:
-- 이미지 파일 저장 및 제공
+   - 이미지 파일 저장 및 제공
 
 3. 주요 모듈:
    - 인증 관련 모듈: JWT 및 Redis Cloud를 이용한 유저 인증, Nodemailer 회원가입 인증
@@ -95,6 +98,7 @@ Cloudinary:
    - 사용자 관리: 회원가입, 로그인, 로그아웃, 유저정보 업데이트
    - 레시피 관리: 레시피 조회, 검색, 카테고리별 조회, 등록
    - 카테고리 관리: 카테고리 조회 및 사용자별 카테고리 설정
+```
 
 </div>
 </details>
