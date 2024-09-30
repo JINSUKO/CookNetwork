@@ -32,6 +32,16 @@ const DropdownLikeModal = forwardRef(({ state, items, activeTab }, ref) => {
         setShow(false);
     }, []);
 
+    const updateModalPosition = () => {
+        if (modalRef.current && buttonRef.current) {
+            modalRef.current.style.top = `${buttonRef.current.getBoundingClientRect().bottom}px`;
+            modalRef.current.style.left = `${buttonRef.current.getBoundingClientRect().left}px`;
+        }
+    };
+
+    const handleResize = () => {
+        requestAnimationFrame(updateModalPosition);
+    };
 
     // 클릭 할 때 버튼과 드롭박스모달이 아니면 드롭박스모달을 보이지 않게 하는 코드
     // 클릭 할 때도 드롭박스 모달을 버튼 밑에 붙이는 코드를 작성하면서 시작했는데,
@@ -41,16 +51,13 @@ const DropdownLikeModal = forwardRef(({ state, items, activeTab }, ref) => {
         if (!(modalRef.current?.contains(event.target) || buttonRef.current?.contains(event.target))) {
             setShow(false);
         }
-
-        modalRef.current.style.top = `${buttonRef.current.getBoundingClientRect().bottom}px`;
-        modalRef.current.style.left = `${buttonRef.current.getBoundingClientRect().left}px`;
+        updateModalPosition()
     }, []);
+
 
     // 스크롤 할 떄 드랍박스모달이 버튼 밑에 따라 붙게 하는 코드.
     const handleScrollHtmlBody = useCallback((event) => {
-        modalRef.current.style.top = `${buttonRef.current.getBoundingClientRect().bottom}px`;
-        modalRef.current.style.left = `${buttonRef.current.getBoundingClientRect().left}px`;
-
+        updateModalPosition()
     }, []);
 
     useEffect(() => {
@@ -58,10 +65,12 @@ const DropdownLikeModal = forwardRef(({ state, items, activeTab }, ref) => {
         if (activeTab === 'recipes') {
             document.addEventListener('mousedown', handleClickHtmlBody);
             document.addEventListener('scroll', handleScrollHtmlBody);
+            window.addEventListener('resize', handleResize);
 
             return () => {
                 document.removeEventListener('mousedown', handleClickHtmlBody);
                 document.removeEventListener('scroll', handleScrollHtmlBody);
+                window.removeEventListener('resize', handleResize);
             };
 
         }

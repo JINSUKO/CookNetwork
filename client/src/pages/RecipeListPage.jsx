@@ -31,7 +31,7 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
 
   return (
     <div>
-      <Container className="py-5">
+      <Container className="py-5" style={{margin: '0 auto'}}>
             <Row xs={1} sm={2} md={3} lg={4} className="g-4">
 
               {recipes && recipes.map((recipe, index) => (

@@ -191,7 +191,6 @@ function FetchRecipeList() {
 
   return (
     <Container className={styles.recipeListContainer}>
-      
       {isLoading && filteredRecipes.length === 0 ? (
         <Row className="justify-content-center">
           <Col xs={12} md={10} lg={8}>
@@ -199,6 +198,7 @@ function FetchRecipeList() {
           </Col>
         </Row>
       ) : (
+      <>
         <Row  className="justify-content-center">
           <Col xs={12} md={10} lg={8}>
 
@@ -213,29 +213,31 @@ function FetchRecipeList() {
               onFilterChange={handleFilterChange}
               currentCategory={currentCategory}/>
           </div>
-          <Row>
-            <SortMenu
-            value={sortOption}
-            onChange={handleSortChange}
-            optionList={sortOptionList}
-            />
-          </Row>
-          <Row>
-          <hr className={styles.customHr}/>
-          </Row>
-
-          {sortedRecipes.length === 0 ? (
-            <div className={styles.noRecipesMessage}>아직 레시피가 없습니다.</div>
-          ) : (
-          <RecipeListPage 
-            // recipes={filteredRecipes} 
-            recipes={sortedRecipes}
-            currentCategory={currentCategory}
-            isLoading={isLoading}
-          />
-          )}
+          
           </Col>
         </Row>
+        <Row>
+          <SortMenu
+          value={sortOption}
+          onChange={handleSortChange}
+          optionList={sortOptionList}
+          />
+        </Row>
+        <Row>
+        <hr className={styles.customHr}/>
+        </Row>
+
+        {sortedRecipes.length === 0 ? (
+          <div className={styles.noRecipesMessage}>아직 레시피가 없습니다.</div>
+        ) : (
+        <RecipeListPage 
+          // recipes={filteredRecipes} 
+          recipes={sortedRecipes}
+          currentCategory={currentCategory}
+          isLoading={isLoading}
+        />
+        )}
+      </>
       )}
     </Container>
   )
