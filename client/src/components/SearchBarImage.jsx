@@ -167,6 +167,7 @@ const SearchBarImage = ( {onSearch} ) => {
                 </label>
                 <Button
                     type="submit"
+                    variant="warning"
                     className={style.searchButton }
                     onClick={handleSearch}
                     ref={button}
