@@ -284,7 +284,7 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
         </Col>
       </Row>
 
-      {/* {recipe.tips && (
+      {recipe.tips && (
         <Row>
           <Col>
             <div className={styles.contentSection}>
@@ -295,14 +295,16 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
             </div>
           </Col>
         </Row>
-      )} */}
+      )}
 
       {recipe.categories && (
         <Row>
           <Col>
             <div className={styles.contentSection}>
               <h2 className={styles.sectionTitle}>태그</h2>
-              <p>{recipe.categories.map(cat => cat.category_name).join(', ')}</p>
+              <div className={styles.categoryTag}>
+                <span>{recipe.categories.map(cat => cat.category_name).join(', ')}</span>
+              </div>
             </div>
           </Col>
         </Row>

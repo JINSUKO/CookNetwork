@@ -3,7 +3,6 @@
 - 함수 handleFilterChange: 카테고리 내 필터 선택
 - 함수 getSortedList: 정렬 기능(최신순, 난이도순, 조리시간순, 이름순)
 [ ] 로그인, 비로그인 북마크 여부 구분
-[ ] 북마크- 낙관적 업데이트 적용
 */  
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -130,7 +129,7 @@ function FetchRecipeList() {
   }, [fetchRecipes]);   
 
   useEffect(() => {
-    setSelectedFilters([]);
+    setSelectedFilters(['X']);
   }, [currentCategory])   // currentCategory가 바뀔때마다 필터 새로고침
 
   // 종류별 필터 선택
@@ -203,7 +202,9 @@ function FetchRecipeList() {
         <Row  className="justify-content-center">
           <Col xs={12} md={10} lg={8}>
 
-          <h6 className={styles.recipeListTitle}>{displayCategory()}</h6>
+          <h6 className={styles.recipeListTitle}>
+            |  {displayCategory()}  |
+          </h6>
 
           <div  className={styles.filterBoxWrapper}>
             <FilterBox 
@@ -220,14 +221,19 @@ function FetchRecipeList() {
             />
           </Row>
           <Row>
-          <hr/>
+          <hr className={styles.customHr}/>
           </Row>
+
+          {sortedRecipes.length === 0 ? (
+            <div className={styles.noRecipesMessage}>아직 레시피가 없습니다.</div>
+          ) : (
           <RecipeListPage 
             // recipes={filteredRecipes} 
             recipes={sortedRecipes}
             currentCategory={currentCategory}
             isLoading={isLoading}
           />
+          )}
           </Col>
         </Row>
       )}

@@ -5,6 +5,7 @@
 
 import React, { useEffect } from 'react';
 import ToggleButton from 'react-bootstrap/ToggleButton';
+import styles from '../assets/styles/FilterBox.module.css';
 
 function FilterBox({ filterOptions, selectedFilters, onFilterChange, currentCategory }) {
 
@@ -36,6 +37,8 @@ function FilterBox({ filterOptions, selectedFilters, onFilterChange, currentCate
 
   return (
     <div className="justify-content-center">
+    <div className={styles.filterBox}>
+    <p className={styles.heading}>필터</p>
 
         {filterOptions.map((filter) => (
           <ToggleButton
@@ -43,15 +46,15 @@ function FilterBox({ filterOptions, selectedFilters, onFilterChange, currentCate
             key={filter}
             type="checkbox"
             value={filter}
+            className={`${styles.filterBtn} ${selectedFilters.includes(filter) ? styles.selected : ''}`}
             onChange={() => handleFilterChange(filter)}
             variant={selectedFilters.includes(filter) ? "dark" : "outline-dark"}
-            style={{ borderRadius: '20px', margin: '3px', fontSize: '0.875rem',  lineHeight: '1.2',}}
             checked={selectedFilters.includes(filter)}
           >
             {filter}
           </ToggleButton>
         ))}
-
+    </div>
     </div>
   );
 };

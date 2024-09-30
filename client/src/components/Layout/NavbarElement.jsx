@@ -78,7 +78,7 @@ function NavbarElement({ user }) {
               <Nav.Item key={category.path}>
                 <Link 
                   to={category.path} 
-                  className="nav-link px-2"
+                  className="nav-link px-2 category-link"
                 >{category.name}
                 </Link>
               </Nav.Item>
