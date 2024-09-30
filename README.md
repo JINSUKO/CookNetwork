@@ -212,9 +212,9 @@ npm run prod
 
 ## 기술 스택
 
-- 프론트엔드: <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=black"> , <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=black">, <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=Vite&logoColor=black">
-- 백엔드: <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=black">, <img src="https://img.shields.io/badge/Node.js-5FA04E?style=flat-square&logo=Node.js&logoColor=white">, <img src="https://img.shields.io/badge/Express.js-000000?style=flat-square&logo=Express&logoColor=black">, <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=black">, <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=FastAPI&logoColor=black">
-- 형상관리: <img src="https://img.shields.io/badge/Git-F05032?style=flat-square&logo=Git&logoColor=black">, <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white">
+- 프론트엔드: <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=white"> , <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=white">, <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=Vite&logoColor=white">
+- 백엔드: <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=white">, <img src="https://img.shields.io/badge/Node.js-5FA04E?style=flat-square&logo=Node.js&logoColor=white">, <img src="https://img.shields.io/badge/Express.js-000000?style=flat-square&logo=Express&logoColor=black">, <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white">, <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=FastAPI&logoColor=white">
+- 형상관리: <img src="https://img.shields.io/badge/Git-F05032?style=flat-square&logo=Git&logoColor=white">, <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white">
 
 ## 협업 가이드라인
 
