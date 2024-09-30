@@ -7,8 +7,8 @@
 1. [프로젝트 소개](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-소개)
 2. [개발 기간](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#개발기간)
 3. [프로젝트 구조](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로젝트-구조)
-   - [프론트엔드 구조](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로트엔드-구조)
-   - [백엔드 구조](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#백엔드-구조)
+   - 프론트엔드 구조
+   - 백엔드 구조
 4. [주요 기능](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#주요기능)
 5. [설치 및 설정](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#설치-및-실행)
 6. [개발 모드 실행](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#개발-모드-실행)
