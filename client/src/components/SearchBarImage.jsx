@@ -56,8 +56,6 @@ const SearchBarImage = ( {onSearch} ) => {
             return
         }
 
-        console.log(file)
-
         const formData = new FormData();
         formData.append('image', file);
 
@@ -73,7 +71,6 @@ const SearchBarImage = ( {onSearch} ) => {
             });
 
             data = await response.json();
-            console.log(data);
 
             if (!response.ok) {return alert('에러가 발생했습니다. 관리자에게 문의해주세요.');}
         } catch (e) {
@@ -112,7 +109,6 @@ const SearchBarImage = ( {onSearch} ) => {
 
             if (button.current?.contains(event.target)) return;
 
-            console.log(21321)
             setShow(false);
 
             fileInputDisplay.current.style.borderColor = '#cccccc';
