@@ -130,7 +130,7 @@ Cloudinary:
 ## 화면 구성
 
 <details>
-<summary>프로트엔드 구조</summary>
+<summary>레시피</summary>
 <div markdown="1">
 
 |화면 명|화면 명|
@@ -143,6 +143,60 @@ Cloudinary:
 |:---:|
 |<img src=""/>|
 |화면에 대한 설명을 입력합니다.|
+
+</div>
+</details>
+
+<details>
+<summary>유저 페이지</summary>
+<div markdown="1">
+
+|화면 명|화면 명|
+|:---:|:---:|
+|<img src=""/>|<img src=""/>|
+|화면에 대한 설명을 입력합니다.|화면에 대한 설명을 입력합니다.|
+
+
+|화면 명|
+|:---:|
+|<img src=""/>|
+|화면에 대한 설명을 입력합니다.|
+
+</div>
+</details>
+
+<details>
+<summary>채팅</summary>
+<div markdown="1">
+
+|화면 명|화면 명|
+|:---:|:---:|
+|<img src=""/>|<img src=""/>|
+|화면에 대한 설명을 입력합니다.|화면에 대한 설명을 입력합니다.|
+
+
+|화면 명|
+|:---:|
+|<img src=""/>|
+|화면에 대한 설명을 입력합니다.|
+
+<details>
+<summary>관리자</summary>
+<div markdown="1">
+
+|화면 명|화면 명|
+|:---:|:---:|
+|<img src=""/>|<img src=""/>|
+|화면에 대한 설명을 입력합니다.|화면에 대한 설명을 입력합니다.|
+
+
+|화면 명|
+|:---:|
+|<img src=""/>|
+|화면에 대한 설명을 입력합니다.|
+
+</div>
+</details>
 
 </div>
 </details>
