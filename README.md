@@ -13,7 +13,7 @@
    - 백엔드 구조
 6. [주요 기능](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#주요-기능)
 7. [화면 구성](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#화면-구성)
-8. [설치 및 설정](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#설치-및-실행)
+8. [설치 및 설정](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#설치-및-설정)
 9. [개발 모드 실행](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#개발-모드-실행)
 10. [프로덕션 빌드 및 실행](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#프로덕션-빌드-및-실행)
 11. [협업 가이드라인](https://github.com/JINSUKO/CookNetwork?tab=readme-ov-file#협업-가이드라인)
