@@ -3,9 +3,9 @@
 
 .sortMenuContainer {
   position: relative;
-  width: 120px;
+  width: 150px;
   font-family: Arial, sans-serif;
-  margin-left: auto; /* 이 줄을 추가 */
+  margin-left: auto; 
 }
 
 .sortMenuHeader {
@@ -56,9 +56,9 @@
 }
 
 .sortMenuItem:hover {
-  background-color: #f8f9fa;
+  background-color: rgb(255, 254, 242);
 }
 
 .selected {
-  background-color: #e9ecef;
+  background-color: #fff4d5;
 }
