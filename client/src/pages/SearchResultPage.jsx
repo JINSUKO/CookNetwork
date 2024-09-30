@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
 import Paging from "../components/UI/Paging";
 import styles from "../assets/styles/RecipeCard.module.css";
-import {FaClock, FaRegChartBar} from "react-icons/fa";   // 페이지네이션
+import {FaClock, FaRegChartBar, FaStar} from "react-icons/fa";   // 페이지네이션
 
 const API_URL = import.meta.env.VITE_HOST_IP;
 
@@ -131,13 +131,17 @@ function SearchResultPage() {
                     {recipe.recipe_desc}
                   </Card.Title>
                   <div className={styles.recipeInfo}>
-                    <span style={{ marginRight: '16px'}}>
-                      <FaRegChartBar className={styles.icon} />
-                      레벨{recipe.level}
-                    </span>
                     <span>
-                      <FaClock className={styles.icon} />
-                      {recipe.cooked_time}분
+                        <FaRegChartBar className={styles.icon} />
+                        Lv.{recipe.level}
+                      </span>
+                      <span>
+                        <FaClock className={styles.icon} />
+                        {recipe.cooked_time}분
+                      </span>
+                      <span>
+                        <FaStar className={styles.icon}/>
+                        평점
                     </span>
                   </div>
                 </Card.Body>

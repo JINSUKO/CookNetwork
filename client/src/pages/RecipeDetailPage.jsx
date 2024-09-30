@@ -16,6 +16,7 @@ import styles from '../assets/styles/RecipeDetail.module.css';
 import { FaUtensils, FaClock, FaRegChartBar, FaStarHalf, FaStar } from 'react-icons/fa';
 import Loading from '../components/UI/Loading';
 import StarRating from '../components/StarRating';
+import ScrollToTop from '../components/UI/ScrolltoTop';
 // import { useRating } from '../context/StarRatingContext';
 
 function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
@@ -295,6 +296,7 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
           </div>
         </Col>
       </Row>
+      <ScrollToTop/>
     </Container>
     );
   }

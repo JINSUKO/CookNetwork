@@ -14,6 +14,7 @@ import Skeleton from "./UI/Skeleton";
 import styles from '../assets/styles/RecipeList.module.css';
 import { useBookmarkContext } from "./Bookmark/BookmarkContext";
 import SortMenu from "./SortMenu"; 
+import ScrollToTop from "./UI/ScrolltoTop";
 
 function FetchRecipeList() { 
   const { category } = useParams();
@@ -237,6 +238,7 @@ function FetchRecipeList() {
           isLoading={isLoading}
         />
         )}
+        <ScrollToTop />
       </>
       )}
     </Container>
