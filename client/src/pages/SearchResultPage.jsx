@@ -73,9 +73,6 @@ function SearchResultPage() {
       if (e.target.closest(`.${styles.bookmarkWrapper}`)){
           e.preventDefault();
           e.stopPropagation();
-      } else {
-          // 카드의 다른 부분 클릭시 레시피 상세 페이지로 이동
-          window.location.href = `/recipe/${recipe_id}`;
       }
   };
 
