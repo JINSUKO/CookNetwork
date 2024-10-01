@@ -1,43 +1,47 @@
-/* RecipeDetailPage.jsx
+/**RecipeDetailPage.jsx
 -레시피 상세페이지 컴포넌트입니다.
-*/
+*/ 
+/** RcipeDetailPage.jsx
+ * 레시피 상세페이지
+ * 함수 fetchRecipeDetails: 레시피 데이터 API 호출
+ * 함수 averageRating: 레시피 평균 별점 데이터 API 호출
+ * fetchUserRating: 로그인한 유저가 매겼던 별점 데이터 API 호출
+ */
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Row, Col, Image } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
 import BookmarkButton from '../components/Bookmark/BookmarkButton';
 import styles from '../assets/styles/RecipeDetail.module.css';
-import { FaUtensils, FaClock, FaRegChartBar } from 'react-icons/fa';
+import { FaUtensils, FaClock, FaRegChartBar, FaStarHalf, FaStar } from 'react-icons/fa';
 import Loading from '../components/UI/Loading';
+import StarRating from '../components/StarRating';
+// import { useRating } from '../context/StarRatingContext';
 
 function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
   const { recipe_id } = useParams();
-  // const location = useLocation();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
   const [recipe, setRecipe] = useState(null);   // recipes 데이터 빈 배열로 설정
-  const [ingredients, setIngredients] = useState([]);
-  const [orders, setOrders] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
+  // const { ratings, setRating, averageRatings, calculateAverageRating } = useRating();
 
   const API_URL = import.meta.env.VITE_HOST_IP;
-  const filterOptions = [
-    "메인요리", "반찬", "국/탕", "디저트", "면",
-    "밥/죽/떡", "퓨전", "양념/소스", "채식", "분식", "안주",
-    "스프", "간식", "음료", "다이어트", "도시락"
-  ];
 
+  // 레시피 데이터 가져오기 함수
   const fetchRecipeDetails = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/api/recipe/${recipe_id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}` 
         }
       });
       if(!response.ok) {
         throw new Error((await response.json()).error);
       }
 
-      // 레시피 데이터 result를 받아 recipes에 저장
       const result = await response.json();
       console.log("레시피:", result)
       if (result) {
@@ -46,67 +50,92 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
     } catch (error) {
       console.error("레시피 호출 실패:", error);
     }
-  }, [recipe_id]);
+  }, [recipe_id, API_URL]);
 
-  const fetchRecipeRate = useCallback(async () => {  
-  }, [recipe_id]);
 
-  // 재료 데이터 호출
-  const fetchRecipeIngredients = useCallback(async () => {
-    try{
-      const response = await fetch(`${API_URL}/api/recipe/${recipe_id}/ingredients`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      if(!response.ok) {
-        throw new Error((await response.json()).error);
-      }
-
-      const result = await response.json();
-      console.log("재료 데이터 호출 성공:", result);
-      if (result) {
-        setIngredients(result);
-      }
-    } catch (error) {
-      console.error("재료 호출 실패:", error);
-    }
-  }, [recipe_id]);
-  
-  // 조리순서 데이터
-  const fetchRecipeOrders = useCallback(async () => {
+  // 레시피 평점 데이터 가져오기 
+  // [ ] 평균별점 가져오기
+  const fetchAverageRating = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/api/recipe/${recipe_id}/orders`, {
+      const response = await fetch(`${API_URL}/api/recipe/${recipe_id}/averageRating`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         }
       });
-      if(!response.ok) {
+      if (!response.ok) {
         throw new Error((await response.json()).error);
       }
 
       const result = await response.json();
-      console.log("조리순서 데이터 호출 성공:", result);
-      if (result) {
-        setOrders(result);
-      }
+      setAverageRating(result.averageRating);
     } catch (error) {
-      console.error("조리순서 호출 실패:", error);
+      console.error("평균 별점 호출 실패:", error);
     }
-  }, [recipe_id]);
+  }, [recipe_id, API_URL]);
 
-  // 컴포넌트가 마운트될 때 fetch 함수 호출
-  useEffect(() => {   
-    fetchRecipeDetails();
-    fetchRecipeRate();
-    fetchRecipeIngredients();
-    fetchRecipeOrders();
-  }, [fetchRecipeDetails, fetchRecipeRate, fetchRecipeIngredients, fetchRecipeOrders]);
 
+  // 로그인 유저가 이미 평점을 매겼던 레시피라면->이전 평점 불러오기 
+  const fetchUserRating = useCallback(async () => {  
+    try {
+      const response = await fetch(`${API_URL}/api/recipe/${recipe_id}/rating`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}` // 사용자 인증 토큰
+        }
+      });
+      if (!response.ok) {
+        throw new Error((await response.json()).error);
+      }
+
+      const result = await response.json();
+      setUserRating(result.rating);
+    } catch (error) {
+      console.error("사용자 평점 호출 실패:", error);
+    }
+  }, [recipe_id, API_URL]);
+
+  // [ ] 유저 평점 등록 함수
+  const handleRatingChange = async (newRating) => {
+    try {
+      const response = await fetch(`${API_URL}/api/recipe/${recipe_id}/rating`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // 사용자 인증 토큰
+        },
+        body: JSON.stringify({ rating: newRating })
+      });
+      if (!response.ok) {
+        throw new Error((await response.json()).error);
+      }
+      // 평점 등록 후 레시피 정보를 다시 불러옴
+      await fetchRecipeDetails();
+    } catch (error) {
+      console.error("평점 등록 실패:", error);
+    }
+  };
+
+  // 컴포넌트가 마운트될 때 fetch 함수 호출 
+  // [ ] loadRecipe 를 제거해야할지?? 간소화하기
+  useEffect(() => {
+    const loadRecipeData = async () => {
+      setIsLoading(true);
+      await fetchRecipeDetails();
+      // await fetchAverageRating();
+      setIsLoading(false);
+    };
+
+    loadRecipeData();
+  }, [fetchRecipeDetails, fetchAverageRating]);
+  
+  if (isLoading) {
+    return <div><Loading /></div>;
+  }
   if (!recipe) {
-    return <div><Loading/></div>;
+    return <div className="justify-content-center">
+      레시피를 찾을 수 없습니다.</div>;
   } else {
     return (
       <Container className={styles.recipeDetail}>
@@ -122,6 +151,29 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
         </Col>
       </Row>
 
+      <Row>
+        <Col>
+          <div>
+            {/* <BookmarkButton recipeId={recipe.id} initialIsBookmarked={recipe.isBookmarked} /> */}
+          </div>
+        </Col>
+
+        {recipe.rating ? (
+        <Col>
+          <div>
+            <span>평균 
+              {/* {averageRating[recipe_id].toFixed(1)} */}
+            </span>
+            <FaStar className={styles.icon} size={20} color="#FFD700" />
+          </div>
+        </Col>
+        ) : (
+          <Col>
+            {/* <FaStar className={styles.icon} size={20} color="#666" />   */}
+          </Col>
+        )}
+      </Row>
+
       <Row className="justify-content-center">
         <Col md={8}>
           <h1 className={styles.recipeTitle}>{recipe.recipe_name}</h1>
@@ -132,7 +184,6 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
         <Col md={8}>
           <div className={styles.recipeInfo}>
             <p>{recipe.recipe_desc}</p>
-            <BookmarkButton recipeId={recipe.id} initialIsBookmarked={recipe.isBookmarked} />
             
             <Row className={styles.recipeStats}>
               <Col xs={3}>
@@ -148,7 +199,7 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
           </div>
         </Col>
       </Row>
-
+      <hr className={styles.customHr}/>
       <Row>
         <Col>
           <div className={styles.contentSection}>
@@ -156,7 +207,8 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
             <ul className={styles.ingredientList}>
               {recipe.ingredients && recipe.ingredients.map((ingredient, index) => (
                 <li key={index} className={styles.ingredientItem}>
-                  {ingredient.ingredient_name}: {ingredient.count} {ingredient.ingredient_unit}
+                  <span className={styles.ingredientName}>{ingredient.ingredient_name}</span>
+                  <span className={styles.ingredientAmount}>{ingredient.count} {ingredient.ingredient_unit}</span>
                 </li>
               ))}
             </ul>
@@ -169,46 +221,37 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
           <div className={styles.contentSection}>
             <h2 className={styles.sectionTitle}>조리순서</h2>
             <ol className={styles.stepList}>
-              {recipe.steps && recipe.steps.map((step, index) => (
+              {recipe.orders && recipe.orders.map((step, index) => (
                 <li key={index} className={styles.stepItem}>
+                  <div className={styles.stepContainer}>
+                    <div className={styles.stepNumberWrapper}>
+                      <span className={styles.stepNumber}>{index + 1}</span>
+                    </div>
+                    <div className={styles.stepContent}>
+                      <div className={styles.stepBlock}>
+                        <p>{step.order_desc}</p>
+                      </div>
+                      {step.order_img && <Image src={step.order_img} alt={`Step ${index + 1}`} fluid className={styles.stepImage} />}
+                    </div>
+                  </div>
+                  {/* <Row>
+                    <Col>
+                      {step.order_img && <Image src={step.order_img} alt={`Step ${index + 1}`} fluid className={styles.stepImage} />}
+                    </Col>
+                  </Row>
                   <Row>
                     <Col xs={1}>
                       <span className={styles.stepNumber}>{index + 1}</span>
                     </Col>
                     <Col xs={11}>
                         <div className={styles.stepBlock}>
-                          <p>step.description</p>
+                          <p>{step.order_desc}</p>
                         </div>
-                          {step.image && <Image src={step.image} alt={`Step ${index + 1}`} fluid className={styles.stepImage} />}
                     </Col>
-                  </Row>
+                  </Row> */}
                 </li>
               ))}
             </ol>
-
-
-
-
-
-            {/* 확인용 */}
-            <Row>
-                    <Col xs={1}>
-            <span className={styles.stepNumber}>1</span>
-            </Col>
-            <Col xs={11}>
-
-            <div className={styles.stepBlock}>
-              <p className={styles.stepList}>조리 1단계</p>
-            </div>
-
-            </Col>
-                  </Row>
-
-
-
-
-
-
 
           </div>
         </Col>
@@ -227,12 +270,14 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
         </Row>
       )}
 
-      {recipe.recipe_category && (
+      {recipe.categories && (
         <Row>
           <Col>
             <div className={styles.contentSection}>
-              <h2 className={styles.sectionTitle}>#태그</h2>
-              <p>{recipe.recipe_category.map(cat => cat.category_name).join(', ')}</p>
+              <h2 className={styles.sectionTitle}>태그</h2>
+              <div className={styles.categoryTag}>
+                <span>{recipe.categories.map(cat => `#${cat.category_name}`).join(' ')}</span>
+              </div>
             </div>
           </Col>
         </Row>
@@ -241,8 +286,12 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
       <Row>
         <Col>
           <div className={styles.contentSection}>
-            <h2 className={styles.sectionTitle}>평점 등록</h2>
-            {/* 평점 등록 컴포넌트를 여기에 추가 */}
+            <h2 className={styles.sectionTitle}>내 평점 등록</h2>
+            {/* <StarRating
+              initialRating={ratings[recipe_id]}
+              onRatingChange={handleRatingChange}
+              recipe_id={recipe_id}
+            /> */}
           </div>
         </Col>
       </Row>

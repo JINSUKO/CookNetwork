@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
 import SearchCategoryDrop from "./SearchCategoryDrop";
 import "../assets/styles/SearchBar.css"
+import { FaSearch } from "react-icons/fa";
 
 function SearchBar({ onSearch, recipeData }) {  
   const [searchInput, setSearchInput] = useState("") ; 
@@ -80,10 +81,10 @@ function SearchBar({ onSearch, recipeData }) {
           />
         <Button 
           type="submit" 
-          variant="warning" 
           className="search-button"
           onClick={handleSearch}>
-          <span>검색</span>
+          <span className="search-icon"><FaSearch />
+          </span>
         </Button>
       </Form>
     </div>

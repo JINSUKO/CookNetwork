@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect, useContext } from 'react';
-import { useBookmarkContext } from '../../context/BookmarkContext';
+import { useBookmarkContext } from './BookmarkContext';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
 import styles from '../../assets/styles/Bookmark.module.css';
 import { toast } from 'react-toastify';
@@ -16,8 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 function BookmarkButton({ recipe_id }) {
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarkContext(); 
-  const [bookmarked, setBookmarked] = useState(false);
-  const [bookmarkCount, setBookmarkCount] = useState();
+  const [bookmarkCount, setBookmarkCount] = useState();   // [ ] 레시피별 북마크 횟수 
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('loginUser');  
 
@@ -75,7 +74,7 @@ function BookmarkButton({ recipe_id }) {
   // }
 
    // 아이콘 색상 및 스타일 설정
-   const iconStyle = {
+  const iconStyle = {
     fill: bookmarked ? '#FFD700' : '#6b6b6b',
     stroke: '#000000',
     strokeWidth: '0.9px',

@@ -1,11 +1,11 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {io} from 'socket.io-client';
-import {ListGroup, Nav, Offcanvas} from 'react-bootstrap';
-
+import {Image, ListGroup, Nav, Offcanvas} from 'react-bootstrap';
 //작성해둔 컴포넌트 불러옴
 import {StyledApp} from './styled.jsx';
 
 import ChatDesign from '../assets/styles/ChatMessage.module.css';
+import ConfirmModal from "../components/ConfirmModal.jsx";
 
 
 const{
@@ -23,10 +23,10 @@ const{
 } = StyledApp;
 
 const socket_IP  = import.meta.env.VITE_HOST_IP
-// const socket = new io('http://192.168.0.103:3001/'); // 관용님 학원 pc ip
 // 클라이언트 소켓 서버와 연결
 const socket = new io(socket_IP);
-// const socket = new io('http://192.168.0.14:3001/'); // 진수님 학원 wifi ip
+
+const AI_HOST_IP = import.meta.env.VITE_AI_HOST_IP;
 
 function openChat({ userData }) {
     // 유저 데이터를 받아와서 변수에 지정
@@ -37,6 +37,8 @@ function openChat({ userData }) {
     const [oldMessageLog, setOldMessageLog] = useState([]);
     // FAQ 채팅 내역
     const [messageFAQHistory, setMessageFAQHistory] = useState([]);
+    // Recipe 채팅 내역
+    const [messageRecipeHistory, setMessageRecipeHistory] = useState([]);
 
 
     // 클라이언트를 구별할 ID 저장. <- 회원만 채팅 기능 가능하면 user_id로 구분 중이라서 필요가 없을듯?
@@ -48,6 +50,7 @@ function openChat({ userData }) {
     // const historyElement = useRef(null);
     const openChatRoom = useRef(null);
     const FAQChatRoom = useRef(null);
+    const RecipeChatRoom = useRef(null);
     const personalChatRoom = useRef(null);
     const personalRoom = useRef(null)
 
@@ -78,7 +81,14 @@ function openChat({ userData }) {
     // 입력창을 상황에 따라 보이거나 사라지도록 설정
     const [isFormVisible, setIsFormVisible] = useState(true)
 
+    const [isImgBtnVisible, setIsImgBtnVisible] = useState(false)
+
     const [isUpdate, setIsUpdate] = useState(false);
+
+    const [searchImg, setSearchImg] = useState(null);
+    const [searchImgBase64, setSearchImgBase64] = useState(null);
+    const fileInputRef = useRef(null);
+    const [showImgConfirmModal, setShowImgConfirmModal] = useState(false)
 
     // A가 새로운 방을 만들었을때 B가 요청없이 데이터를 받을수 있나?????
     // B가 채팅요청을 어떻게 받을지 고민?
@@ -236,7 +246,6 @@ function openChat({ userData }) {
         try {
 
             console.log('FAQToSend.message', FAQToSend.message)
-            const AI_HOST_IP = import.meta.env.VITE_AI_HOST_IP;
             const response = await fetch(`${AI_HOST_IP}/ai/FAQAnswer`, {
                 method: 'POST',
                 headers: {
@@ -247,11 +256,37 @@ function openChat({ userData }) {
 
             const { answer } = await response.json();
 
-            const FAQAnswer = {...FAQToSend,id:'faq', name: 'FAQ', message: answer};
+            const FAQAnswer = {id:'faq', name: 'FAQ', message: answer};
 
             console.log('FAQAnswer', FAQAnswer)
 
             setMessageFAQHistory((prevFAQHistory) => [...prevFAQHistory, FAQAnswer]);
+
+
+        } catch (e) {
+            console.error(e);
+        }
+
+    });
+
+    const fetchRecipeAnswer = useCallback( async (RecipeToSend) => {
+        try {
+            console.log('RecipeToSend.message', RecipeToSend.message)
+            const response = await fetch(`${AI_HOST_IP}/ai/recipeImage/chat/talk`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({query: RecipeToSend.message})
+            });
+
+            const { answer } = await response.json();
+
+            const RecipeAnswer = {id:'recipe', name: '???', message: answer};
+
+            console.log('RecipeAnswer', RecipeAnswer)
+
+            setMessageRecipeHistory((prevRecipeHistory) => [...prevRecipeHistory, RecipeAnswer]);
 
 
         } catch (e) {
@@ -279,22 +314,27 @@ function openChat({ userData }) {
         
         // event별 submit 구분
         if(activeTab ==='FAQ'){
-            // submit누를때 페이지 새로 로딩하는것 방지
             e.preventDefault();
-            // userMessage.user_id, userMessage.name, userMessage.message을 json형태로 저장
-            const FAQToSend = {id: userMessage.id, name: userMessage.name, message: userMessage.message};
+            const FAQToSend = {id: socket.id, name: userMessage.name, message: userMessage.message};
             // console.log(socket.id)
-
-            // 서버의 'Message_FAQ' 이벤트를 실행하고 socket.id,FAQToSend전달
-            socket.emit('Message_FAQ',socket.id,FAQToSend);
-            
-            // messageFAQHistory에 기존요소을 불러와 FAQToSend을 추가하고
+            console.log('FAQToSend', FAQToSend)
             setMessageFAQHistory((prevHistory) => [...prevHistory, FAQToSend]);
-            // userMessage.message를 ''로 변경
             setUserMessage((prevUser) => ({
                 ...prevUser,
                 message: '',
             }));
+            fetchFAQAnswer(FAQToSend);
+        } else if(activeTab ==='Recipe'){
+            e.preventDefault();
+            const RecipeToSend = {id: socket.id, name: userMessage.name, message: userMessage.message};
+            // console.log(socket.id)
+            console.log('RecipeToSend', RecipeToSend)
+            setMessageRecipeHistory((prevHistory) => [...prevHistory, RecipeToSend]);
+            setUserMessage((prevUser) => ({
+                ...prevUser,
+                message: '',
+            }));
+            fetchRecipeAnswer(RecipeToSend);
         } else if (activeTab === 'openTalk'){
             // 전송 방지
             // 없을경우 Submit버튼 누를때 페이지 새로고침함
@@ -377,6 +417,71 @@ function openChat({ userData }) {
         }
     };
 
+    const handleFileChange = (event) => {
+        console.log(event.target.files[0]);
+
+        const file = event.target.files[0];
+
+        if (!file) return
+
+        if (!file.type.startsWith('image/')) return alert('이미지 파일만 선택해주세요.');
+
+        setSearchImg(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            setSearchImgBase64(e.target.result);
+        }
+        reader.readAsDataURL(file);
+
+
+        setShowImgConfirmModal(true)
+    };
+
+    const sendImgConfirm = async () => {
+        setShowImgConfirmModal(false);
+        // 파일 저장 formData 객체 생성
+        const formData = new FormData();
+        formData.append('file', searchImg);
+
+        let RecipeToSend = {id: socket.id, name: userMessage.name, message: "이미지를 분석중입니다 ..."};
+        setMessageRecipeHistory((prevHistory) => [...prevHistory, RecipeToSend]);
+
+        fileInputRef.current.value = null;
+
+        try {
+            const response = await fetch(`${AI_HOST_IP}/ai/recipeImage/chat/image`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error);
+            }
+
+            const { answer, query } = await response.json();
+
+            RecipeToSend = {id: socket.id, name: userMessage.name, message: query};
+
+            setMessageRecipeHistory((prevRecipeHistory) => [...prevRecipeHistory, RecipeToSend]);
+
+            const RecipeAnswer = {id:'Recipe', name: '???', message: answer};
+
+            setMessageRecipeHistory((prevRecipeHistory) => [...prevRecipeHistory, RecipeAnswer]);
+            console.log('RecipeAnswer', RecipeAnswer)
+
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const sendImgCancel = () => {
+        fileInputRef.current.value = null;
+        setShowImgConfirmModal(false);
+        setSearchImg(null);
+        setSearchImgBase64(null);
+    }
+
     const handleChatShow = (e) => {
         setChatShow(true)
     };
@@ -384,24 +489,41 @@ function openChat({ userData }) {
 
     // 각각의 탭을 눌렀을때 설정
     const handleToggleTabs = (k) => {
-        if(k === 'FAQ'){
+        if(k === 'FAQ') {
             FAQChatRoom.current.style.display = 'flex';
+            RecipeChatRoom.current.style.display = 'none';
             openChatRoom.current.style.display = 'none';
             personalRoom.current.style.display = 'none';
+            FAQChatRoom.current.scrollTop = FAQChatRoom.current.scrollHeight;
 
             setIsFormVisible(true);
+            setIsImgBtnVisible(false);
+        } else if(k === 'Recipe'){
+            FAQChatRoom.current.style.display = 'none';
+            RecipeChatRoom.current.style.display = 'flex';
+            openChatRoom.current.style.display = 'none';
+            personalRoom.current.style.display = 'none';
+            RecipeChatRoom.current.scrollTop = RecipeChatRoom.current.scrollHeight;
+
+            setIsFormVisible(true);
+            setIsImgBtnVisible(true);
         } else if (k === 'openTalk') {
             FAQChatRoom.current.style.display = 'none';
+            RecipeChatRoom.current.style.display = 'none';
             openChatRoom.current.style.display = 'flex';
             personalRoom.current.style.display = 'none';
             openChatRoom.current.scrollTop = openChatRoom.current.scrollHeight;
-            setIsFormVisible(true);
 
+            setIsFormVisible(true);
+            setIsImgBtnVisible(false);
         } else if (k === 'personalTalk') {
             FAQChatRoom.current.style.display = 'none';
+            RecipeChatRoom.current.style.display = 'none';
             openChatRoom.current.style.display = 'none';
             personalRoom.current.style.display = 'flex';
+
             setIsFormVisible(false);
+            setIsImgBtnVisible(false);
         }
 
         setActiveTab(k)
@@ -420,9 +542,8 @@ function openChat({ userData }) {
                 <i className={"fa-sharp fa-solid fa-comment-dots fa-2xl"} onClick={handleChatShow}></i>
             </div>
             <Offcanvas show={chatShow} onHide={handleChatClose} placement='end' scroll='true'>
+                {/* FAQ */}
                 <div className={ChatDesign.FAQChatRoom} ref={FAQChatRoom}>
-                    {/*<HistoryWrapper ref={historyElement}>*/}
-                    {/* FAQ */}
                     <HistoryWrapper>
                         {messageFAQHistory.length ? (
                             <>
@@ -436,6 +557,25 @@ function openChat({ userData }) {
                             </>
                         ) : (
                             
+                            <NoHistory>채팅 내역이 없습니다.</NoHistory>
+                        )}
+                    </HistoryWrapper>
+                </div>
+                {/* Recipe */}
+                <div className={ChatDesign.RecipeChatRoom} ref={RecipeChatRoom}>
+                    <HistoryWrapper>
+                        {messageRecipeHistory.length ? (
+                            <>
+                                {messageRecipeHistory.map(({id, name, message}, index) => (
+                                    // <ChatItem key={index} me={id === userData.user_id}>
+                                    <ChatItem key={index} me={id === socket.id}>
+                                        <ChatName>{name}</ChatName>
+                                        <ChatMessage>{message}</ChatMessage>
+                                    </ChatItem>
+                                ))}
+                            </>
+                        ) : (
+
                             <NoHistory>채팅 내역이 없습니다.</NoHistory>
                         )}
                     </HistoryWrapper>
@@ -525,13 +665,35 @@ function openChat({ userData }) {
                             placeholder="메시지를 입력하세요..."
                         />
                         <SubmitButton>보내기</SubmitButton>
+                        <input
+                            type='file'
+                            ref={fileInputRef}
+                            className={`${isImgBtnVisible ? ChatDesign.ImgInput : ChatDesign.hidden}`}
+                            onChange={handleFileChange}
+                        />
                     </Form>
+                    <ConfirmModal
+                        show={showImgConfirmModal}
+                        title="이미지 선택"
+                        message={
+                            <Image
+                                src={searchImgBase64}
+                                style={{ width: '100%' }}
+                            />}
+                        onConfirm={sendImgConfirm}
+                        onCancel={sendImgCancel}
+                    />
                 </div>
                 {/* 톡 채널 탭 */}
                 <Nav activeKey={activeTab} onSelect={handleToggleTabs} className={ChatDesign.chatNav} >
                     <Nav.Item>
                         <Nav.Link eventKey='FAQ' className={ChatDesign.chatTab}>
                             FAQ
+                        </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link eventKey='Recipe' className={ChatDesign.chatTab}>
+                            ???
                         </Nav.Link>
                     </Nav.Item>
                     <Nav.Item>

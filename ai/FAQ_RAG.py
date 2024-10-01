@@ -1,20 +1,17 @@
 import json
 import os
-from typing import List
 
-from fastapi import APIRouter, Body
-from pydantic import BaseModel
+from fastapi import APIRouter, Body, Request
 
 from dotenv import load_dotenv  # pip install python-dotenv
-from langchain.docstore.document import Document
 from langchain.prompts import PromptTemplate
 # from langchain_huggingface  import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_community.vectorstores.utils import DistanceStrategy
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough, RunnableParallel  # pip install lanchain
+from langchain_core.runnables import RunnablePassthrough, RunnableParallel  # pip install langchain
 from langchain_openai import ChatOpenAI
-from langchain_openai import OpenAIEmbeddings  # pip install lanchain-openai
+from langchain_openai import OpenAIEmbeddings  # pip install langchain-openai
 
 # from langchain_community.embeddings import HuggingFaceEmbeddings
 # https://wikidocs.net/231573 # pip install lanchain-community sentence-transformers torch
@@ -46,6 +43,8 @@ def create_vector_store(texts):
     """
     return vector_store
 
+def extract_page_contents(docs):
+    return [doc.page_content for doc in docs]
 
 def setup_rag(vector_store):
     retriever = vector_store.as_retriever(search_type='similarity', search_kwargs={"k": 10})
@@ -71,7 +70,7 @@ def setup_rag(vector_store):
 
     qa_chain = (
             RunnableParallel(
-                {"context": retriever, "question": RunnablePassthrough()}
+                {"context": retriever | extract_page_contents, "question": RunnablePassthrough()}
             )
             | QA_CHAIN_PROMPT
             | llm
@@ -92,7 +91,7 @@ def qa_chain_with_sources(qa_chain, retriever, query):
     return {"result": result, "source_documents": docs}
 
 
-router = APIRouter( prefix="/ai/FAQAnswer" )
+router = APIRouter()
 
 directory = "./FAQ_Answer"
 
@@ -100,16 +99,26 @@ directory = "./FAQ_Answer"
 # 요청마다 실행하면 답변이 오래 걸림.
 # JSON 문서 로드 및 처리
 documents = load_json_answers(directory)
+# print(documents)
 
 vector_store = create_vector_store(documents)
-print("벡터 저장소 생성 완료")
+print("FAQ 벡터 저장소 생성 완료")
 
 qa_chain, retriever = setup_rag(vector_store)
-print("RAG 설정 완료")
+print("FAQ RAG 설정 완료")
+
+# @router.post("/")
+# async def faq_answer(query: dict = Body(...)):
+    # query = query['query']
 
 @router.post("/")
-async def faq_answer(query: dict = Body(...)):
-    query = query['query']
+async def faq_answer(request: Request):
+    body = await request.body()
+
+    data = json.loads(body)
+    query = data.get('query')
+
+    print(query)
 
     result = qa_chain_with_sources(qa_chain, retriever, query)
     # print(result)
@@ -121,6 +130,6 @@ async def faq_answer(query: dict = Body(...)):
 
     print("\n참고한 문서:")
     for doc in result['source_documents']:
-        print(f"- {doc.page_content[:100]}...")  # 첫 100자만 출력
+        print(f"- {doc.page_content[:100]}")  # 첫 100자만 출력
 
     return {"answer": result['result']}

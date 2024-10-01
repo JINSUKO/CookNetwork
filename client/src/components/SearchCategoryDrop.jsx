@@ -31,14 +31,36 @@ function SearchCategoryDrop({ onCategoryChange }) {   // SearchBar에 함수 전
   };
 
   return (
-    <NavDropdown title={category} id="nav-dropdown" onSelect={handleSelect} >
+    <NavDropdown 
+      title={category} 
+      id="nav-dropdown" 
+      onSelect={handleSelect} 
+      style={styles.dropdownToggle}
+    >
       {categories.map((cat, index) => (
-      <NavDropdown.Item key={index} eventKey={cat.name}>
-        {cat.name}
-      </NavDropdown.Item>
+        <NavDropdown.Item 
+          key={index} 
+          eventKey={cat.name}
+          style={styles.dropdownItem}
+          >
+          {cat.name}
+        </NavDropdown.Item>
       ))}
     </NavDropdown>
   );
 }
 
 export default SearchCategoryDrop;
+
+
+// 스타일 객체 추가
+const styles = {
+  dropdownToggle: {
+    fontWeight: 'normal',
+    fontSize: '16px',
+  },
+  dropdownItem: {
+    fontWeight: 'normal',
+    fontSize: '16px',
+  }
+};

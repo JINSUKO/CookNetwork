@@ -24,6 +24,7 @@ ai/__pycache__/
 .env.test.local
 .env.production.local
 **/.env
+**/.env.gmail
 **/.env.local
 **/.env.development.local
 **/.env.test.local

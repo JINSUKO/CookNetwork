@@ -10,6 +10,7 @@ import LeftSidebar from './SideBar.jsx';
 import SearchBar from '../../components/SearchBar.jsx';
 import { Container, Nav, Navbar, Button } from 'react-bootstrap';
 import '../../assets/styles/Navbar.css'
+import SearchBarImage from "../../components/SearchBarImage.jsx";
 
 function NavbarElement({ user }) {
   const [showSidebar, setShowSidebar] = useState(false)
@@ -66,7 +67,7 @@ function NavbarElement({ user }) {
       </Nav>
 
       {/* 헤더 아래 네비바 */}
-      <Navbar expand="lg" className="navbar bg-body-tertiary">
+      <Navbar expand="sm" className="navbar bg-body-tertiary">
         <Container className="navbar-container d-flex justify-content-center align-items-center flex-nowrap ">
           <Button variant="link" onClick={handleSidebarShow} className="me-2 border-0" >
             <i className="fas fa-bars text-secondary" ></i>
@@ -76,9 +77,9 @@ function NavbarElement({ user }) {
 
             {categories.map((category) => (
               <Nav.Item key={category.path}>
-                <Link 
+                <Link
                   to={category.path} 
-                  className="nav-link px-2"
+                  className="nav-link px-2 category-link"
                 >{category.name}
                 </Link>
               </Nav.Item>
@@ -89,6 +90,7 @@ function NavbarElement({ user }) {
         </Container>
         <Container className='d-flex justify-content-end'>
           <SearchBar onSearch={handleSearch}  />
+          <SearchBarImage onSearch={handleSearch} />
         </Container>
       </Navbar>
 
