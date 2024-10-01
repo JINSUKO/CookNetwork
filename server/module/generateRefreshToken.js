@@ -10,8 +10,8 @@ require("dotenv").config({ path: '.env.local' });
  * @param userId: 접근 승인 토큰의 재성성을 위한 토근을 생성하기 위한 해당 계정의 아이디 필요.
  * @returns {{token: JWT Refresh Token, jti: uuidv4}}
  */
-const generateRefreshToken = (userId) => {
-    const REFRESH_TOKEN_EXPIRY = '30d';
+const generateRefreshToken = (userCode,userId) => {
+    const REFRESH_TOKEN_EXPIRY = 30 * 24 * 60 * 60;
 
     const SECRET_KEY = process.env.SECRET_KEY_REFRESH;
 
@@ -20,10 +20,12 @@ const generateRefreshToken = (userId) => {
     const jti = uuidv4();
 
     const payload = {
+        userCode,
         userId,
-        jti
+        jti,
+        expiresIn: REFRESH_TOKEN_EXPIRY
     }
-
+  
     // refresh token 유효를 확인하기 위해서 jti를 사용해야해서,
     // refresh token 생성에 사용한 jti도 같이 반환한다.
     return {

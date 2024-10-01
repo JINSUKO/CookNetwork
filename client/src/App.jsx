@@ -36,7 +36,7 @@ import Best from './pages/Best'
 
 
 function App() {
-  let loginUser = localStorage.getItem('loginUser');
+  let loginUser = localStorage.getItem('loginUser')|| null;
 
   const [message, setMessage] = useState('');
   const [user, setUser] = useState(null);
@@ -59,6 +59,7 @@ function App() {
           const data = await authManager.addRequest(() => authFetch(`${HOST_IP}/api/userInfo/${loginUser}`, {
             method: 'POST',
             body: JSON.stringify({userId: loginUser}),
+            credentials: 'include'
           }));
 
           console.log(data.message);

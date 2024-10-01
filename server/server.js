@@ -15,20 +15,20 @@ require('dotenv').config();
 // require('dotenv').config({ path: '.env.local' })
 const app = express();
 
-// gzip 텍스트 압축 설정
-app.use(compression());
-
 // Morgan logging dev 모드 설정
 app.use(morgan('dev'));
-
-// Cookie Parser
-app.use(cookieParser())
 
 // CORS 설정
 app.use(cors({
     origin: ['https://cooknetwork.shop', 'http://localhost:5000', 'http://192.168.0.103:5000', 'http://192.168.0.139:5000', 'http://192.168.0.14:5000', 'http://192.168.220.1:5000'],
     credentials: true
 }));
+
+// Cookie Parser
+app.use(cookieParser())
+
+// gzip 텍스트 압축 설정
+app.use(compression());
 
 // Body parser
 app.use(express.json());
@@ -123,12 +123,12 @@ const logoutRouter = require("./router/logout.js");
 app.use("/api/logout", logoutRouter);
 
 // 로그인 승인 페이지 라우트 요청시 사용
-app.get("/api/authPage", authAccessToken, authRefreshToken, (req, res) => {
+app.post("/api/authPage", authAccessToken, authRefreshToken, (req, res) => {
     console.log('authPage', res.locals.accessExpired)
     if (res.locals.accessExpired) {
-        return res.json({ accessToken: res.locals.accessToken, message: '회원 전용 페이지에 접근 승인 되었습니다.' });
+        return res.json({ isAuth: true, message: '회원 전용 페이지에 접근 승인 되었습니다.' });
     } else {
-        return res.json({ message: '회원 전용 페이지에 접근 승인 되었습니다.' });
+        return res.json({ isAuth: true, message: '회원 전용 페이지에 접근 승인 되었습니다.' });
     }
 
 });

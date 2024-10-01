@@ -8,13 +8,11 @@ import styles from '../assets/styles/Login.module.css';
 function Login({setUser, setProfilePic}) {
 
   const logged_in = localStorage.getItem('loginUser');
-  const AT = localStorage.getItem('accessToken');
-
-  if (logged_in || AT) {
+  if (logged_in) {
   //   alert('로그인 중인 유저는 접근할 수 없습니다.');
     window.location.href = '/';
+    return ;
   }
-
   const API_URL = import.meta.env.VITE_HOST_IP; // 브라우저의 url과 hostname이 같아야 cookie가 넘어감.
   const [loginUser, setLoginUser] = useState({
     userId: '',
@@ -63,7 +61,7 @@ function Login({setUser, setProfilePic}) {
         console.log('로그인 성공:', data);
 
         // 로그인 성공 시 로그인 상태 유지를 위한 토큰을 받아온다.
-        localStorage.setItem('accessToken', data.accessToken)
+        // localStorage.setItem('accessToken', data.accessToken)
         localStorage.setItem('loginUser', data.user_id)
 
         setUser(data.user_id);
