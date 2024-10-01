@@ -6,19 +6,20 @@
 * 따라서 interceptor 역할을 하는 코드라고 할 수 있습니다. */
 
 const fetchInterceptorAuthToken = async (url, options = {}) => {
-    const accessToken = localStorage.getItem('accessToken');
+    // const accessToken = Cookies.get('accessToken');
+    // console.log('a: ',accessToken)
 
-    // accessToken이 있으면 헤더에 추가해서 인증 토큰을 서버에 보냅니다.
-    if (!options.headers || typeof options.headers !== 'object') {
-        options.headers = {};
-    }
+    // // accessToken이 있으면 헤더에 추가해서 인증 토큰을 서버에 보냅니다.
+    // if (!options.headers || typeof options.headers !== 'object') {
+    //     options.headers = {};
+    // }
 
-    if (accessToken) {
-        options.headers.Authorization = `Bearer ${accessToken}`;
-        options.credentials = 'include';
-    }
+    // if (accessToken) {
+    //     options.headers.Authorization = `Bearer ${accessToken}`;
+    //     options.credentials = 'include';
+    // }
 
-    console.log('options', options);
+    // console.log('options', options);
 
     try {
         const response = await fetch(url, options);
@@ -27,8 +28,7 @@ const fetchInterceptorAuthToken = async (url, options = {}) => {
         // response.status === 401 || response.status === 403
         // if (!response.ok) { return await response.json() ; }
         if (!response.ok) {
-
-            localStorage.removeItem('accessToken');
+            // Cookies.remove('accessToken');
             localStorage.removeItem('loginUser');
             alert(` 로그인을 진행해주세요.`)
             // 로그인 페이지로 리다이렉트
@@ -39,7 +39,8 @@ const fetchInterceptorAuthToken = async (url, options = {}) => {
 
         const data = await response.json();
 
-        if (data.accessToken) localStorage.setItem('accessToken', data.accessToken);
+        // if (data.accessToken) 
+            // localStorage.setItem('accessToken', data.accessToken);
 
         console.log("data:", data)
 

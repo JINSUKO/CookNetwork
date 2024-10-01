@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router()
 
 const maria = require('../module/sql') ;
-const clearRefreshToken = require('../module/clearRefreshToken');
+const clearToken = require('../module/clearToken');
 
 
 // 회원탈퇴 라우터
@@ -47,7 +47,7 @@ router.delete('/', async(req,res)=>{
 
         await maria.execute(userDeleteQuery, [user_code]);
 
-        clearRefreshToken(res);
+        clearToken(res);
 
         return res.json({message: '유저 정보 삭제 완료.'})
     } catch (e) {
