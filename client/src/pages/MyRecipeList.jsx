@@ -11,6 +11,7 @@ import MyRecipeCard from "../components/MyRecipeCard";
 import RecipeListPage from './RecipeListPage';
 // import FilterBox from "../components/FilterBox";
 import Loading from "../components/UI/Loading"
+import ScrollToTop from "../components/UI/ScrollToTop";
 
 const MyRecipeList = ({ user }) => {    // { recipes }
 
@@ -87,6 +88,7 @@ const API_URL = import.meta.env.VITE_HOST_IP;
           <RecipeListPage recipes = {recipes}/>
         </>
       )}
+      <ScrollToTop/>
     </Container>
   );
 };

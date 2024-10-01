@@ -139,16 +139,14 @@ function App() {
                                                       profilePic={profilePic}
                                                       setProfilePic={setProfilePic}/>}
             />
-            <Route path='/myrecipe/:user_id' element={<MyRecipeList/>}/>
+            <Route path='/myrecipe/:user_id' element={<MyRecipeList user={user}/>}/>
             <Route path='/writerecipe' element={<RecipeWrite user={user}/>} />
-            <Route path='/updaterecipe/:recipe_id' element={<RecipeUpdate user={user} />} />
+            {/* <Route path='/updaterecipe/:recipe_id' element={<RecipeUpdate user={user} />} /> */}
           </Route>
           {/* 추가 중이라서 영자 계정만 접근할 수 있게 막지는 않았습니다.*/}
           <Route path='/admin' element={<Admin />} />
 
           <Route path='*' element={<NotFound />}/>
-          {/* <Route path='/myrecipe' element={<MyRecipeList user={user}/>}/> */}
-          {/* <Route path='/writerecipe' element={<RecipeWrite user={user}/>} /> */}
           {/* <Route path='/updaterecipe/:recipe_id' element={<RecipeUpdate user={user} />} /> */}
           <Route path='/mybookmark' element={<BookmarkList/>} />
           <Route path='/best' element={<Best />} />

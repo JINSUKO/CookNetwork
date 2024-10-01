@@ -81,6 +81,7 @@ function SearchBar({ onSearch, recipeData }) {
           />
         <Button 
           type="submit" 
+          variant="warning"
           className="search-button"
           onClick={handleSearch}>
           <span className="search-icon"><FaSearch />
