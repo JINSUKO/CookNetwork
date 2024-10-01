@@ -14,11 +14,12 @@ import FetchRecipeList from './components/FetchRecipeList';
 import Logout from "./components/Logout";
 import ProtectedPage from "./pages/authToken/ProtectedPage";
 import Admin from './pages/Admin';
+import About from './pages/About';
 
 import authFetch from './fetchInterceptorAuthToken';
 import authManager from "./authManager";
 
-import { BookmarkProvider } from './components/Bookmark/BookmarkContext';
+import { BookmarkProvider } from './context/BookmarkContext';
 import BookmarkList from './components/Bookmark/BookmarkList';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -121,6 +122,7 @@ function App() {
         <Header user={user}/>
         <Routes>
           <Route path = '/' element = {<FetchRecipeList />}/>
+          <Route path = '/about' element = {<About />}/>
           <Route path = '/category/:category' element = {<FetchRecipeList/>}/>
           <Route path = '/board' element = {<Board />}/>
           <Route path = '/login' element = {<Login setUser={setUser} setProfilePic={setProfilePic} />}/>
@@ -136,17 +138,17 @@ function App() {
                                                       profilePic={profilePic}
                                                       setProfilePic={setProfilePic}/>}
             />
-            <Route path='/myrecipe' element={<MyRecipeList user={user}/>}/>
-            {/* <Route path='/writerecipe' element={<RecipeWrite user={user}/>} /> */}
+            <Route path='/myrecipe/:user_id' element={<MyRecipeList/>}/>
+            <Route path='/writerecipe' element={<RecipeWrite user={user}/>} />
             <Route path='/updaterecipe/:recipe_id' element={<RecipeUpdate user={user} />} />
           </Route>
           {/* 추가 중이라서 영자 계정만 접근할 수 있게 막지는 않았습니다.*/}
           <Route path='/admin' element={<Admin />} />
 
           <Route path='*' element={<NotFound />}/>
-          <Route path='/myrecipe' element={<MyRecipeList user={user}/>}/>
-          <Route path='/writerecipe' element={<RecipeWrite user={user}/>} />
-          <Route path='/updaterecipe/:recipe_id' element={<RecipeUpdate user={user} />} />
+          {/* <Route path='/myrecipe' element={<MyRecipeList user={user}/>}/> */}
+          {/* <Route path='/writerecipe' element={<RecipeWrite user={user}/>} /> */}
+          {/* <Route path='/updaterecipe/:recipe_id' element={<RecipeUpdate user={user} />} /> */}
           <Route path='/mybookmark' element={<BookmarkList/>} />
           <Route path='/best' element={<Best />} />
         </Routes>

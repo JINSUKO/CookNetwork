@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { Offcanvas, Nav, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from '../../assets/styles/SideBar.module.css'
-import { FaUser, FaUserPlus, FaUserCog, FaBookmark, FaCrown, FaCookieBite, FaListUl, FaPen } from "react-icons/fa";
+import { FaUser, FaUserPlus, FaUserCog, FaBookmark, FaCrown, FaCookieBite, FaListUl, FaPen, FaMedal } from "react-icons/fa";
 
 
 function LeftSidebar({ show, handleClose, user }) {
@@ -23,7 +23,7 @@ function LeftSidebar({ show, handleClose, user }) {
 
   const chefMenu = [
     { to: "/writerecipe", text: "나만의 레시피 등록", icon: <FaPen />},
-    { to: "/myrecipe", text: "나만의 레시피 관리", icon: <FaListUl /> },
+    { to: `/myrecipe/${user && user.user_id}`, text: "나만의 레시피 관리", icon: <FaListUl /> },
   ]
 
   const loggedOutMenu = [
@@ -74,7 +74,9 @@ function LeftSidebar({ show, handleClose, user }) {
                 className={styles.profileImage}
               />
               <span className={styles.profileName}>{user.username}</span>
-              {/* <span className={styles.profileName}>{user.chef_code}</span> */}
+              {user.chef_code && user.chef_code === 1 ? (
+              <span className={styles.profileName}><FaMedal /> </span>
+              ) : null}
             </Nav.Link>
         ) : (
           <Nav.Link as={Link} to="/login" onClick={handleClose} className={styles.profileSection}>

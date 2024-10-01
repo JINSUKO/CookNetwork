@@ -1,6 +1,3 @@
-/**RecipeDetailPage.jsx
--레시피 상세페이지 컴포넌트입니다.
-*/ 
 /** RcipeDetailPage.jsx
  * 레시피 상세페이지
  * 함수 fetchRecipeDetails: 레시피 데이터 API 호출
@@ -11,12 +8,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Row, Col, Image } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
-import BookmarkButton from '../components/Bookmark/BookmarkButton';
 import styles from '../assets/styles/RecipeDetail.module.css';
-import { FaUtensils, FaClock, FaRegChartBar, FaStarHalf, FaStar } from 'react-icons/fa';
+import { FaUtensils, FaClock, FaRegChartBar, FaStar } from 'react-icons/fa';
 import Loading from '../components/UI/Loading';
+import BookmarkButton from '../components/Bookmark/BookmarkButton';
 import StarRating from '../components/StarRating';
-import ScrollToTop from '../components/UI/ScrolltoTop';
+import ScrollToTop from '../components/UI/ScrollToTop';
 // import { useRating } from '../context/StarRatingContext';
 
 function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {

@@ -1,4 +1,6 @@
-/* RecipeEditor.module.css */
+/* RecipeEditor.module.css
+레시피 등록 페이지(RecipeWrite.jsx), 레시피 수정 페이지(RecipeUpdate.jsx)에서 사용
+*/
 
 .recipeEditor {
   max-width: 800px;
@@ -8,9 +10,9 @@
 
 .recipeTitle {
   font-size: 28px;
-  color: #2c3e50;
+  color: #162029;
   margin-bottom: 20px;
-  font-weight: 400;
+  font-weight: bold;
   text-align: center;
 }
 
@@ -47,7 +49,7 @@
 }
 
 .lightPlaceholder::placeholder {
-  color: #999; /* 연한 회색으로 설정 */
+  color: #999;
 }
 
 .boldSmallText {
@@ -83,6 +85,38 @@
   resize: vertical;
 } */
 
+/* 필터 선택 */
+.filterOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filterToggle {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filterToggle.active {
+  background-color: #221300;
+  color: white;
+  border-color: #221300;
+}
+
+.filterToggle:hover {
+  background-color: #f0f0f0;
+}
+
+.filterToggle.active:hover {
+  background-color: #3b3b3b;
+}
+
 .buttonContainer {
   display: flex;
   justify-content: flex-end;
@@ -93,7 +127,7 @@
 .addButton {
   background-color: #faf4d8;
   width: 100px;
-  color: #3d3d3d;
+  color: #202020;
   font-weight: bold;
   padding: 10px 15px;
   border: none;
@@ -168,6 +202,34 @@
   font-weight: bold;
 }
 
+.deleteImageButton,
+.deleteStepButton {
+  color: white;
+  border: #ccc;
+  border-radius: 4px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.deleteStepButton {
+  margin-left: 10px;
+}
+
+/* 이미지 관련 */
+.imageContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.deleteImageButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
 
 
 
@@ -182,7 +244,7 @@
 
 .ProseMirror:focus {
   outline: none;
-  border-color: #4a90e2;
+  border-color: #000000;
 }
 
 .ProseMirror h1 {
@@ -221,35 +283,3 @@
   font-style: italic;
 }
 
-
-/* 필터 선택 */
-.filterOptions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.filterToggle {
-  padding: 8px 16px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  background-color: white;
-  color: #333;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.filterToggle.active {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
-}
-
-.filterToggle:hover {
-  background-color: #f0f0f0;
-}
-
-.filterToggle.active:hover {
-  background-color: #0056b3;
-}

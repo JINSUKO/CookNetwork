@@ -119,7 +119,7 @@ const RecipeEditor = ({ user }) => {
     },
   })
 
-  // 필터 선택
+  // 필터 선택 함수
   const handleFilterChange = (filter) => {
     setSelectedFilters(prevFilters => {
       if (prevFilters.includes(filter)) {
@@ -130,19 +130,19 @@ const RecipeEditor = ({ user }) => {
     });
   }
 
-  // 재료 입력
+  // 재료 입력 함수
   const handleIngredientChange = (index, field, value) => {
     const newIngredients = [...ingredients]
     newIngredients[index][field] = value
     setIngredients(newIngredients)
   }
 
-  // 재료 추가 버튼
+  // 재료 추가 함수
   const addIngredient = () => {
     setIngredients([...ingredients, {name: '', count:'', unit:''}])
   }
   
-  // 단계 입력
+  // 단계 입력 함수
   const handleStepChange = (index, value) => {
     setSteps(prevSteps => 
       prevSteps.map((step, i) => 
@@ -150,12 +150,12 @@ const RecipeEditor = ({ user }) => {
       )
     );
   }
-
-  // 단계 추가 버튼
+  // 단계 추가 함수
   const addStep = () => {
-    setSteps([...steps, { order: steps.length +1, desc:'', img:''}])
+    setSteps([...steps, { order: steps.length +1, desc:'', img:'', imgFile: file }])
   }
-
+  // 단계 삭제 함수
+  // const deleteStep = (indexTo)
 
   // 폼 제출
   const handleSubmit = async (e) => {
@@ -189,13 +189,33 @@ const RecipeEditor = ({ user }) => {
     // 이미지 제외 데이터 FormData에 추가
     formData.append('recipeData',JSON.stringify(recipeData));
     // 대표 이미지 추가
+    // if (recipeImg) {
+    //   formData.append('recipe_img', recipeImg);
+    // }
     if (recipeImg) {
-      formData.append('recipe_img', recipeImg);
+      if (recipeImg instanceof File) {
+        formData.append('recipe_img', recipeImg);
+      } else {
+        formData.append('recipe_img', recipeImg); // 기존 이미지 URL
+      }
+    } else {
+      formData.append('recipe_img', ''); // 업로드 이미지 삭제
     }
     //단계별이미지추가
+    // steps.forEach((step, index) => {
+    //   if (step.imgFile) {
+    //     formData.append('step_img', step.imgFile);
+    //   }
+    // });
     steps.forEach((step, index) => {
       if (step.imgFile) {
-        formData.append('step_img', step.imgFile);
+        if (step.imgFile instanceof File) {
+          formData.append(`step_img_${index}`, step.imgFile);
+        } else {
+          formData.append(`step_img_${index}`, step.imgFile); // 기존 이미지 URL
+        }
+      } else { 
+        formData.append(`step_img_${index}`, '');  // 업로드 이미지 삭제
       }
     });
 
@@ -264,9 +284,10 @@ const RecipeEditor = ({ user }) => {
             accept="image/*"
             onChange={uploadImage}
             className={`${styles.recipeSelect} ${styles.halfWidth}`}
-            // required
+            required
           />
-        {recipeImgPreview && <img src={recipeImgPreview} alt="대표이미지" className={styles.previewImage} />}
+        {recipeImgPreview && 
+          <img src={recipeImgPreview} alt="대표이미지" className={styles.previewImage} />}
         </div>
         <div className={styles.formGroup}>
           <input

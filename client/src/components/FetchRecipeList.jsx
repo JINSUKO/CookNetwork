@@ -12,9 +12,9 @@ import RecipeListPage from "../pages/RecipeListPage";
 import FilterBox from "./FilterBox";
 import Skeleton from "./UI/Skeleton";
 import styles from '../assets/styles/RecipeList.module.css';
-import { useBookmarkContext } from "./Bookmark/BookmarkContext";
+import { useBookmarkContext } from '../context/BookmarkContext';
 import SortMenu from "./SortMenu"; 
-import ScrollToTop from "./UI/ScrolltoTop";
+import ScrollToTop from "./UI/ScrollToTop";
 
 function FetchRecipeList() { 
   const { category } = useParams();
