@@ -90,7 +90,7 @@ function LeftSidebar({ show, handleClose, user }) {
               alt="회원 프로필 이미지" 
               className={styles.profileImage}
             />
-            <span className={styles.profileName}>로그인 후 이용하실 수 있습니다.</span>
+            <span className={styles.profileInfo}>로그인 후 이용하실 수 있습니다.</span>
           </Nav.Link>
         )}
       </Offcanvas.Body>

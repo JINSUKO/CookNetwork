@@ -19,7 +19,7 @@ function About () {
 
         <Row className="my-5 text-center">
           <Col>
-            <h1 className="display-4 mb-2"  style={{ fontWeight: 'bold' }}><i>CookNetWork를 소개합니다!</i></h1>
+            <h4 className="display-4 mb-2"  style={{ fontWeight: 'bold' }}><i>CookNetWork를 소개합니다!</i></h4>
             <p className="mb-4">
             'CookNetwork'는 요리를 사랑하는 모든 이들을 위한 온라인 커뮤니티입니다.
               초보자부터 전문가까지, 요리사들이 레시피를 공유하고, 배우며, 함께 성장할 수 있는 레시피 공유 플랫폼입니다.

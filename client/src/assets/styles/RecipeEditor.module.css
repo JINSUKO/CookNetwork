@@ -38,6 +38,7 @@
   margin-bottom: 10px;
   align-items: center;
   margin: 0px 0px;
+  /* justify-content: space-between; */
 }
 
 .recipeInput, .recipeSelect, .recipeTextarea {
@@ -168,26 +169,14 @@
   text-decoration: none;
 }
 
-.deleteButton {
-  padding: 10px 20px;
-  background-color: #ffffff;
-  color: #ff4136;
-  border: 1px solid #ff4136;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  align-self: flex-end;
-  text-decoration: none;
-}
-
-.deleteButton:hover {
-  background-color: #e6e6e6;
-}
-
 .stepImage, .previewImage {
   max-width: 200px;
   max-height: 200px;
   margin-top: 10px;
+  margin-right: 20px;
+  margin-left: auto;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .stepOrder {
@@ -201,22 +190,23 @@
   align-items: center;
   font-weight: bold;
 }
-
-.deleteImageButton,
-.deleteStepButton {
+/* 추가된 재료, 조리단계 삭제 버튼 */
+.deleteButton {
+  background-color: #5f5f5f;
   color: white;
-  border: #ccc;
-  border-radius: 4px;
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  background-color: rgba(255, 255, 255, 0.7);
+  border: none;
   padding: 5px 10px;
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
 }
 
-.deleteStepButton {
-  margin-left: 10px;
+.deleteButton:hover {
+  background-color: #ccc;
 }
 
 /* 이미지 관련 */
@@ -230,6 +220,39 @@
   top: 5px;
   right: 5px;
 }
+
+
+/* 재료선택 드롭다운 */
+.ingredientSelector {
+  position: relative;
+  width: 100%;
+}
+
+.dropdownList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.dropdownItem {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdownItem:hover {
+  background-color: #f0f0f0;
+}
+
+
+
+
 
 
 

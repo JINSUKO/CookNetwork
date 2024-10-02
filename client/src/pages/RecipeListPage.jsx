@@ -3,7 +3,7 @@
  * [ ] 북마크
 */ 
 
-import React, { useEffect, useRef, useCallback } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";

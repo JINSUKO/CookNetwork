@@ -68,7 +68,7 @@ function Board() {
               </Card.Body>
               <Card.Footer>
                 <small className="text-muted">
-                  {post.create_notice_date}
+                  작성일자: {post.create_notice_date.substring(0, 10)}
                 </small>
               </Card.Footer>
             </Card>

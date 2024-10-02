@@ -2,20 +2,21 @@
  * 레시피 등록 페이지
  */
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEditor, EditorContent } from '@tiptap/react'
+import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image'
-import Placeholder from '@tiptap/extension-placeholder'
-import Underline from '@tiptap/extension-underline'
-import TextAlign from '@tiptap/extension-text-align'
-import TaskList from '@tiptap/extension-task-list'
-import TaskItem from '@tiptap/extension-task-item'
-import 'prosemirror-view/style/prosemirror.css'
-import styles from '../assets/styles/RecipeEditor.module.css' 
+import Image from '@tiptap/extension-image';
+import Placeholder from '@tiptap/extension-placeholder';
+import Underline from '@tiptap/extension-underline';
+import TextAlign from '@tiptap/extension-text-align';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
+import 'prosemirror-view/style/prosemirror.css';
+import styles from '../assets/styles/RecipeEditor.module.css';
+import DropdownSelector from '../components/DropdownSelector';
 
-const RecipeEditor = ({ user }) => {
+const RecipeWrite = ({ user }) => {
   if (!user) {
     // console.log(user)
     return <div>사용자 정보를 불러오는 중입니다...</div>;
@@ -31,7 +32,7 @@ const RecipeEditor = ({ user }) => {
   const [cookedTime, setCookedTime] = useState('')
   const [serving, setServing] = useState('')
   const [level, setLevel] = useState('')
-  const [ingredients, setIngredients] = useState([{ name: '', count: '', unit: '' }])
+  const [ingredients, setIngredients] = useState([{ name: '', count: '', unit: ''}])
   const [steps, setSteps] = useState([{ order: 1, desc: '', img: '', imgFile: null }])
   const [tips, setTips] = useState('')
   
@@ -51,6 +52,7 @@ const RecipeEditor = ({ user }) => {
     "스프", "간식", "음료", "다이어트", "도시락"
   ];
 
+  
   // 대표 이미지 업로드 함수
   const uploadImage = async (event) => {
     const file = event.target.files[0]
@@ -89,11 +91,11 @@ const RecipeEditor = ({ user }) => {
             i === index ? { ...step, img: e.target.result, imgFile: file } : step
           )
         );
+        // setStepImgPreview(e.target.result)  // 미리보기 URL 저장
       }
       reader.readAsDataURL(file)
     }
   }
-
 
   // 조리순서 작성 에디터 부분
   const editor = useEditor({
@@ -137,11 +139,23 @@ const RecipeEditor = ({ user }) => {
     setIngredients(newIngredients)
   }
 
+  // 재료 이름 드롭다운에서 선택
+  const handleIngredientSelect = (index, selectedIngredient) => {
+    const newIngredients = [...ingredients];
+    newIngredients[index] = { ...newIngredients[index], name: selectedIngredient };
+    setIngredients(newIngredients);
+  };
+
   // 재료 추가 함수
   const addIngredient = () => {
     setIngredients([...ingredients, {name: '', count:'', unit:''}])
   }
   
+  // 재료 삭제 함수
+  const deleteIngredient = (indexToDelete) => {   // indexToDelete: 삭제할 재료의 인덱스 변수
+    setIngredients(ingredients.filter((_, index) => index !== indexToDelete));  // 나머지 재료들을 새로운 배열로 만들기
+  }
+
   // 단계 입력 함수
   const handleStepChange = (index, value) => {
     setSteps(prevSteps => 
@@ -152,10 +166,19 @@ const RecipeEditor = ({ user }) => {
   }
   // 단계 추가 함수
   const addStep = () => {
-    setSteps([...steps, { order: steps.length +1, desc:'', img:'', imgFile: file }])
+    setSteps([...steps, { order: steps.length +1, desc:'', img:'', imgFile: null }])
   }
   // 단계 삭제 함수
-  // const deleteStep = (indexTo)
+  const deleteStep = (indexToDelete) => {
+    setSteps(prevSteps => {
+      const newSteps = prevSteps.filter((_, index) => index !== indexToDelete); // 나머지 단계들을 새로운 배열로 만들기
+      // 순서 재정렬
+      return newSteps.map((step, index) => ({
+        ...step,
+        order: index + 1
+      }));
+    });
+  }
 
   // 폼 제출
   const handleSubmit = async (e) => {
@@ -169,16 +192,17 @@ const RecipeEditor = ({ user }) => {
       recipe_name: recipeName,
       category,
       filters: selectedFilters,
-      // recipe_img: recipeImg,    // cloudinary에서 받은 id
       recipe_desc: recipeDesc,
       cooked_time: cookedTime,
       serving,
       level,
-      ingredients: ingredients.map(ing => `${ing.name} ${ing.count} ${ing.unit}`),
+      ingredients: ingredients.map(ing => ({
+        name: ing.name,
+        count: ing.count,
+        unit: ing.unit})),
       cooked_order: steps.map(step => ({
         cooked_order: step.order,
         order_desc: step.desc,
-        // order_img: step.img
       })),
       tips
     };
@@ -189,35 +213,36 @@ const RecipeEditor = ({ user }) => {
     // 이미지 제외 데이터 FormData에 추가
     formData.append('recipeData',JSON.stringify(recipeData));
     // 대표 이미지 추가
-    // if (recipeImg) {
-    //   formData.append('recipe_img', recipeImg);
-    // }
     if (recipeImg) {
-      if (recipeImg instanceof File) {
-        formData.append('recipe_img', recipeImg);
-      } else {
-        formData.append('recipe_img', recipeImg); // 기존 이미지 URL
-      }
-    } else {
-      formData.append('recipe_img', ''); // 업로드 이미지 삭제
+      formData.append('recipe_img', recipeImg);
     }
-    //단계별이미지추가
-    // steps.forEach((step, index) => {
-    //   if (step.imgFile) {
-    //     formData.append('step_img', step.imgFile);
+    // if (recipeImg) {
+    //   if (recipeImg instanceof File) {
+    //     formData.append('recipe_img', recipeImg);
+    //   } else {
+    //     formData.append('recipe_img', recipeImg); // 기존 이미지 URL
     //   }
-    // });
+    // } else {
+    //   formData.append('recipe_img', ''); // 업로드 이미지 삭제 -> 삭제. 이미지는 필수이므로 다시  파일선택
+    // }
+
+    // 단계별이미지추가
     steps.forEach((step, index) => {
       if (step.imgFile) {
-        if (step.imgFile instanceof File) {
-          formData.append(`step_img_${index}`, step.imgFile);
-        } else {
-          formData.append(`step_img_${index}`, step.imgFile); // 기존 이미지 URL
-        }
-      } else { 
-        formData.append(`step_img_${index}`, '');  // 업로드 이미지 삭제
+        formData.append('step_img', step.imgFile);
       }
     });
+    // steps.forEach((step, index) => {
+    //   if (step.imgFile) {
+    //     if (step.imgFile instanceof File) {
+    //       formData.append(`step_img_${index}`, step.imgFile);
+    //     } else {
+    //       formData.append(`step_img_${index}`, step.imgFile); // 기존 이미지 URL
+    //     }
+    //   } else { 
+    //     formData.append(`step_img_${index}`, '');  // 업로드 이미지 삭제
+    //   }
+    // });
 
     // FormData 데이터 전송
     try {
@@ -342,15 +367,19 @@ const RecipeEditor = ({ user }) => {
         <hr />
 
         <p className={styles.boldSmallText}>재료</p>
+        
         {ingredients.map((ingredient, index) => (
           <div key={index} className={styles.formGroup}>
-            <input
+            <DropdownSelector
+              onIngredientSelect={(selectedIngredient) => handleIngredientSelect(index, selectedIngredient)}
+            />
+            {/* <input
               type="text"
               placeholder="재료명"
               value={ingredient.name}
               onChange={(e) => handleIngredientChange(index, 'name', e.target.value)}
               className={`${styles.recipeInput} ${styles.thirdWidth} ${styles.lightPlaceholder}`}
-            />
+            /> */}
             <input
               type="text"
               placeholder="수량"
@@ -365,6 +394,15 @@ const RecipeEditor = ({ user }) => {
               onChange={(e) => handleIngredientChange(index, 'unit', e.target.value)}
               className={`${styles.recipeInput} ${styles.quarterWidth} ${styles.lightPlaceholder}`}
             />
+          {ingredients.length > 1 && (
+            <button
+              type="button"
+              onClick={() => deleteIngredient(index)}
+              className={styles.deleteButton}
+            > 삭제
+            </button>
+          )}
+
           </div>
         ))}
         <button type="button" onClick={addIngredient} className={styles.addButton}>재료 추가</button>
@@ -386,7 +424,19 @@ const RecipeEditor = ({ user }) => {
               onChange={(e) => uploadStepImage(index, e)}
               className={`${styles.recipeInput} ${styles.fullWidth}`}
             />
+
+            {/* {recipeImgPreview && <img src={recipeImgPreview} alt={`Step ${step.order}`} className={styles.stepImage} />} */}
             {step.img && <img src={step.img} alt={`Step ${step.order}`} className={styles.stepImage} />}
+
+            {steps.length > 1 && (
+            <button 
+              type="button" 
+              onClick={() => deleteStep(index)}
+              className={styles.deleteButton}
+            > 삭제
+            </button>
+          )}
+
           </div>
         ))}
         <button type="button" onClick={addStep} className={styles.addButton}>단계 추가</button>
@@ -411,4 +461,4 @@ const RecipeEditor = ({ user }) => {
   )
 }
 
-export default RecipeEditor;
+export default RecipeWrite;

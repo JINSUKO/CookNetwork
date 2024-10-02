@@ -232,21 +232,6 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
                       {step.order_img && <Image src={step.order_img} alt={`Step ${index + 1}`} fluid className={styles.stepImage} />}
                     </div>
                   </div>
-                  {/* <Row>
-                    <Col>
-                      {step.order_img && <Image src={step.order_img} alt={`Step ${index + 1}`} fluid className={styles.stepImage} />}
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col xs={1}>
-                      <span className={styles.stepNumber}>{index + 1}</span>
-                    </Col>
-                    <Col xs={11}>
-                        <div className={styles.stepBlock}>
-                          <p>{step.order_desc}</p>
-                        </div>
-                    </Col>
-                  </Row> */}
                 </li>
               ))}
             </ol>
@@ -284,8 +269,8 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
       <Row>
         <Col>
           <div className={styles.contentSection}>
-            <h2 className={styles.sectionTitle}>내 평점 등록</h2>
-            {/* <StarRating
+            {/* <h2 className={styles.sectionTitle}>내 평점 등록</h2>
+            <StarRating
               initialRating={ratings[recipe_id]}
               onRatingChange={handleRatingChange}
               recipe_id={recipe_id}

@@ -20,7 +20,6 @@ import authFetch from './fetchInterceptorAuthToken';
 import authManager from "./authManager";
 
 import { BookmarkProvider } from './context/BookmarkContext';
-import BookmarkList from './components/Bookmark/BookmarkList';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // import { RatingProvider } from './context/StarRatingContext';
@@ -33,6 +32,7 @@ import RecipeUpdate from './pages/RecipeUpdate';
 import './App.css'
 import NotFound from './pages/NotFound';
 import Best from './pages/Best'
+import BookmarkList from './components/Bookmark/BookmarkList';
 
 
 function App() {
@@ -152,7 +152,6 @@ function App() {
           <Route path='/best' element={<Best />} />
         </Routes>
         </BookmarkProvider>
-        {/* </RatingProvider> */}
       </Router>
       {user && <OpenChat userData = {user}/>}
       <Footer/>

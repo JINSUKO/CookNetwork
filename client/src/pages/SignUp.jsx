@@ -3,12 +3,14 @@
 [ ] 이메일 틀린 형식으로 중복확인시 사용가능하다고 뜨는 문제 
 */
 
-import React, {useRef, useState} from 'react';
-import { Link } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Policy from '../components/Policy';
 import SignUpStyles from '../assets/styles/SignUp.module.css';
 
 
 function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 전달
+  const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_HOST_IP;
   const [user, setUser] = useState({
     userId: '',
@@ -376,8 +378,12 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
       <form onSubmit={handleSubmit} className={SignUpStyles.contentWrap}>
         <div className={SignUpStyles.userInputFrame}>
           <p className={SignUpStyles.infoOptionalText}>아래에 정보를 입력해주세요.</p>
-          <label className={SignUpStyles.infoLabelText}>아이디
-            <button onClick={idCheck}>중복확인</button>
+
+          <div className={SignUpStyles.labelButtonContainer}>
+            <label className={SignUpStyles.infoLabelText}>
+            아이디</label>
+            <button onClick={idCheck} className={SignUpStyles.checkButton}>중복확인</button>
+            </div>
             <input
                 className={SignUpStyles.userInput}
                 type="text"
@@ -385,10 +391,12 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
                 value={user.userId}
                 name="userId"
                 onChange={handleChange}/>
-
-          </label>
           <div className={SignUpStyles.errorMessageWrap}>{errors.userId}</div>
-          <label className={SignUpStyles.infoLabelText}>비밀번호<input
+
+          <div className={SignUpStyles.labelButtonContainer}>
+            <label className={SignUpStyles.infoLabelText}>비밀번호</label>
+          </div>
+            <input
               className={SignUpStyles.userInput}
               type="password"
               placeholder="비밀번호"
@@ -396,9 +404,12 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
               name="password"
               onChange={handleChange}
           />
-          </label>
           <div className={SignUpStyles.errorMessageWrap}>{errors.password}</div>
-          <label className={SignUpStyles.infoLabelText}>비밀번호 확인<input
+          
+          <div className={SignUpStyles.labelButtonContainer}>
+            <label className={SignUpStyles.infoLabelText}>비밀번호 확인</label>
+          </div>
+            <input
               className={SignUpStyles.userInput}
               type="password"
               placeholder="비밀번호 확인"
@@ -406,23 +417,29 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
               value={user.passwordVerify}
               onChange={handleChange}
           />
-          </label>
+          
           <div className={SignUpStyles.errorMessageWrap}>{errors.passwordVerify}</div>
-          <label className={SignUpStyles.infoLabelText}>닉네임
-            <button onClick={nicknameCheck}>중복확인</button>
 
-            <input
-                className={SignUpStyles.userInput}
-                type="text"
-                placeholder="닉네임"
-                value={user.nickname}
-                name="nickname"
-                onChange={handleChange}
-            />
-            <div className={SignUpStyles.errorMessageWrap}>{errors.nickname}</div>
-          </label>
-          <label className={SignUpStyles.infoLabelText}>이메일
-            <button onClick={emailCheck}>중복확인</button>
+          <div className={SignUpStyles.labelButtonContainer}>
+              <label className={SignUpStyles.infoLabelText}>
+              닉네임</label>
+              <button onClick={nicknameCheck} className={SignUpStyles.checkButton}>중복확인</button>
+          </div>
+                <input
+                    className={SignUpStyles.userInput}
+                    type="text"
+                    placeholder="닉네임"
+                    value={user.nickname}
+                    name="nickname"
+                    onChange={handleChange}
+                />
+          <div className={SignUpStyles.errorMessageWrap}>{errors.nickname}</div>
+
+          <div className={SignUpStyles.labelButtonContainer}>
+            <label className={SignUpStyles.infoLabelText}>
+              이메일</label>
+            <button onClick={emailCheck} className={SignUpStyles.checkButton}>중복확인</button>
+          </div>
             <input
                 className={SignUpStyles.userInput}
                 type="text"
@@ -431,7 +448,6 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
                 name="userEmail"
                 onChange={handleChange}
             />
-          </label>
           <button style={{display: isEmailChecked ? 'flex' : 'none', width: 'fit-content', fontSize: '12px'}}
                   onClick={sendEmailAuth}>인증번호 보내기
           </button>
@@ -480,12 +496,13 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
 
         <div>
           <hr></hr>
-          <label className={SignUpStyles.infoOptionalText}>
+          <label className={SignUpStyles.checkboxContainer}>
             이용약관 및 개인정보수집 및 이용에 동의합니다.
             <input type="checkbox" checked={checked} onChange={handleCheck}/>
           </label>
-          <div className={SignUpStyles.checkboxContainer}>이용약관</div>
-          <div className={SignUpStyles.checkboxContainer}>개인정보 수집 및 이용 동의</div>
+          {/* <div className={SignUpStyles.checkboxContainer}>이용약관</div>
+          <div className={SignUpStyles.checkboxContainer}>개인정보 수집 및 이용 동의</div> */}
+          <Policy />
           <hr></hr>
         </div>
         <div>
@@ -497,8 +514,22 @@ function SignUp({ onSignUp }) {   // onSignUp props로 handleSignUp 함수를 �
           </button>
         </div>
         <div>
-          <p className={SignUpStyles.infoOptionalText}>이미 회원이신가요? 
-            <Link to="/api/login"> 로그인 하러가기</Link>
+          <p className={SignUpStyles.infoOptionalText}>이미 회원이신가요?
+            <button
+              className={SignUp.loginRedirectButton}
+              onClick={() => navigate('/login')}
+              style={{
+                backgroundColor: 'white',
+                color: 'black',
+                border: '1px solid #666',
+                padding: '8px 16px',
+                marginLeft: '10px',
+                cursor: 'pointer',
+                borderRadius: '120px',
+                fontSize: '14px',
+              }}
+            >
+              로그인 하러가기</button>
           </p>
         </div>
       </form>
