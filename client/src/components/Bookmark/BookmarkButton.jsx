@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect, useContext } from 'react';
-import { useBookmarkContext } from './BookmarkContext';
+import { useBookmarkContext } from '../../context/BookmarkContext.jsx';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
 import styles from '../../assets/styles/Bookmark.module.css';
 import { toast } from 'react-toastify';

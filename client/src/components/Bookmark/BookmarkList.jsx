@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Container } from 'react-bootstrap';
-import { useBookmarkContext } from ".//BookmarkContext";
+import { useBookmarkContext } from '../../context/BookmarkContext';
 import RecipeListPage from "../../pages/RecipeListPage";
 // import Loading from "../../components/UI/Loading";
 import Skeleton from "../../components/UI/Skeleton";

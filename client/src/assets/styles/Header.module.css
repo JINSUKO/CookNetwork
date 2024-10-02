@@ -1,0 +1,18 @@
+/* Header.css */
+
+.header {
+  position: sticky;
+  /* padding-top: 10px; */
+  top: -110px;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.logoContainer {
+  background-color: white;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}

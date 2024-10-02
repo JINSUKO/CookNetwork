@@ -95,7 +95,10 @@ const RecipeEditor = ({ user }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Image,
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+      }),
       Placeholder.configure({
         placeholder:  '레시피 내용을 입력하세요.'
       }),
@@ -114,17 +117,6 @@ const RecipeEditor = ({ user }) => {
       setSteps(prevSteps => prevSteps.map(step => ({...step, desc: content})));
     },
   })
-
-  // 필터 선택
-  const handleFilterChange = (filter) => {
-    setSelectedFilters(prevFilters => {
-      if (prevFilters.includes(filter)) {
-        return prevFilters.filter(f => f !== filter);
-      } else {
-        return [...prevFilters, filter];
-      }
-    });
-  }
 
   //대표이미지 업로드
   const uploadImage = async (event) => {
@@ -145,6 +137,13 @@ const RecipeEditor = ({ user }) => {
       reader.readAsDataURL(file)
     }
   };
+
+  // 대표 이미지 삭제
+  const deleteMainImage = () => {
+    setRecipeImg('')
+    setRecipeImgPreview('')
+  }
+  
   // 조리단계별 이미지 업로드
   const uploadStepImage = (index, file) => {
     if (!file) return;
@@ -164,6 +163,26 @@ const RecipeEditor = ({ user }) => {
       }
       reader.readAsDataURL(file)
     }
+  }
+
+  // 조리단계별 이미지 삭제
+  const deleteStepImage = (index) => {
+    setSteps(prevSteps => 
+      prevSteps.map((step, i) => 
+        i === index ? { ...step, img: '', imgFile: null } : step
+      )
+    );
+  }
+
+  // 필터 선택
+  const handleFilterChange = (filter) => {
+    setSelectedFilters(prevFilters => {
+      if (prevFilters.includes(filter)) {
+        return prevFilters.filter(f => f !== filter);
+      } else {
+        return [...prevFilters, filter];
+      }
+    });
   }
 
   // 재료 입력
@@ -235,14 +254,28 @@ const RecipeEditor = ({ user }) => {
     formData.append('recipeData', JSON.stringify(recipeData));
     // 대표 이미지 추가
     if (recipeImg) {
-      formData.append('recipe_img', recipeImg);
+      if (recipeImg instanceof File) {
+        formData.append('recipe_img', recipeImg);
+      } else {
+        formData.append('recipe_img', recipeImg); // 기존 이미지 URL
+      }
+    } else {
+      formData.append('recipe_img', ''); // 업로드 이미지 삭제
     }
-    //단계별이미지추가
+    //단계별 이미지 추가
     steps.forEach((step, index) => {
       if (step.imgFile) {
-        formData.append(`step_img_${index}`, step.imgFile);
+        if (step.imgFile instanceof File) {
+          formData.append(`step_img_${index}`, step.imgFile);
+        } else {
+          formData.append(`step_img_${index}`, step.imgFile); // 기존 이미지 URL
+        }
+      } else { 
+        formData.append(`step_img_${index}`, '');  // 업로드 이미지 삭제
       }
     });
+
+    
     // FormData 데이터 전송
     try {
       const response = await fetch(`${API_URL}/api/updateRecipe/${recipe_id}`, {
@@ -330,9 +363,13 @@ const RecipeEditor = ({ user }) => {
             accept="image/*"
             onChange={(e) => uploadImage(e)}
             className={`${styles.recipeSelect} ${styles.halfWidth}`}
-            // required
+            required
           />
-          {recipeImgPreview  && <img src={recipeImgPreview} alt="대표이미지" className={styles.previewImage} />}
+          {recipeImgPreview  && (
+            <div className={styles.imageContainer}>
+              <img src={recipeImgPreview} alt="대표이미지" className={styles.previewImage} />
+            </div>
+          )}
         </div>
         <div className={styles.formGroup}>
           <input
@@ -432,10 +469,15 @@ const RecipeEditor = ({ user }) => {
               onChange={(e) => uploadStepImage(index, e.target.files[0])}
               className={`${styles.recipeInput} ${styles.fullWidth}`}
             />
-            {step.img && <img src={step.img} alt={`Step ${step.order}`} className={styles.stepImage} />}
+            {step.img && ( 
+            <div className={styles.imagecontainer}>
+              <img src={step.img} alt={`Step ${step.order}`} className={styles.stepImage} />
+              
+            </div>
+            )}
           </div>
-
         ))}
+
         <button type="button" onClick={addStep} className={styles.addButton}>단계 추가</button>
 
         <hr />
