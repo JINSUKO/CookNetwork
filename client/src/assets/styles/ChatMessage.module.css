@@ -17,7 +17,12 @@
 
 .chatNav {
     display: flex;
-    border-style: solid;
+    /*border: 1px solid #4d3a29;*/
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: #FFE5B4;
+    color: #ffffff;
+    font-weight: bold;
     /*width: 100%;*/
     height: 10%;
     position: relative;
@@ -33,8 +38,22 @@
 
 }
 
-.noHistory {
+.historyWrapper {
+    padding: 0;
+}
 
+.noHistory {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    background-color: #ffffff;
+    margin-bottom: 20px;
 }
 
 .FAQChatRoom {
@@ -88,6 +107,7 @@
     display: flex;
     max-height: 10%;
     width: 100%;
+    flex-direction: column-reverse;
 }
 
 .ImgInput {
@@ -98,13 +118,55 @@
     display: none;
 }
 
+.chatModal{
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    width: 60%;
+    height: 64%;
+    top: 16%;
+    left: 20%;
+    /*border: 1px solid #0a0a0a;*/
+    background-color: #FFF8DE;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.show {
+    display: flex;
+}
+
 .me {
     text-align: right;
+    background-color: #FFE5B4;
+    align-self: flex-end;
+    margin-left: auto;
+
+    flex-grow: 1;
+    /*padding: 10px;*/
+    overflow-y: auto;
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 15px;
+    max-width: 70%
 
 }
 
 .other {
+    background-color: #FFFFFF;
+    border: 1px solid #FFD700;
 
+    flex-grow: 1;
+    /*padding: 10px;*/
+    overflow-y: auto;
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 15px;
+    max-width: 70%
 }
 
 .chatName {
@@ -116,13 +178,54 @@
 }
 
 .nameInput {
-
+    border: 1px solid #FF791F;
+    border-radius: 20px;
+    padding: 8px 15px;
+    outline: none;
 }
 
 .messageInput {
-
+    /*flex-grow: 1;*/
+    border: 1px solid #FF791F;
+    border-radius: 20px;
+    padding: 8px 15px;
+    outline: none;
 }
 
 .submitButton {
+    background-color: #FF791F;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    margin-left: 10px;
+    cursor: pointer;
+}
 
+.form {
+    display: flex;
+    align-items: center;
+}
+
+.imageUpload {
+    position: relative;
+    overflow: hidden;
+}
+.imageUpload input[type="file"] {
+    display: none;
+}
+
+.imageUploadBtn {
+    background-color: #FAC213;
+    color: #FFFFFF;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    margin-left: 10px;
+    cursor: pointer;
 }

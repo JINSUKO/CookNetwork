@@ -417,6 +417,8 @@ function openChat({ userData }) {
         }
     };
 
+    const handleImageInput = () => {fileInputRef.current.click();}
+
     const handleFileChange = (event) => {
         console.log(event.target.files[0]);
 
@@ -485,6 +487,7 @@ function openChat({ userData }) {
     const handleChatShow = (e) => {
         setChatShow(true)
     };
+    const handleChatToggle = () => setChatShow(!chatShow);
     const handleChatClose = () => setChatShow(false);
 
     // 각각의 탭을 눌렀을때 설정
@@ -539,9 +542,12 @@ function openChat({ userData }) {
     return (
         <Container>
             <div className={ChatDesign.chatIcon}>
-                <i className={"fa-sharp fa-solid fa-comment-dots fa-2xl"} onClick={handleChatShow}></i>
+                <i className={"fa-sharp fa-solid fa-comment-dots fa-2xl"} onClick={handleChatToggle}></i>
+                {/*<i className={"fa-sharp fa-solid fa-comment-dots fa-2xl"} onClick={handleChatShow}></i>*/}
             </div>
-            <Offcanvas show={chatShow} onHide={handleChatClose} placement='end' scroll='true'>
+            <div className={`${ChatDesign.chatModal} ${chatShow ? ChatDesign.show : ''}`}  placement='end' scroll='true'>
+            {/*<Offcanvas show={chatShow} onHide={handleChatClose} placement='end' scroll='true'>*/}
+
                 {/* FAQ */}
                 <div className={ChatDesign.FAQChatRoom} ref={FAQChatRoom}>
                     <HistoryWrapper>
@@ -657,7 +663,7 @@ function openChat({ userData }) {
                     </HistoryWrapper>
                 </div>
                 <div className={`${isFormVisible? ChatDesign.ChatInput : ChatDesign.hidden}`}>
-                    <Form onSubmit={handleSubmit}>
+                    <Form className={`${ChatDesign.form}`} onSubmit={handleSubmit} >
                         <MessageInput
                             id="message"
                             value={userMessage.message}
@@ -665,12 +671,15 @@ function openChat({ userData }) {
                             placeholder="메시지를 입력하세요..."
                         />
                         <SubmitButton>보내기</SubmitButton>
-                        <input
-                            type='file'
-                            ref={fileInputRef}
-                            className={`${isImgBtnVisible ? ChatDesign.ImgInput : ChatDesign.hidden}`}
-                            onChange={handleFileChange}
-                        />
+                        <div className={`${ChatDesign.imageUpload} ${isImgBtnVisible ? ChatDesign.ImgInput : ChatDesign.hidden}`}>
+                            <label htmlFor="file-input" className={`${ChatDesign.imageUploadBtn}`} onClick={handleImageInput}>사진 올리기</label>
+                            <input
+                                type='file'
+                                accept="image/*"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                            />
+                        </div>
                     </Form>
                     <ConfirmModal
                         show={showImgConfirmModal}
@@ -707,7 +716,8 @@ function openChat({ userData }) {
                         </Nav.Link>
                     </Nav.Item>
                 </Nav>
-            </Offcanvas>
+            </div>
+            {/*</Offcanvas>*/}
         </Container>
     );
 }
