@@ -17,7 +17,7 @@
 .navbar {
   background-color: white !important;
   border-bottom: 1px solid rgba(110, 110, 110, 0.1);
-  padding: 0.2rem 1rem; /* 상하 패딩을 줄여 높이 조정 */
+  padding: 0.5rem 1rem; /* 상하 패딩을 줄여 높이 조정 */
 }
 
 .navbar-container {
@@ -67,6 +67,7 @@
 /* 네비게이션 아이템 간격 조정 */
 .navbar .nav-item {
   margin: 0 0px;
+  padding-right: 10px;
 }
 
 /* 카테고리(한식,중식,일식,양식) 스타일 */
@@ -77,6 +78,7 @@
 /* 드롭다운 영역*/
 .search-form .dropdown {
   margin-right: 0px;
+  padding-left: 20px;
   color: #444444 !important; 
 }
 

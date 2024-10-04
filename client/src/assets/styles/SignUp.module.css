@@ -1,22 +1,19 @@
 .page {
-  position: relative;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  max-width: 500px;
-  padding: 30px;
-  left: 30%;
-
-  transform: translate(10%, 0);
-
-  background-color: #ffffff;
-
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
+  position: relative;
+  top: 0;
+  bottom: 0;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  left: 30%;
+  transform: translate(10%, 0);
+  background-color: #ffffff;
+  overflow: hidden;
 }
 
 .titleWrap {
@@ -24,64 +21,69 @@
   font-size: 26px;
   font-weight: 700;
   text-align: center;
-  color: #262626;
+  color: #010101;
   margin-bottom: 20px;
 
 }
 
 .contentWrap {
+  max-width: 400px;
   width: 100%;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 30px;
+  background: #ffffff;
+  padding: 32px 24px;
+  border: solid 1px #f0f0f070;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   flex: 1;
 }
 
-
+/* 정보 입력 */
 .infoOptionalText {
-  margin-top: 20px;
+  text-align: center;
   margin-bottom: 20px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
-  color: #262626
+  color: #525252
 }
 
 .infoLabelText {
   margin-top: 0px;
-  margin-bottom: 00px;
-  font-size: 12px;
+  margin-bottom: 0px;
+  font-size: 14px;
   font-weight: 600;
-  color: #262626
+  color: #262626;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .userInputFrame {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 400px;
   border-radius: 16px;
-  padding: 16px;
-  background-color: var(--color-white);
-  border: 1px solid #cac5c5;
+  gap: 5px;
 }
 
-/* input 클릭시 border */
-.userInputFrame:focus-within {
-  border: 1px solid #cac5c5;
+.labelButtonContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* margin-bottom: 3px; */
 }
 
 .userInput {
   width: 100%;
-
-  background: rgba(255, 255, 255, 0.4);
+  height: 40px;
+  background: none;
   border-radius: 12px;
-  padding: 10px;
-  border: none;
+  padding: 8px 15px;
+  border: 1px solid #eee;
   color: #333;
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 0px;
+  /* margin-bottom: 3px; */
+  transition: border-color 0.3s ease;
 }
 
 .userInput::placeholder {
@@ -89,26 +91,51 @@
   text-align: left;
 }
 
+.userInput:focus {
+  border-color: #9198a3;
+  outline: none;
+}
+
 .errorMessageWrap {
   margin-top: 1px;
   margin-bottom: 20px;
-  color: red;
+  color: #ff3333;
   font-weight: 700;
   font-size: 12px;
   text-align: left;
 }
 
+/* 중복확인 버튼 스타일 */
+.checkButton {
+  background-color: #666;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 0px;
+}
+
+/* 회원가입 버튼 */
 .userButton {
   width: 100%;
   height: 48px;
   border: none;
-  font-weight: 500;
+  font-size: 17px;
+  font-weight: 600;
   background-color: #000000;
-  border-radius: 64px;
-  color: rgb(255, 255, 255);
-  margin-top: 16px;
+  border-radius: 24px;
+  color: #ffffff;
+  margin-top: 20px;
   margin-bottom: 16px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.userButton:hover {
+  background-color: #838383;
 }
 
 /* 성별 라디오 버튼 */
@@ -116,37 +143,18 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 10px;
 }
 
 .userSexRadioOption {
   display: flex;
   align-items: center;
+  
 }
 
 .userSexRadio {
-  color: var(#333);
   font-size: 14px;
-  margin-right: 10px;
-}
-
-.signup-container {
-  /* 글래스모피즘 효과 */
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-
-  /* 추가 스타일 */
-  padding: 20px;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-/* hover 이벤트? */
-.userButton:hover {
-  background: #333333;
+  margin-right: 5px;
 }
 
 /* 체크박스 */
@@ -155,11 +163,48 @@
   align-items: center;
   gap: 10px;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 14px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
+
+.checkboxContainer input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+
 
 p {
   color: #666;
 }
 
 
+/* 추가 스타일 */
+button {
+  background-color: #666;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-items: flex-end;
+}
+
+button:hover {
+  background-color: #666;
+}
+
+a {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #666;
+  text-decoration: underline;
+}
