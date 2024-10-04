@@ -71,12 +71,13 @@ router.get('/:recipe_id', async(req,res) =>{
             // const [ingredients] = await maria.execute(ingredientQuery, [id]);
             // const [orders] = await maria.execute(orderQuery, [id]);
             // const [categories] = await maria.execute(categoryQuery, [id]);
-
-
+            const updateOrders = orders[0].map(step =>{
+                return {...step, order_img: `${url}/${step.order_img}`}
+            })
             const result = {
                 ...recipeData,
                 ingredients: ingredients[0],
-                orders: orders[0],
+                orders: updateOrders,
                 categories: categories[0]
             }
 

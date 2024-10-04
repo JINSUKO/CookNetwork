@@ -120,7 +120,7 @@ function FetchRecipeList() {
     } finally {
       setIsLoading(false)
     }
-  }, [currentCategory, selectedFilters, searchParams, API_URL, isBookmarked]);  // 카테고리 값이 변경될 때 함수 재생성
+  }, [selectedFilters, searchParams, API_URL, isBookmarked]);  // 카테고리 값이 변경될 때 함수 재생성
 // }, [isBookmarked]);
 
   
