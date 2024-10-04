@@ -117,6 +117,14 @@ app.use("/api/recipe",detailpageRouter)
 const writeRecipesRouter = require("./router/writeRecipes.js");
 app.use("/api/writeRecipe",writeRecipesRouter)
 
+// 공지사항 관련 라우트
+const noticeRouter = require("./router/postNotice.js"); 
+app.use("/api/board",noticeRouter)
+
+// 마이페이지 작성 레시피 라우트
+const myRecipe = require("./router/getMyRecipe.js");
+app.use("/api/myRecipe",myRecipe)
+
 // 로그아웃 라우트 연결
 const logoutRouter = require("./router/logout.js");
 // 로그아웃 라우트 요청시 사용
@@ -159,10 +167,36 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
+// 서버 실행시 redis 접속
+const {connectRedis, disconnectRedis} = require('./module/redis.js');
+connectRedis();
+
+
 // 메인 서버
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
 
+
+// SIGINT,SIGTERM 종료신호를 잡아서(ctrl+c) 처리하는 로직이라고 합니다.
+// 서버 종료할때 redis 초기화 하는것도 괜찮을거 같습니다 
+// process.on('SIGINT', () => {
+//     console.log('서버가 종료되었습니다.');
+//     server.close(() => {
+//         disconnectRedis()
+//         console.log('모든 연결이 종료되었습니다.');
+//         process.exit(0);
+//     });
+// });
+
+// process.on('SIGTERM', () => {
+//     console.log('서버가 종료되었습니다.');
+//     server.close(() => {
+//         disconnectRedis()
+//         console.log('모든 연결이 종료되었습니다.');
+//         process.exit(0);
+//     });
+// });
+//
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
