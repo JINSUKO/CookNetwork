@@ -26,7 +26,7 @@ def parse_content(content):
     parsed_content = {}
 
     # 기본 정보 추가 (값이 있는 경우에만)
-    for key in ["제목", "설명", "serving", "조리시간", "난이도", "재료", "조리도구", "조리순서"]:
+    for key in ["제목", "설명", "serving", "조리시간", "난이도", "재료", "조리도구", "조리순서", "팁"]:
         if content.get(key):
             if key == "재료":
                 if isinstance(content[key], dict):
