@@ -11,7 +11,7 @@ export const StyledApp = {
         </form>
     ),
     HistoryWrapper : forwardRef(({ children, ...props },ref) => (
-        <ul className="history-wrapper" ref={ref} {...props}>
+        <ul className={`${ChatDesign.historyWrapper}`} ref={ref} {...props}>
             {children}
         </ul>
     )),
@@ -20,18 +20,18 @@ export const StyledApp = {
             {children}
         </Card>
     )),
-    NoHistory : ({ children }) => <div className='no-history'>{children}</div>,
+    NoHistory : ({ children }) => <div className={`${ChatDesign.noHistory}`}>{children}</div>,
     ChatItem : ({ children, me, chatDesign }) => <li className={me ? ChatDesign.me : ChatDesign.other}>{children}</li>,
     ChatName : ({ children }) => <strong className="chat-name">{children}</strong>,
     ChatMessage : ({ children }) => <p className="chat-message" style={{whiteSpace: 'pre-line'}}>{children}</p>,
     IDInput : (props) => (
-        <input className="ID-input" {...props} autoComplete='off'/>
+        <input className={`${ChatDesign.nameInput}`} {...props} autoComplete='off'/>
     ),
     MessageInput : (props) => (
-        <input className="message-input" {...props} autoComplete='off'/>
+        <input className={`${ChatDesign.messageInput}`} {...props} autoComplete='off'/>
     ),
     SubmitButton : ({ children, ...props }) => (
-        <button className="submit-button" type="submit">
+        <button className={`${ChatDesign.submitButton}`} type="submit">
             {children}
         </button>
     ),
