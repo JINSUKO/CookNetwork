@@ -425,7 +425,6 @@ const RecipeWrite = ({ user }) => {
               className={`${styles.recipeInput} ${styles.fullWidth}`}
             />
 
-            {/* {recipeImgPreview && <img src={recipeImgPreview} alt={`Step ${step.order}`} className={styles.stepImage} />} */}
             {step.img && <img src={step.img} alt={`Step ${step.order}`} className={styles.stepImage} />}
 
             {steps.length > 1 && (
