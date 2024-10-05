@@ -5,7 +5,7 @@ const router = express.Router()
 const mappingImg = require('../module/fetchCloudinary');
 
 const maria = require('../module/sql') ;
-const fetchCloudinary = require('../module/fetchCloudinary');
+// const fetchCloudinary = require('../module/fetchCloudinary');
 
 // get 요청을 동적 라우팅으로 받음
 router.get('/:category',async(req,res)=>{
@@ -98,7 +98,7 @@ router.get('/:category',async(req,res)=>{
                 ORDER BY create_post_date DESC
             `;
             try{
-                console.log(categories)
+                // console.log(categories)
                 const [recipes] = await maria.execute(queryString,[...categories,cateCount]);
 
                 // const imgId = recipes.map((recipe) => recipe.recipe_img);
