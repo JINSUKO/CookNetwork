@@ -179,6 +179,7 @@
 }
 
 .nameInput {
+    /*flex-grow: 1;*/
     border: 1px solid #FF791F;
     border-radius: 20px;
     padding: 8px 15px;
@@ -186,7 +187,7 @@
 }
 
 .messageInput {
-    /*flex-grow: 1;*/
+    flex-grow: 1;
     border: 1px solid #FF791F;
     border-radius: 20px;
     padding: 8px 15px;
