@@ -629,7 +629,7 @@ function openChat({ userData }) {
                     </RoomWrapper>
                 </div>
                 <div className={`${!isFormVisible? ChatDesign.ChatInput : ChatDesign.hidden}`}>
-                    <Form onSubmit={handleSubmit}>
+                    <Form className={`${ChatDesign.form}`} onSubmit={handleSubmit}>
                         <IDInput
                             id="name"
                             value={toId.name}
