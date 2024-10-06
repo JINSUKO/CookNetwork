@@ -200,10 +200,12 @@ function openChat({ userData }) {
         // 스크롤 위치와 스크롤 현재 높이를 일치시켜 새로운 채팅이 올라와도 스크롤을 계속 밑에 있도록 함
         if(activeTab === 'FAQ' && FAQChatRoom.current){
             FAQChatRoom.current.scrollTop = FAQChatRoom.current.scrollHeight;       
+        } else if(activeTab === 'Recipe' && RecipeChatRoom.current) {
+            RecipeChatRoom.current.scrollTop = RecipeChatRoom.current.scrollHeight;
         } else if(activeTab === 'openTalk' && openChatRoom.current) {
             openChatRoom.current.scrollTop = openChatRoom.current.scrollHeight;
         }
-    }, [messageHistory, oldMessageLog, messageFAQHistory]);
+    }, [messageHistory, oldMessageLog, messageFAQHistory, messageRecipeHistory]);
 
     // useEffect(() =>{
     //     // 
@@ -282,7 +284,7 @@ function openChat({ userData }) {
 
             const { answer } = await response.json();
 
-            const RecipeAnswer = {id:'recipe', name: '???', message: answer};
+            const RecipeAnswer = {id:'recipe', name: '레시피 정보', message: answer};
 
             console.log('RecipeAnswer', RecipeAnswer)
 
@@ -467,7 +469,7 @@ function openChat({ userData }) {
 
             setMessageRecipeHistory((prevRecipeHistory) => [...prevRecipeHistory, RecipeToSend]);
 
-            const RecipeAnswer = {id:'Recipe', name: '???', message: answer};
+            const RecipeAnswer = {id:'Recipe', name: '레시피정보', message: answer};
 
             setMessageRecipeHistory((prevRecipeHistory) => [...prevRecipeHistory, RecipeAnswer]);
             console.log('RecipeAnswer', RecipeAnswer)
@@ -702,7 +704,7 @@ function openChat({ userData }) {
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link eventKey='Recipe' className={ChatDesign.chatTab}>
-                            ???
+                            레시피 정보
                         </Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
