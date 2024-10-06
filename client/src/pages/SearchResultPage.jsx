@@ -9,20 +9,23 @@ import { Link } from 'react-router-dom';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
 import Paging from "../components/UI/Paging";
 import styles from "../assets/styles/RecipeCard.module.css";
-import {FaClock, FaRegChartBar, FaStar} from "react-icons/fa";   // 페이지네이션
+import {FaClock, FaRegChartBar, FaUser} from "react-icons/fa";   // 페이지네이션
+import Skeleton from "../components/UI/Skeleton";
+import SortMenu from "../components/SortMenu";
 
 const API_URL = import.meta.env.VITE_HOST_IP;
 
 function SearchResultPage() {
   const [results, setResults] = useState([]);   // 검색 결과 저장
-  const [isLoading, setIsLoading] = useState(false);    // 검색 후 로딩
+  const [isLoading, setIsLoading] = useState(false); 
   const [error, setError] = useState(null);
   const location = useLocation();
-
+  // 정렬 기능 관련
+  const [sortOption, setSortOption] = useState("최신순");
+  const [sortedResults, setSortedResults] = useState([]);   // 정렬된 레시피 배열
   // 페이지네이션 관련
   const [activePage, setActivePage] = useState(1);
   const itemsPerPage = 8;
-  // const totalPage = Math.ceil(results.length/itemsPerPage);
 
   const searchParams = new URLSearchParams(location.search);
   const query = searchParams.get('q');
@@ -33,13 +36,17 @@ function SearchResultPage() {
     const query = searchParams.get('q');
     const category = searchParams.get('category') || 'all'
 
-    console.log(query)
-    console.log(category)
+    // console.log(query)
+    // console.log(category)
     if (query) {
       fetchSearchResults(query,category);
     }
   }, [location]);
 
+  // 정렬 기능
+  useEffect(() => {
+    setSortedResults(getSortedList(results, sortOption));
+  }, [results, sortOption]);
 
   // fetch 함수
   const fetchSearchResults = async (query,category) => {
@@ -76,6 +83,35 @@ function SearchResultPage() {
       }
   };
 
+  // 정렬 기능
+  // sortOption이 변경될 때마다 정렬된 데이터를 업데이트
+  const getSortedList = useCallback((data, option) => {
+    const copyList = JSON.parse(JSON.stringify(data));    // 원본데이터를 변경하지 않고 복사본을 만들어 정렬
+    switch (option) {
+      case "난이도순":
+        return copyList.sort((a, b) => a.level - b.level);
+      case "조리시간순":
+        return copyList.sort((a, b) => a.cooked_time - b.cooked_time);
+      case "이름순":
+        return copyList.sort((a, b) => a.recipe_name.localeCompare(b.recipe_name));
+      case "최신순":
+      default:
+        return copyList.sort((a, b) => b.recipe_id - a.recipe_id);
+    }
+  }, []);
+
+  const handleSortChange = (option) => {
+    setSortOption(option);
+  };
+
+  const sortOptionList = [
+    { value: "최신순", name: "최신순" },
+    { value: "이름순", name: "이름순" },
+    { value: "난이도순", name: "난이도순" },
+    { value: "조리시간순", name: "조리시간순" },
+  ];
+
+
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber);
   };
@@ -86,7 +122,7 @@ function SearchResultPage() {
   }
   
   if (isLoading) {    // 검색 로딩중
-    return <p>검색 중...</p>;
+    return <div><Skeleton /></div>;
   }
 
   if (error) {      // 검색 오류
@@ -103,10 +139,15 @@ function SearchResultPage() {
   // const currentItems = results.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
-    <Container>
+    <Container className="py-5" style={{margin: '0 auto'}}>
       <h3>검색 결과: {query}</h3>
+      <SortMenu 
+        value={sortOption}
+        onChange={handleSortChange}
+        optionList={sortOptionList}
+      />
       <Row xs={2} md={3} lg={4} className="g-4">
-        {results.map((recipe) => (    // results 배열에 저장된 검색결과를 사용
+        {sortedResults.map((recipe) => (    // results 배열에 저장된 검색결과를 사용
           <Col key={recipe.recipe_id}>
               <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
                 <Card
@@ -140,8 +181,8 @@ function SearchResultPage() {
                         {recipe.cooked_time}분
                       </span>
                       <span>
-                        <FaStar className={styles.icon}/>
-                        평점
+                        <FaUser className={styles.icon}/>
+                        셰프
                     </span>
                   </div>
                 </Card.Body>
