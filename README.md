@@ -1,5 +1,3 @@
-# Cook Network Project
-
 <details>
 <summary>목차 바로가기</summary>
 <div markdown="1">
@@ -133,17 +131,10 @@ Cloudinary:
 <summary>레시피</summary>
 <div markdown="1">
 
-|화면 명|화면 명|
-|:---:|:---:|
-|<img src=""/>|<img src=""/>|
-|화면에 대한 설명을 입력합니다.|화면에 대한 설명을 입력합니다.|
-
-
-|화면 명|
-|:---:|
-|<img src=""/>|
-|화면에 대한 설명을 입력합니다.|
-
+|레시피 목록|레시피 상세보기|레시피 등록|
+|:---:|:---:|:---:|
+|<img height="500px" src="https://github.com/user-attachments/assets/3c455d69-0f30-438d-999a-3ed47897a21f"/>|<img height="500px" src="https://github.com/user-attachments/assets/8a6b0e65-2fa3-49d9-a032-9ff8460631b1"/>|<img height="500px" src="https://github.com/user-attachments/assets/9aba293d-bf4e-477b-9c79-2f48711f5593"/>|
+|레시피 목록을 보여줍니다.<br>카테고리와 필터를 클릭하면 해당 레시피의 목록을 확인할 수 있습니다.|레시피 카드를 클릭하면 해당 레시피의 상세정보를 확인할 수 있습니다.|레시피 등록 페이지입니다.<br>계정 등급이 셰프 이상인 계정들에게 레시피 등록 권한이 있습니다.|
 </div>
 </details>
 
@@ -151,17 +142,10 @@ Cloudinary:
 <summary>유저 페이지</summary>
 <div markdown="1">
 
-|화면 명|화면 명|
-|:---:|:---:|
-|<img src=""/>|<img src=""/>|
-|화면에 대한 설명을 입력합니다.|화면에 대한 설명을 입력합니다.|
-
-
-|화면 명|
-|:---:|
-|<img src=""/>|
-|화면에 대한 설명을 입력합니다.|
-
+|마이페이지 회원 정보|마이페이지 활동|유저 메뉴 탭|
+|:---:|:---:|:---:|
+|<img height="500px" src="https://github.com/user-attachments/assets/b8ef18f8-a8f9-4ef1-b385-12038d669ac8"/>|<img height="500px" src="https://github.com/user-attachments/assets/44ae6537-d932-4a64-9de5-a14a61780ea6"/>|<img height="500px" src="https://github.com/user-attachments/assets/5bb61d76-2021-441b-8076-ef3e9c6958d4"/>|
+|마이페이지 회원 정보 탭입니다.<br>개인 정보를 확인하고 변경할 수 있습니다.|마이페이지 활동 탭입니다.<br>선택한 카테고리의 레시피 목록과 등록한 레시피 목록을 확인할 수 있습니다.|헤더 좌측의 메뉴 탭입니다.<br>유저가 이동할 수 있는 페이지의 바로가기가 준비되어있습니다.|
 </div>
 </details>
 
@@ -169,35 +153,22 @@ Cloudinary:
 <summary>채팅</summary>
 <div markdown="1">
 
-|화면 명|화면 명|
-|:---:|:---:|
-|<img src=""/>|<img src=""/>|
-|화면에 대한 설명을 입력합니다.|화면에 대한 설명을 입력합니다.|
+|FAQ 채팅|레시피 채팅|오픈 채팅|
+|:---:|:---:|:---:|
+|<img height="500px" src="https://github.com/user-attachments/assets/a8af06bf-16ea-4460-8180-af8963c1845d"/>|<img height="500px" src="https://github.com/user-attachments/assets/ccfcc773-1f34-4005-8cbf-3f0f353cb1ad"/>|<img height="500px" src="https://github.com/user-attachments/assets/ce660c88-05f7-4442-af31-3c901fa1fa7a"/>|
+|FAQ 관련 문의를 할 수 있는 채팅 탭입니다.|레시피 관련 문의를 할 수 있는 채팅 탭입니다.<br>음식 이미지를 올리면 해당 이미지를 분류하여 음식 이름으로 정보를 찾는 기능도 구현 중입니다.|오픈채팅 탭입니다.<br>다른 유저와 편하게 대화를 하면서 레시피 정보를 공유할 수 있습니다.|
 
-
-|화면 명|
-|:---:|
-|<img src=""/>|
-|화면에 대한 설명을 입력합니다.|
+</div>
+</details>
 
 <details>
 <summary>관리자</summary>
 <div markdown="1">
 
-|화면 명|화면 명|
+|관라자 페이지 대시보드|관리자 페이지 레시피|
 |:---:|:---:|
-|<img src=""/>|<img src=""/>|
-|화면에 대한 설명을 입력합니다.|화면에 대한 설명을 입력합니다.|
-
-
-|화면 명|
-|:---:|
-|<img src=""/>|
-|화면에 대한 설명을 입력합니다.|
-
-</div>
-</details>
-
+|<img height="500px"  src="https://github.com/user-attachments/assets/9f028481-77ef-48bb-b138-cee1a0a6bd2d"/>|<img height="500px" src="https://github.com/user-attachments/assets/5fbb35bf-769b-476f-845f-e7ae24c59cfb"/>|
+|CookNetwork 서비스의 대시보드를 보여줍니다.<br>세부 내용은 구현 중입니다.|레시피 목록을 테이블 형태로 확인할 수 있습니다.|
 </div>
 </details>
 
