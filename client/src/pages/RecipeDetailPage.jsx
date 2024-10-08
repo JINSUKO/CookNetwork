@@ -115,6 +115,10 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
     }
   };
 
+  const OrderImgErrorHandler = (event) => {
+    event.target.style.display = 'none';
+  }
+
   // 컴포넌트가 마운트될 때 fetch 함수 호출 
   // [ ] loadRecipe 를 제거해야할지?? 간소화하기
   useEffect(() => {
@@ -229,7 +233,7 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
                       <div className={styles.stepBlock}>
                         <p>{step.order_desc}</p>
                       </div>
-                      {step.order_img && <Image src={step.order_img} alt={`Step ${index + 1}`} fluid className={styles.stepImage} />}
+                      {step.order_img && <Image onError={OrderImgErrorHandler} src={step.order_img} alt={`Step ${index + 1}`} fluid className={styles.stepImage} />}
                     </div>
                   </div>
                 </li>
