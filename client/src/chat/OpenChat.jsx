@@ -191,7 +191,7 @@ function openChat({ userData }) {
             };
         }
         // messageHistory의 길이가 바뀔때마다 업데이트
-    }, [messageHistory.length]);
+    }, [messageHistory.length, oldMessageLog.length]);
 
 
     useEffect(() => {
@@ -712,11 +712,11 @@ function openChat({ userData }) {
                             오픈채팅방
                         </Nav.Link>
                     </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link eventKey='personalTalk' className={ChatDesign.chatTab}>
-                            1대1 톡방
-                        </Nav.Link>
-                    </Nav.Item>
+                    {/*<Nav.Item>*/}
+                    {/*    <Nav.Link eventKey='personalTalk' className={ChatDesign.chatTab}>*/}
+                    {/*        1대1 톡방*/}
+                    {/*    </Nav.Link>*/}
+                    {/*</Nav.Item>*/}
                 </Nav>
             </div>
             {/*</Offcanvas>*/}
