@@ -2,13 +2,14 @@
 * 레시피 검색 결과가 렌더링되는 레시피 리스트 페이지입니다.
 */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
 import Paging from "../components/UI/Paging";
-import styles from "../assets/styles/RecipeCard.module.css";
+import cardStyles from "../assets/styles/RecipeCard.module.css";
+import listStyles from "../assets/styles/RecipeList.module.css";
 import {FaClock, FaRegChartBar, FaUser} from "react-icons/fa";   // 페이지네이션
 import Skeleton from "../components/UI/Skeleton";
 import SortMenu from "../components/SortMenu";
@@ -77,7 +78,7 @@ function SearchResultPage() {
 
   const handleCardclick = (e, recipe_id) => {
       // 북마크 버튼 클릭 시 카드가 클릭되어 상세페이지로 이동되는 것을 방지
-      if (e.target.closest(`.${styles.bookmarkWrapper}`)){
+      if (e.target.closest(`.${cardStyles.bookmarkWrapper}`)){
           e.preventDefault();
           e.stopPropagation();
       }
@@ -140,48 +141,55 @@ function SearchResultPage() {
 
   return (
     <Container className="py-5" style={{margin: '0 auto'}}>
-      <h3>검색 결과: {query}</h3>
-      <SortMenu 
-        value={sortOption}
-        onChange={handleSortChange}
-        optionList={sortOptionList}
-      />
+      <h3 className={listStyles.recipeListTitle}>
+        검색 결과: {query}</h3>
+      <Row>
+        <SortMenu 
+          value={sortOption}
+          onChange={handleSortChange}
+          optionList={sortOptionList}
+        />
+      </Row>
+      <Row>
+      <hr className={listStyles.customHr}/>
+      </Row>
+
       <Row xs={2} md={3} lg={4} className="g-4">
         {sortedResults.map((recipe) => (    // results 배열에 저장된 검색결과를 사용
           <Col key={recipe.recipe_id}>
               <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
                 <Card
-                  className={styles.recipeCard}
+                  className={cardStyles.recipeCard}
                   onClick={(e) => handleCardclick(e, recipe.recipe_id)}
                   >
-                <div className={styles.imageWrapper}>
+                <div className={cardStyles.imageWrapper}>
                   {recipe.recipe_img ? (
-                  <Card.Img variant="top" src={recipe.recipe_img}  className={styles.recipeImage}/>
+                  <Card.Img variant="top" src={recipe.recipe_img}  className={cardStyles.recipeImage}/>
                   ) : (
                     <div style={{height: '200px' }}></div>
                   )}
-                      <div className={styles.bookmarkWrapper}>
+                      <div className={cardStyles.bookmarkWrapper}>
                           {/*<BookmarkButton recipe_id={recipe.recipe_id} />*/}
                       </div>
                 </div>
                 <Card.Body>
-                  <Card.Title className={styles.recipeTitle}>
+                  <Card.Title className={cardStyles.recipeTitle}>
                     {recipe.recipe_name}
                   </Card.Title>
-                  <Card.Title  className={styles.recipeDesc}>
+                  <Card.Title  className={cardStyles.recipeDesc}>
                     {recipe.recipe_desc}
                   </Card.Title>
-                  <div className={styles.recipeInfo}>
+                  <div className={cardStyles.recipeInfo}>
                     <span>
-                        <FaRegChartBar className={styles.icon} />
+                        <FaRegChartBar className={cardStyles.icon} />
                         Lv.{recipe.level}
                       </span>
                       <span>
-                        <FaClock className={styles.icon} />
+                        <FaClock className={cardStyles.icon} />
                         {recipe.cooked_time}분
                       </span>
                       <span>
-                        <FaUser className={styles.icon}/>
+                        <FaUser className={cardStyles.icon}/>
                         셰프
                     </span>
                   </div>

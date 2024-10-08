@@ -23,6 +23,12 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
   const [recipe, setRecipe] = useState(null);   // recipes 데이터 빈 배열로 설정
   const [averageRating, setAverageRating] = useState(0);
   // const { ratings, setRating, averageRatings, calculateAverageRating } = useRating();
+  const [openSections, setOpenSections] = useState({
+    ingredients: true,
+    steps: true,
+    tips: true,
+    categories: true
+  });
 
   const API_URL = import.meta.env.VITE_HOST_IP;
 
@@ -52,7 +58,6 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
 
 
   // 레시피 평점 데이터 가져오기 
-  // [ ] 평균별점 가져오기
   const fetchAverageRating = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/api/recipe/${recipe_id}/averageRating`, {
@@ -94,7 +99,7 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
     }
   }, [recipe_id, API_URL]);
 
-  // [ ] 유저 평점 등록 함수
+  // 유저 평점 등록 함수
   const handleRatingChange = async (newRating) => {
     try {
       const response = await fetch(`${API_URL}/api/recipe/${recipe_id}/rating`, {
@@ -120,7 +125,6 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
   }
 
   // 컴포넌트가 마운트될 때 fetch 함수 호출 
-  // [ ] loadRecipe 를 제거해야할지?? 간소화하기
   useEffect(() => {
     const loadRecipeData = async () => {
       setIsLoading(true);
@@ -132,6 +136,11 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
     loadRecipeData();
   }, [fetchRecipeDetails, fetchAverageRating]);
   
+  // 아코디언 토글
+  const toggleSection = (section) => {
+    setOpenSections(prev => ({...prev, [section]: !prev[section]}));
+  };
+
   if (isLoading) {
     return <div><Loading /></div>;
   }
@@ -202,86 +211,98 @@ function RecipeDetailPage({ initialIsBookmarked, handleBookmark }) {
         </Col>
       </Row>
       <hr className={styles.customHr}/>
-      <Row>
-        <Col>
-          <div className={styles.contentSection}>
-            <h2 className={styles.sectionTitle}>재료</h2>
-            <ul className={styles.ingredientList}>
-              {recipe.ingredients && recipe.ingredients.map((ingredient, index) => (
-                <li key={index} className={styles.ingredientItem}>
-                  <span className={styles.ingredientName}>{ingredient.ingredient_name}</span>
-                  <span className={styles.ingredientAmount}>{ingredient.count} {ingredient.ingredient_unit}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Col>
-      </Row>
+      
 
-      <Row>
-        <Col>
-          <div className={styles.contentSection}>
-            <h2 className={styles.sectionTitle}>조리순서</h2>
-            <ol className={styles.stepList}>
-              {recipe.orders && recipe.orders.map((step, index) => (
-                <li key={index} className={styles.stepItem}>
-                  <div className={styles.stepContainer}>
-                    <div className={styles.stepNumberWrapper}>
-                      <span className={styles.stepNumber}>{index + 1}</span>
-                    </div>
-                    <div className={styles.stepContent}>
-                      <div className={styles.stepBlock}>
-                        <p>{step.order_desc}</p>
+
+
+
+
+
+      <Row>      
+        <div className={styles.accordion}>
+          <div className={styles.accordionItem}>
+            <h2 className={styles.sectionTitle} onClick={() => toggleSection('ingredients')}>
+              재료
+              <span className={styles.accordionIcon}>{openSections.ingredients ? '▲' : '▼'}</span>
+            </h2>
+            {openSections.ingredients && (
+              <ul className={styles.ingredientList}>
+                {recipe.ingredients && recipe.ingredients.map((ingredient, index) => (
+                  <li key={index} className={styles.ingredientItem}>
+                    <span className={styles.ingredientName}>{ingredient.ingredient_name}</span>
+                    <span className={styles.ingredientAmount}>{ingredient.count} {ingredient.ingredient_unit}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className={styles.accordionItem}>
+            <h2 className={styles.sectionTitle} onClick={() => toggleSection('steps')}>
+              조리순서
+              <span className={styles.accordionIcon}>{openSections.steps ? '▲' : '▼'}</span>
+            </h2>
+            {openSections.steps && (
+              <ol className={styles.stepList}>
+                {recipe.orders && recipe.orders.map((step, index) => (
+                  <li key={index} className={styles.stepItem}>
+                    <div className={styles.stepContainer}>
+                      <div className={styles.stepNumberWrapper}>
+                        <span className={styles.stepNumber}>{index + 1}</span>
                       </div>
-                      {step.order_img && <Image onError={OrderImgErrorHandler} src={step.order_img} alt={`Step ${index + 1}`} fluid className={styles.stepImage} />}
+                      <div className={styles.stepContent}>
+                        <div className={styles.stepBlock}>
+                          <p>{step.order_desc}</p>
+                        </div>
+                        {step.order_img && <Image onError={OrderImgErrorHandler} src={step.order_img} alt={`Step ${index + 1}`} fluid className={styles.stepImage} />}
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
-            </ol>
-
+                  </li>
+                ))}
+              </ol>
+            )}
           </div>
-        </Col>
+
+          {recipe.tips && (
+            <div className={styles.accordionItem}>
+              <h2 className={styles.sectionTitle} onClick={() => toggleSection('tips')}>
+                조리팁!
+                <span className={styles.accordionIcon}>{openSections.tips ? '▲' : '▼'}</span>
+              </h2>
+              {openSections.tips && (
+                <div className={styles.tipBlock}>
+                  <p>{recipe.tips}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {recipe.categories && (
+            <div className={styles.accordionItem}>
+              <h2 className={styles.sectionTitle} onClick={() => toggleSection('categories')}>
+                태그
+                <span className={styles.accordionIcon}>{openSections.categories ? '▲' : '▼'}</span>
+              </h2>
+              {openSections.categories && (
+                <div className={styles.categoryTag}>
+                  <span>{recipe.categories.map(cat => `#${cat.category_name}`).join('　')}</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </Row>
 
-      {recipe.tips && (
-        <Row>
-          <Col>
-            <div className={styles.contentSection}>
-              <h2 className={styles.sectionTitle}>조리팁!</h2>
-              <div className={styles.tipBlock}>
-                <p>{recipe.tips}</p>
-              </div>
-            </div>
-          </Col>
-        </Row>
-      )}
 
-      {recipe.categories && (
-        <Row>
-          <Col>
-            <div className={styles.contentSection}>
-              <h2 className={styles.sectionTitle}>태그</h2>
-              <div className={styles.categoryTag}>
-                <span>{recipe.categories.map(cat => `#${cat.category_name}`).join(' ')}</span>
-              </div>
-            </div>
-          </Col>
-        </Row>
-      )}
 
-      <Row>
-        <Col>
-          <div className={styles.contentSection}>
-            {/* <h2 className={styles.sectionTitle}>내 평점 등록</h2>
-            <StarRating
-              initialRating={ratings[recipe_id]}
-              onRatingChange={handleRatingChange}
-              recipe_id={recipe_id}
-            /> */}
-          </div>
-        </Col>
-      </Row>
+
+
+
+
+
+
+
+      
       <ScrollToTop/>
     </Container>
     );

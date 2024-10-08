@@ -2,7 +2,6 @@
 -Fetch 함수를 사용해 레시피 데이터 호출하는 컴포넌트입니다.
 - 함수 handleFilterChange: 카테고리 내 필터 선택
 - 함수 getSortedList: 정렬 기능(최신순, 난이도순, 조리시간순, 이름순)
-[ ] 로그인, 비로그인 북마크 여부 구분
 */  
 
 import React, { useState, useEffect, useCallback } from "react";
