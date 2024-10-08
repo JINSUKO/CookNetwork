@@ -69,7 +69,7 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
                       </span>
                       <span>
                         <FaUser className={styles.icon}/>
-                        셰프
+                        {recipe.username}
                       </span>
                     </div>
                   </Card.Body>
