@@ -9,7 +9,7 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
 import styles from '../assets/styles/RecipeCard.module.css';
 import Skeleton from '../components/UI/Skeleton';
-import { FaClock, FaRegChartBar, FaStar } from 'react-icons/fa';
+import { FaClock, FaRegChartBar, FaUser } from 'react-icons/fa';
 
 function RecipeListPage({ recipes, currentCategory, isLoading }) {
   
@@ -68,8 +68,8 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
                         {recipe.cooked_time}분
                       </span>
                       <span>
-                        <FaStar className={styles.icon}/>
-                        평점
+                        <FaUser className={styles.icon}/>
+                        {recipe.username}
                       </span>
                     </div>
                   </Card.Body>

@@ -2,7 +2,6 @@
 -Fetch 함수를 사용해 레시피 데이터 호출하는 컴포넌트입니다.
 - 함수 handleFilterChange: 카테고리 내 필터 선택
 - 함수 getSortedList: 정렬 기능(최신순, 난이도순, 조리시간순, 이름순)
-[ ] 로그인, 비로그인 북마크 여부 구분
 */  
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -35,6 +34,7 @@ function FetchRecipeList() {
   // 정렬 기능
   const [sortOption, setSortOption] = useState("최신순");
   const [sortedRecipes, setSortedRecipes] = useState([]);   // 정렬된 레시피 배열
+  const [showSkeleton, setShowSkeleton] = useState(false);  
 
   const filterOptions = [
     "메인요리", "반찬", "국/탕", "디저트", "면", 
@@ -49,9 +49,14 @@ function FetchRecipeList() {
     { value: "난이도순", name: "난이도순" },
     { value: "조리시간순", name: "조리시간순" },
   ];
-
+  // 로딩이 길어질 때만 스켈레톤 UI
   const fetchRecipes = useCallback(async () => {
     setIsLoading(true);
+    setShowSkeleton(false);
+
+    const skeletonTimer = setTimeout(() => {
+      setShowSkeleton(true);
+    }, 1000);
 
     try {
       // 삼항연산자를 사용하여 API 엔드포인트 요청 url 결정
@@ -115,10 +120,13 @@ function FetchRecipeList() {
         // console.error("Unexpected response structure:", result);
         throw new Error("Unexpected response structure");
       }
+      clearTimeout(skeletonTimer);
+      setShowSkeleton(false);
     } catch (e) {
       // console.error("API 호출 실패:", e.message);
     } finally {
       setIsLoading(false)
+      clearTimeout(skeletonTimer);
     }
   }, [selectedFilters, searchParams, API_URL, isBookmarked]);  // 카테고리 값이 변경될 때 함수 재생성
 // }, [isBookmarked]);
@@ -177,10 +185,6 @@ function FetchRecipeList() {
     setSortOption(option);
   };
 
-
-
-
-
   // 리스트 상단 소개에 카테고리 표시
   const displayCategory = () => {
     if (currentCategory === 'main' || currentCategory === '전체' || !currentCategory) {
@@ -192,7 +196,7 @@ function FetchRecipeList() {
 
   return (
     <Container className={styles.recipeListContainer}>
-      {isLoading && filteredRecipes.length === 0 ? (
+      {isLoading && showSkeleton && filteredRecipes.length === 0 ? (
         <Row className="justify-content-center">
           <Col xs={12} md={10} lg={8}>
             <Skeleton/>
