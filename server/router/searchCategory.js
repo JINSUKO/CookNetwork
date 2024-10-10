@@ -96,7 +96,7 @@ router.get('/:category',async(req,res)=>{
                 JOIN categories c ON rc.category_id = c.category_id
                 JOIN users u ON r.user_code = u.user_code
                 WHERE c.category_name IN (${placeHolder})
-                GROUP BY r.recipe_id
+                GROUP BY r.recipe_id 
                 HAVING COUNT(DISTINCT c.category_name) = ?
                 ORDER BY create_post_date DESC
             `;

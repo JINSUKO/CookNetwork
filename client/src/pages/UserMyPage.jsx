@@ -395,30 +395,30 @@ const UserMyPage = ({user, setUser, profilePic, setProfilePic}) => {
                             )}
                             {activeTab === 'activity' && (
                                 <>
-                                    <h6 className="mb-3">최근 평가한 레시피</h6>
-                                    <Row xs={2} md={3} lg={4} className="g-2 mb-4">
-                                        {[...Array(8)].map((_, idx) => (
-                                            <Col key={idx}>
-                                                <div style={{
-                                                    width: '100%',
-                                                    paddingBottom: '100%',
-                                                    background: '#f0f0f0'
-                                                }}></div>
-                                            </Col>
-                                        ))}
-                                    </Row>
-                                    <h6 className="mb-3">최근 북마크 레시피</h6>
-                                    <Row xs={2} md={3} lg={4} className="g-2 mb-4">
-                                        {[...Array(8)].map((_, idx) => (
-                                            <Col key={idx}>
-                                                <div style={{
-                                                    width: '100%',
-                                                    paddingBottom: '100%',
-                                                    background: '#f0f0f0'
-                                                }}></div>
-                                            </Col>
-                                        ))}
-                                    </Row>
+                                    {/*<h6 className="mb-3">최근 평가한 레시피</h6>*/}
+                                    {/*<Row xs={2} md={3} lg={4} className="g-2 mb-4">*/}
+                                    {/*    {[...Array(8)].map((_, idx) => (*/}
+                                    {/*        <Col key={idx}>*/}
+                                    {/*            <div style={{*/}
+                                    {/*                width: '100%',*/}
+                                    {/*                paddingBottom: '100%',*/}
+                                    {/*                background: '#f0f0f0'*/}
+                                    {/*            }}></div>*/}
+                                    {/*        </Col>*/}
+                                    {/*    ))}*/}
+                                    {/*</Row>*/}
+                                    {/*<h6 className="mb-3">최근 북마크 레시피</h6>*/}
+                                    {/*<Row xs={2} md={3} lg={4} className="g-2 mb-4">*/}
+                                    {/*    {[...Array(8)].map((_, idx) => (*/}
+                                    {/*        <Col key={idx}>*/}
+                                    {/*            <div style={{*/}
+                                    {/*                width: '100%',*/}
+                                    {/*                paddingBottom: '100%',*/}
+                                    {/*                background: '#f0f0f0'*/}
+                                    {/*            }}></div>*/}
+                                    {/*        </Col>*/}
+                                    {/*    ))}*/}
+                                    {/*</Row>*/}
                                     { <UserSelectedCategories categories={categories} userCategoryRecipes={userCategoryRecipes} /> }
                                     { (user.user_code <= 11 || user.chef_code === 1 )
                                         && <div>

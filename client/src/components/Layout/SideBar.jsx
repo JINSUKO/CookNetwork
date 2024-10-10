@@ -17,7 +17,7 @@ function LeftSidebar({ show, handleClose, user }) {
   const commonLoggedInMenu = [
     { to: "/mypage", text: "마이페이지", icon: <FaUserCog /> },
     { to: "/mybookmark", text: "북마크한 레시피", icon: <FaBookmark /> },
-    { to: "/popular", text: "인기 레시피", icon: <FaCrown /> },
+    { to: "/best", text: "인기 레시피", icon: <FaCrown /> },
     { to: "/about", text: "서비스 소개", icon: <FaCookieBite /> },
   ];
 

@@ -39,6 +39,7 @@
   transition: .2s ease-in-out;
   font-size: 0.875rem;
   margin: 2px;
+  min-width: 28.59px;
 }
 
 .filterBtn.selected {

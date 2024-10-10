@@ -1,24 +1,19 @@
 .page {
-  position: relative;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  max-width: 500px;
-  
-  padding: 20px;
-
-  left: 30%;
-  transform: translate(10%, 0);
-
-  background-color: #ffffff;
-
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
-
+  position: relative;
+  top: 0;
+  bottom: 0;
+  /* min-height: 100vh; */
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  left: 30%;
+  transform: translate(10%, 0);
+  background-color: #ffffff;
+  overflow: hidden;
 }
 
 .titleWrap {
@@ -26,9 +21,8 @@
   font-size: 26px;
   font-weight: 700;
   text-align: center;
-  color: #262626;
+  color: #010101;
   margin-bottom: 20px;
-
 }
 
 .contentWrap {
@@ -52,32 +46,26 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 300px;
-
+  max-width: 400px;
   border-radius: 16px;
   padding: 30px;
-  background-color: var(--color-whiteBlue);
-  border: 1px solid #cac5c5;
+  background-color: #ffffff;
   text-align: left;
-
-}
-
-/* input 클릭시 border */
-.userInputFrame:focus-within {
-  border: 1px solid #cac5c5;
+  box-shadow: 0 0px 6px rgba(0, 0, 0, 0.1);
+  text-align: left;
 }
 
 .userInput {
-  background: rgba(255, 255, 255, 0.2);
+  width: 100%;
+  background: none;
   border-radius: 12px;
-  padding: 10px;
-  border: none;
+  padding: 10px 15px;
+  border: 1px solid #eee;
   color: #333;
   font-size: 14px;
   font-weight: 500;
-  text-align: left;
-  margin-bottom: 10px;
-
+  margin-bottom: 15px;
+  transition: border-color 0.3s ease;
 }
 
 .userInput::placeholder {
@@ -85,10 +73,15 @@
   text-align: left;
 }
 
+.userInput:focus {
+  border-color: #9198a3;
+  outline: none;
+}
+
 .errorMessageWrap {
   margin-top: 1px;
   margin-bottom: 12px;
-  color: var(--color-red);
+  color: #ff3333;
   font-size: 12px;
   text-align: left;
 }
@@ -97,12 +90,19 @@
   width: 100%;
   height: 48px;
   border: none;
-  font-weight: 500;
+  font-size: 17px;
+  font-weight: 600;
   background-color: #0a0a0a;
   border-radius: 64px;
-  color: white;
+  color: #ffffff;
+  margin-top: 20px;
   margin-bottom: 16px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.userButton:hover {
+  background-color: #333333;
 }
 
 .userSexRadio {
@@ -115,34 +115,11 @@
   display: none;
 }
 
-
-
-
-
-.signup-container {
-  /* 글래스모피즘 효과 */
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-
-  /* 추가 스타일 */
-  padding: 20px;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
 .userInputFrame {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
-
-
-
-/* .userButton:disabled {} */
 
 @media (max-width: 500px) {
   .userInputFrame {
@@ -150,22 +127,14 @@
   }
 }
 
-
-
-/* hover 이벤트? */
-.userButton:hover {
-  background: #333333;
-  ;
-}
-
-/* 체크박스 */
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* 기본 스타일 */
+label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #262626;
+  margin-bottom: 5px;
 }
 
 p {
   color: #666;
 }
-
