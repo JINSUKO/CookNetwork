@@ -35,19 +35,21 @@ router.get('/:category',async(req,res)=>{
                     // HAVING (COUNT)를 사용하여 받은 카테고리와 일치하는 것만 찾음
                     const cateCount = categories.length;
                     queryString = `
-                        SELECT r.*
+                        SELECT r.*, u.username
                         FROM recipe r
                         JOIN recipe_category rc ON r.recipe_id = rc.recipe_id
                         JOIN categories c ON rc.category_id = c.category_id
+                        JOIN users u ON r.user_code = u.user_code
                         WHERE c.category_name IN (${categoryList})
                         GROUP BY r.recipe_id
                         HAVING COUNT(DISTINCT c.category_name) = ${cateCount}
                         ORDER BY create_post_date DESC
                     `
                 } else{
-                    queryString = `SELECT * FROM recipe ORDER BY create_post_date DESC`;
+                    queryString = `SELECT r.*, u.username FROM recipe r JOIN users u ON r.user_code = u.user_code ORDER BY create_post_date DESC`;
                 }
                 const [recipes] = await maria.execute(queryString);
+                console.log(recipes)
 
                 // const imgId = recipes.map((recipe) => recipe.recipe_img);
 
@@ -88,10 +90,11 @@ router.get('/:category',async(req,res)=>{
             const cateCount = categories.length;
             // request에서 받은 카테고리와 동일한 카테고리를 가진 recipe를 찾는 쿼리
             const queryString = `
-                SELECT r.*
+                SELECT r.*, u.username
                 FROM recipe r
                 JOIN recipe_category rc ON r.recipe_id = rc.recipe_id
                 JOIN categories c ON rc.category_id = c.category_id
+                JOIN users u ON r.user_code = u.user_code
                 WHERE c.category_name IN (${placeHolder})
                 GROUP BY r.recipe_id
                 HAVING COUNT(DISTINCT c.category_name) = ?
