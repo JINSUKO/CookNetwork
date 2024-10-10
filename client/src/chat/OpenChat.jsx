@@ -1,11 +1,14 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {io} from 'socket.io-client';
-import {Image, ListGroup, Nav, Offcanvas} from 'react-bootstrap';
+import {Alert, Image, ListGroup, Nav, Offcanvas} from 'react-bootstrap';
 //작성해둔 컴포넌트 불러옴
 import {StyledApp} from './styled.jsx';
 
 import ChatDesign from '../assets/styles/ChatMessage.module.css';
 import ConfirmModal from "../components/ConfirmModal.jsx";
+
+import authFetch from '../fetchInterceptorAuthToken';
+import authManager from "../authManager";
 
 
 const{
@@ -27,6 +30,8 @@ const socket_IP  = import.meta.env.VITE_HOST_IP
 const socket = new io(socket_IP);
 
 const AI_HOST_IP = import.meta.env.VITE_AI_HOST_IP;
+
+const loginUser = localStorage.getItem('loginUser')|| null;
 
 function openChat({ userData }) {
     // 유저 데이터를 받아와서 변수에 지정
@@ -132,6 +137,27 @@ function openChat({ userData }) {
             socket.on('connect',joinFAQ)
         } else if(activeTab === 'openTalk'){ // 'openTalk'탭일 경우
             // TODO 로그인한 유저만 사용 가능하도록 수정할것
+            if(!loginUser){
+                handleToggleTabs('FAQ')
+                return alert('로그인후 이용 가능합니다.')
+            }else{
+                try {
+                    const auth = async () =>{
+                        const data = await authManager.addRequest(() => authFetch(`${socket_IP}/api/authPage`, {
+                            method: 'POST',
+                            body: JSON.stringify({userId: loginUser}),
+                            credentials: 'include'
+                          }));
+                        return data
+                    }
+                    
+                    const response = auth();
+                    console.log(response);
+                    
+                  } catch (e) {
+                    console.error(e);
+                  }
+                }
             if(user_id && username){
                 // 서버의 'USER_ENTER'이벤트를 실행하고 'id', 'name' 전달
                 socket.emit('NEW_USER_ENTER',{ id: user_id, name: username});
