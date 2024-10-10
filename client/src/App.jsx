@@ -154,7 +154,7 @@ function App() {
         </Routes>
         </BookmarkProvider>
       </Router>
-      {user && <OpenChat userData = {user}/>}
+      {<OpenChat userData = {user}/>}
       <Footer/>
       <ToastContainer />
     </div>
