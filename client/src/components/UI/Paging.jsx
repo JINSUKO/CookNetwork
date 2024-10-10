@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import Pagination from "react-js-pagination";
-import { LuChevronLeft , LuChevronRight, LuChevronsLeft , LuChevronsRight  } from "react-icons/lu";
+// import { LuChevronLeft , LuChevronRight, LuChevronsLeft , LuChevronsRight  } from "react-icons/lu";
 import styles from '../../assets/styles/Paging.module.css'
 
 const Paging = ({ activePage, itemsCountPerPage, totalItemsCount, onChange }) => {

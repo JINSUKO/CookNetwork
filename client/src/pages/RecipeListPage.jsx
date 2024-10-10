@@ -9,7 +9,12 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import BookmarkButton from "../components/Bookmark/BookmarkButton";
 import styles from '../assets/styles/RecipeCard.module.css';
 import Skeleton from '../components/UI/Skeleton';
-import { FaClock, FaRegChartBar, FaUser } from 'react-icons/fa';
+import { FaClock } from '@react-icons/all-files/fa/FaClock';
+import { FaRegChartBar } from '@react-icons/all-files/fa/FaRegChartBar';
+import { FaUser } from '@react-icons/all-files/fa/FaUser';
+
+
+
 
 function RecipeListPage({ recipes, currentCategory, isLoading }) {
   

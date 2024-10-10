@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
 import SearchCategoryDrop from "./SearchCategoryDrop";
 import "../assets/styles/SearchBar.css"
-import { FaSearch } from "react-icons/fa";
+import { FaSearch } from "@react-icons/all-files/fa/FaSearch";
 
 function SearchBar({ onSearch, recipeData }) {  
   const [searchInput, setSearchInput] = useState("") ; 

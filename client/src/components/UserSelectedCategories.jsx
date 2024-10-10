@@ -4,7 +4,9 @@ import Card from "react-bootstrap/Card";
 import {Link} from "react-router-dom";
 import styles from "../assets/styles/RecipeCard.module.css";
 import BookmarkButton from "./Bookmark/BookmarkButton.jsx";
-import {FaClock, FaRegChartBar} from "react-icons/fa";
+import {FaClock} from "@react-icons/all-files/fa/FaClock";
+import {FaRegChartBar} from "@react-icons/all-files/fa/FaRegChartBar";
+
 
 const UserSelectedCategories = ({categories, userCategoryRecipes}) => {
 
