@@ -8,7 +8,7 @@ import {Button, Form} from "react-bootstrap";
 
 import style from "../assets/styles/SearchBarImage.module.css";
 import {useNavigate} from "react-router-dom";
-import {FaSearch} from "react-icons/fa";
+import {FaSearch} from "@react-icons/all-files/fa/FaSearch";
 
 const SearchBarImage = ( {onSearch} ) => {
 

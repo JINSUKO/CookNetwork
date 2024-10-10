@@ -6,7 +6,16 @@ import React, { useState } from 'react';
 import { Offcanvas, Nav, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from '../../assets/styles/SideBar.module.css'
-import { FaUser, FaUserPlus, FaUserCog, FaBookmark, FaCrown, FaCookieBite, FaListUl, FaPen, FaChessKing } from "react-icons/fa";
+import { FaUser } from "@react-icons/all-files/fa/FaUser";
+import { FaUserPlus } from "@react-icons/all-files/fa/FaUserPlus";
+import { FaUserCog } from "@react-icons/all-files/fa/FaUserCog";
+import { FaBookmark } from "@react-icons/all-files/fa/FaBookmark";
+import { FaCrown } from "@react-icons/all-files/fa/FaCrown";
+import { FaCookieBite } from "@react-icons/all-files/fa/FaCookieBite";
+import { FaListUl } from "@react-icons/all-files/fa/FaListUl";
+import { FaPen } from "@react-icons/all-files/fa/FaPen";
+import { FaChessKing } from "@react-icons/all-files/fa/FaChessKing";
+
 
 
 function LeftSidebar({ show, handleClose, user }) {

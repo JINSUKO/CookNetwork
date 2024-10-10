@@ -10,7 +10,10 @@ import BookmarkButton from "../components/Bookmark/BookmarkButton";
 import Paging from "../components/UI/Paging";
 import cardStyles from "../assets/styles/RecipeCard.module.css";
 import listStyles from "../assets/styles/RecipeList.module.css";
-import {FaClock, FaRegChartBar, FaUser} from "react-icons/fa";   // 페이지네이션
+// 페이지네이션
+import {FaClock} from "@react-icons/all-files/fa/FaClock";  
+import {FaRegChartBar} from "@react-icons/all-files/fa/FaRegChartBar";  
+import {FaUser} from "@react-icons/all-files/fa/FaUser";  
 import Skeleton from "../components/UI/Skeleton";
 import SortMenu from "../components/SortMenu";
 

@@ -2,7 +2,10 @@ import React from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from "../assets/styles/RecipeCard.module.css";
-import { FaClock, FaRegChartBar } from "react-icons/fa";
+import { FaClock } from "@react-icons/all-files/fa/FaClock";
+import { FaRegChartBar } from "@react-icons/all-files/fa/FaRegChartBar";
+
+
 
 const UserMyRecipe = ({ recipes }) => {
     const handleCardClick = (e, recipe_id) => {

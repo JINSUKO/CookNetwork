@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaTruckMonster } from "react-icons/fa";
+import { FaTruckMonster } from "@react-icons/all-files/fa/FaTruckMonster";
 
 
 function Best () {

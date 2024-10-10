@@ -8,7 +8,8 @@
 
 import React, { useState, useEffect, useContext } from 'react';
 import { useBookmarkContext } from '../../context/BookmarkContext.jsx';
-import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
+import { BsBookmark } from '@react-icons/all-files/bs/BsBookmark';
+import { BsBookmarkFill } from '@react-icons/all-files/bs/BsBookmarkFill';
 import styles from '../../assets/styles/Bookmark.module.css';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
