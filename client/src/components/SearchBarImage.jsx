@@ -50,10 +50,10 @@ const SearchBarImage = ( {onSearch} ) => {
 
             updateModalPosition()
 
-            fileInputDisplay.current.style.borderColor = '#86b7fe';
-            fileInputDisplay.current.style.border= '1px solid #ccc';
-            fileInputDisplay.current.style.boxShadow = '0 0 0 .25rem rgba(13, 110, 253, .25)';
-            fileInputDisplay.current.style.transform = 'scale(1)';
+            // fileInputDisplay.current.style.borderColor = '#f17f42';
+            fileInputDisplay.current.style.border= '1px solid #f17f42';
+            fileInputDisplay.current.style.boxShadow = '0 0 0 2px rgba(255, 194, 161, 0.2)';
+            // fileInputDisplay.current.style.transform = 'scale(1)';
             return
         }
 
