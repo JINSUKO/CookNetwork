@@ -158,10 +158,12 @@ if (process.env.NODE_ENV === 'production') {
 
 // React app의 라우팅을 위한 와일드카드 라우트
 if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../client/dist')));
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, '../client/dist/index.html'));
     });
 } else {
+    app.use(express.static(path.join(__dirname, '../client/')));
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, '../client/index.html'));
     });

@@ -702,6 +702,7 @@ function openChat({ userData }) {
                         <div className={`${ChatDesign.imageUpload} ${isImgBtnVisible ? ChatDesign.ImgInput : ChatDesign.hidden}`}>
                             <label htmlFor="file-input" className={`${ChatDesign.imageUploadBtn}`} onClick={handleImageInput}>사진 올리기</label>
                             <input
+                                id = "file-input"
                                 type='file'
                                 accept="image/*"
                                 ref={fileInputRef}

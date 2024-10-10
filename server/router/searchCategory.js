@@ -49,7 +49,7 @@ router.get('/:category',async(req,res)=>{
                     queryString = `SELECT r.*, u.username FROM recipe r JOIN users u ON r.user_code = u.user_code ORDER BY create_post_date DESC`;
                 }
                 const [recipes] = await maria.execute(queryString);
-                console.log(recipes)
+                // console.log(recipes)
 
                 // const imgId = recipes.map((recipe) => recipe.recipe_img);
 
