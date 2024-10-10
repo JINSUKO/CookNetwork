@@ -33,7 +33,7 @@ router.post('/',upload.fields([{ name: 'recipe_img',maxCount: 1},{ name: 'step_i
     const ingredients = [...recipeData.ingredients]
     const cooked_orders = [...recipeData.cooked_order]
     if(recipeFilter.length === 1||recipeFilter.length === 0) { filters = recipeFilter}
-    else{filters = recipeFilter.split(',')}
+    else{filters = recipeFilter}
 
     console.log(filters)
 
