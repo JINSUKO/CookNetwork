@@ -12,6 +12,10 @@ const UserMyRecipe = ({ recipes }) => {
         }
     };
 
+    const RecipeImgErrorHandler = (event) => {
+        event.target.style.display = 'none';
+    }
+    
     return (
         <Row xs={2} md={3} lg={4} className="g-2 mb-4">
             {recipes && recipes.map((recipe) => (
@@ -23,7 +27,7 @@ const UserMyRecipe = ({ recipes }) => {
                         >
                             <div className={styles.imageWrapper}>
                                 {recipe.recipe_img ? (
-                                    <Card.Img variant="top" src={recipe.recipe_img} className={styles.recipeImage}/>
+                                    <Card.Img variant="top" src={recipe.recipe_img} className={styles.recipeImage} onError={RecipeImgErrorHandler}/>
                                 ) : (
                                     <div style={{height: '200px' }}></div>
                                 )}

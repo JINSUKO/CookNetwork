@@ -1,11 +1,11 @@
 /** Pagination.jsx
  * 검색 결과 리스트에 적용될 페이지네이션 컴포넌트
  * react-js-pagination 라이브러리 사용
- * [ ] 전체 데이터 개수
  */
 import React from 'react';
 import Pagination from "react-js-pagination";
-import { LuChevronLeft , LuChevronRight, LuChevronsLeft , LuChevronsRight  } from "react-icons/lu";
+// import { LuChevronLeft, LuChevronRight, LuChevronsLeft , LuChevronsRight  } from "react-icons/lu";
+// import { FaAngleLeft} from "@react-icons/all-files/fa/FaAngleLeft";
 import styles from '../../assets/styles/Paging.module.css'
 
 const Paging = ({ activePage, itemsCountPerPage, totalItemsCount, onChange }) => {

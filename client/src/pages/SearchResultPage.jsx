@@ -44,7 +44,7 @@ function SearchResultPage() {
     }
   }, [location]);
 
-  // 정렬 기능
+  // 정렬 기능. 정렬 옵션에 따라 정렬된 results 데이터를 sortedResults에 저장
   useEffect(() => {
     setSortedResults(getSortedList(results, sortOption));
   }, [results, sortOption]);
@@ -112,10 +112,14 @@ function SearchResultPage() {
     { value: "조리시간순", name: "조리시간순" },
   ];
 
-
+  // 페이지네이션 페이지 변경 함수
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber);
   };
+  // 각 페이지 데이터 슬라이싱
+  const indexOfLastItem = activePage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = sortedResults.slice(indexOfFirstItem, indexOfLastItem);
 
   // Search Result 문구 표시
   if (!results) {
@@ -134,11 +138,6 @@ function SearchResultPage() {
     return <p>검색 결과가 없습니다.</p>;
   }
 
-
-  // const indexOfLastItem = activePage * itemsPerPage;
-  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  // const currentItems = results.slice(indexOfFirstItem, indexOfLastItem);
-
   return (
     <Container className="py-5" style={{margin: '0 auto'}}>
       <h3 className={listStyles.recipeListTitle}>
@@ -155,7 +154,7 @@ function SearchResultPage() {
       </Row>
 
       <Row xs={2} md={3} lg={4} className="g-4">
-        {sortedResults.map((recipe) => (    // results 배열에 저장된 검색결과를 사용
+        {currentItems.map((recipe) => (    // results 배열에 저장된 검색결과를 사용
           <Col key={recipe.recipe_id}>
               <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
                 <Card
@@ -203,8 +202,9 @@ function SearchResultPage() {
         <Paging
           activePage={activePage}
           itemsCountPerPage={itemsPerPage}
-          totalItemsCount={results.length}
+          totalItemsCount={sortedResults.length}
           onChange={handlePageChange}
+          pageRangeDisplayed={5}
         />
       </Row>
     </Container>
