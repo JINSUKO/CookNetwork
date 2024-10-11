@@ -40,7 +40,10 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
             <Row xs={1} sm={2} md={3} lg={4} className="g-4">
 
               {recipes && recipes.map((recipe, index) => (
-              <Col key={recipe.recipe_id} className={styles.recipeCardWrapper}>  
+              <Col key={recipe.recipe_id} className={styles.recipeCardWrapper}> 
+               {recipe.recipe_img && (
+                <link rel="preload" as="image" href={recipe.recipe_img} />
+                )}
                 <Link to={`/recipe/${recipe.recipe_id}`} style={{ textDecoration: 'none' }}>
                   <Card 
                     className={styles.recipeCard}
@@ -48,7 +51,13 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
                     >
                   <div className={styles.imageWrapper}>
                     {recipe.recipe_img ? (
-                    <Card.Img variant="top" src={recipe.recipe_img}  className={styles.recipeImage}/>
+                    <Card.Img 
+                    variant="top" 
+                    src={recipe.recipe_img} 
+                    alt={recipe.recipe_name} 
+                    className={styles.recipeImage}
+                    loading="eager"
+                    />
                     ) : (
                       <div style={{height: '200px' }}></div>
                     )}
