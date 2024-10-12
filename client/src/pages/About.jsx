@@ -1,6 +1,8 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { FaChevronRight, FaCookie, FaCookieBite } from 'react-icons/fa';
+import { FaChevronRight} from '@react-icons/all-files/fa/FaChevronRight';
+import { FaCookie} from '@react-icons/all-files/fa/FaCookie';
+import { FaCookieBite } from '@react-icons/all-files/fa/FaCookieBite';
 
 function About () {
   return (

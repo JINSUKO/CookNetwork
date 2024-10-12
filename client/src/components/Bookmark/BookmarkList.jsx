@@ -4,7 +4,7 @@ import { useBookmarkContext } from '../../context/BookmarkContext';
 import RecipeListPage from "../../pages/RecipeListPage";
 // import Loading from "../../components/UI/Loading";
 import Skeleton from "../../components/UI/Skeleton";
-import { FaTruckMonster } from "react-icons/fa";
+import { FaTruckMonster } from "@react-icons/all-files/fa/FaTruckMonster";
 
 function BookmarkList() {
   const { fetchBookmark, loading, bookmarkedRecipes } = useBookmarkContext();
