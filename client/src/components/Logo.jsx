@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 function Logo() {
   return (
     <Link to="/">
-      <img src={logo} alt="로고 이미지" width={'200px'} height={'100px'}/>
+      <img src={logo} alt="로고 이미지" width={200}/>
     </Link>
   )
 }

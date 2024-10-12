@@ -141,13 +141,13 @@ app.post("/api/authPage", authAccessToken, authRefreshToken, (req, res) => {
 
 });
 
-
-// if (process.env.NODE_ENV === 'production') {
-//     app.use(express.static(path.join(__dirname, '../client/dist')));
-// } else {
-//     console.log(path.join(__dirname, '../client'))
-//     app.use(express.static(path.join(__dirname, '../client')));
-// }
+// 정적 파일 서빙 (프로덕션 모드)
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../client/dist')));
+} else {
+    console.log(path.join(__dirname, '../client'))
+    app.use(express.static(path.join(__dirname, '../client')));
+}
 
 // 위에 해당하지 않는 모든
 // API 404 에러 처리
@@ -156,7 +156,6 @@ app.post("/api/authPage", authAccessToken, authRefreshToken, (req, res) => {
 //     res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
 // });
 
-// 정적 파일 서빙 (프로덕션 모드)
 // React app의 라우팅을 위한 와일드카드 라우트
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/dist')));
