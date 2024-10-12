@@ -30,6 +30,10 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
     } 
   };
 
+  const RecipeImgErrorHandler = (event) => {
+    event.target.style.display = 'none';
+  }
+
   if (isLoading && (!recipes || recipes.length === 0)) {
     return <Skeleton />
   }
@@ -48,7 +52,7 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
                     >
                   <div className={styles.imageWrapper}>
                     {recipe.recipe_img ? (
-                    <Card.Img variant="top" src={recipe.recipe_img}  className={styles.recipeImage}/>
+                    <Card.Img variant="top" src={recipe.recipe_img} className={styles.recipeImage} onError={RecipeImgErrorHandler}/>
                     ) : (
                       <div style={{height: '200px' }}></div>
                     )}
