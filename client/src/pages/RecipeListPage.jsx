@@ -30,6 +30,10 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
     } 
   };
 
+  const RecipeImgErrorHandler = (event) => {
+    event.target.style.display = 'none';
+  }
+
   if (isLoading && (!recipes || recipes.length === 0)) {
     return <Skeleton />
   }

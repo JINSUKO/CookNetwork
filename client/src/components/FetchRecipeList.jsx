@@ -14,6 +14,7 @@ import styles from '../assets/styles/RecipeList.module.css';
 import { useBookmarkContext } from '../context/BookmarkContext';
 import SortMenu from "./SortMenu"; 
 import ScrollToTop from "./UI/ScrollToTop";
+import Paging from "./UI/Paging";
 
 function FetchRecipeList() { 
   const { category } = useParams();
@@ -35,6 +36,10 @@ function FetchRecipeList() {
   const [sortOption, setSortOption] = useState("최신순");
   const [sortedRecipes, setSortedRecipes] = useState([]);   // 정렬된 레시피 배열
   const [showSkeleton, setShowSkeleton] = useState(false);  
+  // 페이지네이션
+  const [activePage, setActivePage] = useState(1);
+  const itemsPerPage = 8;
+
 
   const filterOptions = [
     "메인요리", "반찬", "국/탕", "디저트", "면", 
@@ -128,7 +133,7 @@ function FetchRecipeList() {
       setIsLoading(false)
       clearTimeout(skeletonTimer);
     }
-  }, [selectedFilters, searchParams, API_URL, isBookmarked]);  // 카테고리 값이 변경될 때 함수 재생성
+  }, [selectedFilters, searchParams, isBookmarked]);  // 카테고리 값이 변경될 때 함수 재생성
 // }, [isBookmarked]);
 
   
@@ -183,6 +188,7 @@ function FetchRecipeList() {
 
   const handleSortChange = (option) => {
     setSortOption(option);
+    setActivePage(1); // 정렬 변경 시 첫 페이지로 리셋
   };
 
   // 리스트 상단 소개에 카테고리 표시
@@ -193,6 +199,15 @@ function FetchRecipeList() {
     return `${currentCategory} 카테고리`;
   };
   
+  // 페이지네이션 페이지 변경 함수
+  const handlePageChange = (pageNumber) => {
+    setActivePage(pageNumber);
+  };
+  // 각 페이지 데이터 슬라이싱
+  const indexOfLastItem = activePage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const slicedRecipes = sortedRecipes.slice(indexOfFirstItem, indexOfLastItem);
+
 
   return (
     <Container className={styles.recipeListContainer}>
@@ -232,16 +247,24 @@ function FetchRecipeList() {
         <hr className={styles.customHr}/>
         </Row>
 
-        {sortedRecipes.length === 0 ? (
+        {slicedRecipes.length === 0 ? (
           <div className={styles.noRecipesMessage}>아직 레시피가 없습니다.</div>
         ) : (
         <RecipeListPage 
-          // recipes={filteredRecipes} 
-          recipes={sortedRecipes}
+          recipes={slicedRecipes}
           currentCategory={currentCategory}
           isLoading={isLoading}
         />
         )}
+        <Row>
+          <Paging 
+            activePage={activePage}
+            itemsCountPerPage={itemsPerPage}
+            totalItemsCount={sortedRecipes.length}
+            onChange={handlePageChange}
+            pageRangeDisplayed={5}
+          />
+        </Row>
         <ScrollToTop />
       </>
       )}
