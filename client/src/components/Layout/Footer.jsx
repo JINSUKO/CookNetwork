@@ -1,13 +1,15 @@
 import React from "react";
+// import "@fortawesome/fontawesome-free/css/all.min.css";
 
 function Footer() {
   const footerStyle = {
     backgroundColor: '#ffffff',
-    padding: '20rem 0 2rem 0',
+    padding: '40px 0 20px 0',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    fontSize: '15px',
   };
 
   
