@@ -63,7 +63,7 @@ function RecipeListPage({ recipes, currentCategory, isLoading }) {
                     loading="eager"
                     />
                     ) : (
-                      <div style={{height: '200px' }}></div>
+                      <div style={{width: '300px',height: '200px' }}></div>
                     )}
                         <div className={styles.bookmarkWrapper}>
                             {/* <BookmarkButton recipe_id={recipe.recipe_id} /> */}

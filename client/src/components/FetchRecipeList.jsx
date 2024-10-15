@@ -118,7 +118,7 @@ function FetchRecipeList() {
         }));
 
         setRecipes(recipesWithBookmarkStatus);    // 북마크 상태 추가한 레시피 저장
-        setFilteredRecipes(recipesWithBookmarkStatus);    
+        // setFilteredRecipes(recipesWithBookmarkStatus);    
         setSortedRecipes(recipesWithBookmarkStatus);
 
       } else {
@@ -133,7 +133,7 @@ function FetchRecipeList() {
       setIsLoading(false)
       clearTimeout(skeletonTimer);
     }
-  }, [selectedFilters, searchParams, isBookmarked]);  // 카테고리 값이 변경될 때 함수 재생성
+  }, [selectedFilters]);  // 카테고리 값이 변경될 때 함수 재생성
 // }, [isBookmarked]);
 
   
