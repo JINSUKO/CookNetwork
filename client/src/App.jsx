@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Main from './pages/Main'
+// import Main from './pages/Main'
 import Board from './pages/Board';
 import SignUp from './pages/SignUp'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
